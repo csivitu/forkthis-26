@@ -57,8 +57,10 @@ export function HeroHud({ onStartFlight }: HeroHudProps) {
           }}
           onMouseEnter={playHover}
           className="pointer-events-auto rounded-full bg-[#8ffe09] px-3 py-1.5 font-misc text-[10px] font-bold tracking-wider text-[#071100] shadow-[0_0_15px_rgb(143_254_9/50%)] transition-all hover:scale-[1.03] hover:bg-[#a5ff45] hover:shadow-[0_0_25px_rgb(143_254_9/80%)] active:scale-95 sm:px-5 sm:text-xs"
+          aria-label="Start the cockpit flight"
         >
-          START FLIGHT
+          <span className="sm:hidden">GO</span>
+          <span className="hidden sm:inline">START FLIGHT</span>
         </button>
       </div>
     </header>

@@ -39,6 +39,7 @@ export function HeroAudioProvider({ children }: { children: ReactNode }) {
   const cache = useRef(new Map<string, HTMLAudioElement>());
 
   useEffect(() => {
+    const audioCache = cache.current;
     const background = new Audio("/audio/hero-ambient.webm");
     background.loop = true;
     background.volume = 0.35;
@@ -47,10 +48,8 @@ export function HeroAudioProvider({ children }: { children: ReactNode }) {
     EFFECTS.forEach((url) => {
       const audio = new Audio(url);
       audio.preload = "auto";
-      cache.current.set(url, audio);
+      audioCache.set(url, audio);
     });
-
-    setIsMuted(localStorage.getItem("forkthis-sound-muted") !== "0");
 
     const registerInteraction = () => setHasInteracted(true);
     window.addEventListener("pointerdown", registerInteraction, { once: true });
@@ -59,10 +58,10 @@ export function HeroAudioProvider({ children }: { children: ReactNode }) {
     return () => {
       background.pause();
       background.src = "";
-      cache.current.forEach((audio) => {
+      audioCache.forEach((audio) => {
         audio.src = "";
       });
-      cache.current.clear();
+      audioCache.clear();
       window.removeEventListener("pointerdown", registerInteraction);
       window.removeEventListener("keydown", registerInteraction);
     };
@@ -76,12 +75,8 @@ export function HeroAudioProvider({ children }: { children: ReactNode }) {
   }, [hasInteracted, isMuted]);
 
   const toggleSound = useCallback(() => {
-    setIsMuted((muted) => {
-      const next = !muted;
-      localStorage.setItem("forkthis-sound-muted", next ? "1" : "0");
-      setHasInteracted(true);
-      return next;
-    });
+    setIsMuted((muted) => !muted);
+    setHasInteracted(true);
   }, []);
 
   const playEffect = useCallback(

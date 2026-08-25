@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CockpitModel } from "./CockpitModel";
 import { SPACE_PATH } from "./spaceMath";
@@ -13,13 +13,13 @@ const FORWARD = new THREE.Vector3();
 const COCKPIT_QUATERNION = new THREE.Quaternion();
 
 export function FlightRig({ progress, pointer }: FlightInput) {
-  const camera = useThree((state) => state.camera);
   const rig = useRef<THREE.Group>(null);
   const smoothedProgress = useRef(0);
   const smoothedPointer = useRef({ x: 0, y: 0 });
 
   useFrame((state, delta) => {
     if (!rig.current) return;
+    const camera = state.camera;
 
     const frameDelta = Math.min(delta, 0.1);
     smoothedProgress.current = THREE.MathUtils.damp(

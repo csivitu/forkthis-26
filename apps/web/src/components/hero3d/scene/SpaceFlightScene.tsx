@@ -1,8 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
-import { useThree } from "@react-three/fiber";
-import * as THREE from "three";
+import { Suspense } from "react";
 import { FlightRig } from "./FlightRig";
 import { MilkyWay } from "./MilkyWay";
 import { PlanetarySystem } from "./PlanetarySystem";
@@ -11,27 +9,6 @@ import { StarField } from "./StarField";
 import type { FlightInput } from "./types";
 
 export function SpaceFlightScene({ progress, pointer }: FlightInput) {
-  const scene = useThree((state) => state.scene);
-  const renderer = useThree((state) => state.gl);
-
-  useEffect(() => {
-    const previousToneMapping = renderer.toneMapping;
-    const previousExposure = renderer.toneMappingExposure;
-    const previousColorSpace = renderer.outputColorSpace;
-    const previousFog = scene.fog;
-
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    scene.fog = new THREE.FogExp2("#090203", 0.00135);
-
-    return () => {
-      renderer.toneMapping = previousToneMapping;
-      renderer.toneMappingExposure = previousExposure;
-      renderer.outputColorSpace = previousColorSpace;
-      scene.fog = previousFog;
-    };
-  }, [renderer, scene]);
 
   return (
     <group>

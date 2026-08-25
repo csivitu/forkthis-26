@@ -1,13 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import dynamic from "next/dynamic";
 import { HeroHud } from "./HeroHud";
 import { useHeroAudio } from "./HeroAudio";
-import { SpaceFlightScene } from "./scene/SpaceFlightScene";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
+
+const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-[#070103]" />,
+});
 
 export function HeroExperience() {
   const container = useRef<HTMLDivElement>(null);
@@ -81,13 +85,7 @@ export function HeroExperience() {
       <HeroHud onStartFlight={startFlight} />
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-          <Canvas
-            camera={{ position: [0, 6, 65], fov: 75, near: 0.01, far: 1000 }}
-            gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-            dpr={[1, 1.5]}
-          >
-            <SpaceFlightScene progress={progress} pointer={pointer} />
-          </Canvas>
+          <HeroCanvas progress={progress} pointer={pointer} />
         </div>
 
         <div

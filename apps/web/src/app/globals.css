@@ -1,26 +1,129 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Teko";
+  src: url("/fonts/Teko_SemiBold-s.p.4d580838.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Eurostile";
+  src: url("/fonts/Eurostile_Bold-s.p.a22f4418.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/70bc3e132a0a741e-s.p.15008bfb.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spline Sans";
+  src: url("/fonts/d249839af5fc7f99-s.p.12490bb0.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --acid: #8ffe09;
+  --acid-bright: #a5ff45;
+  --acid-dim: #497a00;
+  --void: #030305;
+  --ink: #fcfcfc;
+  --panel: #0d0d12;
+  --frame-inset: 3px;
+  --font-display: "Teko", sans-serif;
+  --font-misc: "Eurostile", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-body: "Spline Sans", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--void);
+  color-scheme: dark;
+  padding: var(--frame-inset);
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--font-body);
+  user-select: none;
+  scrollbar-width: none;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  line-height: 0.85;
+  text-transform: uppercase;
+}
+
+.font-misc {
+  font-family: var(--font-misc);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.glow-acid {
+  text-shadow: 0 0 20px rgb(143 254 9 / 80%), 0 0 40px rgb(143 254 9 / 40%);
+}
+
+.cockpit-bezel {
+  position: fixed;
+  z-index: 999;
+  inset: 0;
+  border: var(--frame-inset) solid rgb(143 254 9 / 80%);
+  box-shadow: inset 0 0 12px rgb(143 254 9 / 35%);
+  pointer-events: none;
+}
+
+.scanlines {
+  background:
+    linear-gradient(rgb(18 16 16 / 0%) 50%, rgb(0 0 0 / 25%) 50%),
+    linear-gradient(90deg, rgb(255 0 0 / 3%), rgb(0 255 0 / 1%), rgb(0 0 255 / 3%));
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+.noise-overlay {
+  background-image:
+    radial-gradient(circle at 18% 22%, rgb(143 254 9 / 8%) 0 0.5px, transparent 0.8px),
+    radial-gradient(circle at 78% 66%, rgb(255 104 44 / 7%) 0 0.5px, transparent 0.8px);
+  background-size: 5px 7px, 7px 5px;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }

@@ -60,13 +60,17 @@ export function HeroExperience() {
     const element = container.current;
     if (!element) return;
     const travel = element.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: Math.max(1, travel * 0.16), behavior: "smooth" });
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({
+      top: Math.max(1, travel * 0.16),
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
   }, []);
 
   return (
     <div
       ref={container}
-      className="relative h-[1100vh] w-full bg-[#070103]"
+      className="relative h-[850vh] w-full bg-[#070103] sm:h-[1100vh]"
       onPointerMove={(event) => {
         setPointer({
           x: (event.clientX / window.innerWidth) * 2 - 1,
@@ -98,7 +102,7 @@ export function HeroExperience() {
             <p className="mb-3 font-mono text-[10px] tracking-[0.42em] text-[#8ffe09] sm:text-xs">
               CSI PRESENTS // GITHUB WORKSHOP 2026
             </p>
-            <h1 className="glow-acid font-display text-[17vw] font-bold leading-[0.72] tracking-[-0.055em] text-white sm:text-[14vw]">
+            <h1 className="glow-acid font-display text-[clamp(5rem,17vw,16rem)] font-bold leading-[0.72] tracking-[-0.055em] text-white sm:text-[clamp(7rem,14vw,16rem)]">
               FORKTHIS
             </h1>
             <p className="mt-6 font-misc text-xs tracking-[0.28em] text-white/70 sm:text-sm">

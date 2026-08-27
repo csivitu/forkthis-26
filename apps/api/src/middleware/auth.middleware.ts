@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/env.config.js";
+import { env } from "../config/env.config";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -30,7 +30,7 @@ export const authMiddleware = (
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret, {
+    const decoded = jwt.verify(token, env.JWT_SECRET, {
       algorithms: ["HS256"],
     }) as { id: number; email: string };
 

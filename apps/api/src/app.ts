@@ -2,11 +2,12 @@ import express from "express";
 import cors from "cors";
 import routes from "./routes";
 import { errorHandler } from "./middleware/error.middleware";
+import { env } from "./config/env.config";
 
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:5173"], 
+  origin: [env.WEB_URL], 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 };

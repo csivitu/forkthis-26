@@ -1,4 +1,4 @@
-import config from "./env.config.js";
+import { env } from "./env.config";
 
 /**
  * Minimal database config shape. Put your ORM/driver setup here.
@@ -6,7 +6,7 @@ import config from "./env.config.js";
  */
 
 export const dbConfig = {
-  url: config.databaseUrl,
+  url: env.DATABASE_URL,
   pool: {
     max: Number(process.env.DB_POOL_MAX ?? 10),
     min: Number(process.env.DB_POOL_MIN ?? 0),
@@ -15,6 +15,6 @@ export const dbConfig = {
 };
 
 export const makeDbConfig = () => ({
-  connectionString: config.databaseUrl,
-  ssl: config.nodeEnv === "production" ? { rejectUnauthorized: true } : false,
+  connectionString: env.DATABASE_URL,
+  ssl: env.NODE_ENV === "production" ? { rejectUnauthorized: true } : false,
 });

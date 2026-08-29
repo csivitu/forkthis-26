@@ -28,6 +28,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@repo/db": "workspace:*",
     "express": "^5.2.1"
   }
 }

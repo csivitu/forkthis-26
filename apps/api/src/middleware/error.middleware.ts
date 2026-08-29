@@ -7,7 +7,10 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
+  res.err = err instanceof Error ? err : new Error(String(err));
+  
   if (err instanceof ApiError) {
+    
     return res.status(err.statusCode).json({
       success: false,
       error: err.message,

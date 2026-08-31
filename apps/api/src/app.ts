@@ -5,6 +5,8 @@ import { errorHandler } from "./middleware/error.middleware";
 import { env } from "./config/env.config";
 import pinoHttp from "pino-http";
 import logger from "./utils/logger.util";
+import pino from "pino"
+
 
 const app = express();
 
@@ -17,21 +19,18 @@ const corsOptions = {
 app.use(
   pinoHttp({
     logger,
-    genReqId: (req) => req.headers['x-request-id'] ?? crypto.randomUUID(),
-    serializers: {
-      req: (req) => ({ method: req.method, url: req.url }),
-      res: (res) => ({ statusCode: res.statusCode }),
-      err: (err) => ({
-        type: err.type,
-        message: err.message
-      })
-    },
+    genReqId: (req) => crypto.randomUUID(),
     redact: ['req.headers.authorization'],
     customLogLevel: (req, res, err) => {
       if (res.statusCode >= 500 || err) return 'error';
       if (res.statusCode >= 400) return 'warn';
       return 'info';
     },
+    serializers:{
+      
+    },
+    customSuccessMessage: (req,res) => `${req.method}${req.url} - ${res.statusCode}`,
+    customErrorMessage:(req,res,err) => `${req.method}${req.url}-${res.statusCode}-${err.message}-${err.stack}`,
   })
 )
 

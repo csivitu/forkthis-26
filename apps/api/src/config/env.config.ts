@@ -20,7 +20,13 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default("1h"),
 
   CORS_ORIGIN: z.string().optional(),
-  WEB_URL: z.string().default("http://localhost:5173"),
+  BETTER_AUTH_URL: z.string(),
+  BETTER_AUTH_SECRET: z.string().min(16),
+  GOOGLE_CLIENT_ID: z.string().min(1),
+  GOOGLE_CLIENT_SECRET: z.string().min(1),
+  GITHUB_CLIENT_ID: z.string().min(1),
+  GITHUB_CLIENT_SECRET: z.string().min(1),
+  WEB_URL: z.string().default("http://localhost:3000"),
 });
 
 export const env = envSchema.parse(process.env);

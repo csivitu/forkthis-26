@@ -5,7 +5,8 @@ import { errorHandler } from "./middleware/error.middleware";
 import { env } from "./config/env.config";
 import pinoHttp from "pino-http";
 import logger from "./utils/logger.util";
-import pino from "pino"
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./config/auth.config";
 
 
 const app = express();
@@ -35,6 +36,9 @@ app.use(
 )
 
 app.use(cors(corsOptions));
+
+app.all("/api/auth/*splat", toNodeHandler(auth))
+
 app.use(express.json());
 
 

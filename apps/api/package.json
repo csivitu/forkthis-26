@@ -9,7 +9,6 @@
     "start": "bun dist/index.js"
   },
   "devDependencies": {
-    "@better-auth/cli": "^1.4.21",
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

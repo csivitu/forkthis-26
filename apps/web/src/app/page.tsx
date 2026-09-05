@@ -1,5 +1,6 @@
 import { HeroAudioProvider } from "@/components/hero3d/HeroAudio";
 import { HeroExperience } from "@/components/hero3d/HeroExperience";
+import { TimelineSection } from "@/components/TimelineSection";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
       <HeroAudioProvider>
         <HeroExperience />
       </HeroAudioProvider>
+      <TimelineSection />
       <div className="scanlines pointer-events-none fixed inset-0 z-[90] opacity-40" aria-hidden="true" />
       <div className="noise-overlay pointer-events-none fixed inset-0 z-[89] opacity-35" aria-hidden="true" />
     </main>

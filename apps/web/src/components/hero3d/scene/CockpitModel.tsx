@@ -61,6 +61,45 @@ const COCKPIT_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
+function removeDashboardLogo(source: THREE.BufferGeometry) {
+  const geometry = source.clone();
+  const position = geometry.getAttribute("position");
+  const index = geometry.getIndex();
+  if (!index) return geometry;
+
+  const keptIndices: number[] = [];
+  for (let offset = 0; offset < index.count; offset += 3) {
+    let isLogoTriangle = true;
+
+    for (let corner = 0; corner < 3; corner += 1) {
+      const vertex = index.getX(offset + corner);
+      const x = position.getX(vertex);
+      const y = position.getY(vertex);
+      const z = position.getZ(vertex);
+      const insideLogo =
+        x >= -0.85 &&
+        x <= -0.73 &&
+        y >= 0.55 &&
+        y <= 0.66 &&
+        z >= -0.08 &&
+        z <= 0.08;
+
+      if (!insideLogo) {
+        isLogoTriangle = false;
+        break;
+      }
+    }
+
+    if (!isLogoTriangle) {
+      keptIndices.push(index.getX(offset), index.getX(offset + 1), index.getX(offset + 2));
+    }
+  }
+
+  geometry.setIndex(keptIndices);
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
 function CockpitLight({
   color,
   position,
@@ -113,19 +152,24 @@ export function CockpitModel() {
       fog: false,
     });
     const object = scene.clone(true);
+    const geometries: THREE.BufferGeometry[] = [];
     object.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
+      const geometry = removeDashboardLogo(child.geometry);
+      child.geometry = geometry;
       child.material = material;
       child.frustumCulled = false;
+      geometries.push(geometry);
     });
 
-    return { lightmap, material, object };
+    return { geometries, lightmap, material, object };
   }, [scene, sourceLightmap]);
 
   useEffect(
     () => () => {
       cockpit.material.dispose();
       cockpit.lightmap.dispose();
+      cockpit.geometries.forEach((geometry) => geometry.dispose());
     },
     [cockpit],
   );
@@ -138,15 +182,6 @@ export function CockpitModel() {
         rotation={[0, -Math.PI / 2, 0]}
         scale={1.05}
       />
-      <mesh position={[0, -0.6, 0.16]} renderOrder={12}>
-        <planeGeometry args={[0.095, 0.08]} />
-        <meshBasicMaterial
-          color="#141916"
-          depthTest={false}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
       <CockpitLight color="#ffffff" position={[-0.98, 0.67, 0.08]} rotation={0.2} />
       <CockpitLight color="#ffffff" position={[0.98, 0.67, 0.08]} rotation={-0.2} />
     </group>

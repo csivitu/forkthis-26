@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CockpitModel } from "./CockpitModel";
@@ -11,6 +11,45 @@ const CAMERA_POINT = new THREE.Vector3();
 const LOOK_POINT = new THREE.Vector3();
 const FORWARD = new THREE.Vector3();
 const COCKPIT_QUATERNION = new THREE.Quaternion();
+
+function Headlights() {
+  const leftLight = useRef<THREE.SpotLight>(null);
+  const rightLight = useRef<THREE.SpotLight>(null);
+  const leftTarget = useRef<THREE.Object3D>(null);
+  const rightTarget = useRef<THREE.Object3D>(null);
+
+  useLayoutEffect(() => {
+    if (leftLight.current && leftTarget.current) leftLight.current.target = leftTarget.current;
+    if (rightLight.current && rightTarget.current) rightLight.current.target = rightTarget.current;
+  }, []);
+
+  return (
+    <group>
+      <spotLight
+        ref={leftLight}
+        color="#ffffff"
+        intensity={9500}
+        distance={150}
+        angle={0.52}
+        penumbra={0.64}
+        decay={2}
+        position={[-0.72, 0.12, -0.2]}
+      />
+      <spotLight
+        ref={rightLight}
+        color="#ffffff"
+        intensity={9500}
+        distance={150}
+        angle={0.52}
+        penumbra={0.64}
+        decay={2}
+        position={[0.72, 0.12, -0.2]}
+      />
+      <object3D ref={leftTarget} position={[-7, -0.5, -70]} />
+      <object3D ref={rightTarget} position={[7, -0.5, -70]} />
+    </group>
+  );
+}
 
 export function FlightRig({ progress, pointer }: FlightInput) {
   const rig = useRef<THREE.Group>(null);
@@ -72,6 +111,7 @@ export function FlightRig({ progress, pointer }: FlightInput) {
   return (
     <group ref={rig}>
       <CockpitModel />
+      <Headlights />
     </group>
   );
 }

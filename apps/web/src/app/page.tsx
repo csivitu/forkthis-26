@@ -7,7 +7,6 @@ export default function Home() {
       <HeroAudioProvider>
         <HeroExperience />
       </HeroAudioProvider>
-      <div className="cockpit-bezel" aria-hidden="true" />
       <div className="scanlines pointer-events-none fixed inset-0 z-[90] opacity-40" aria-hidden="true" />
       <div className="noise-overlay pointer-events-none fixed inset-0 z-[89] opacity-35" aria-hidden="true" />
     </main>

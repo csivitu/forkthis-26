@@ -19,7 +19,7 @@ export function HeroExperience() {
   const lastStage = useRef(1);
   const [progress, setProgress] = useState(0);
   const [pointer, setPointer] = useState(INITIAL_POINTER);
-  const { playAlert, playWave, playClick } = useHeroAudio();
+  const { playAlert, playWave } = useHeroAudio();
 
   const updateScroll = useCallback(() => {
     frameRequest.current = null;
@@ -60,19 +60,10 @@ export function HeroExperience() {
     if (stage === 3) playAlert();
   }, [playAlert, playWave, progress]);
 
-  const startFlight = useCallback(() => {
-    const element = container.current;
-    if (!element) return;
-    const travel = element.offsetHeight - window.innerHeight;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({
-      top: Math.max(1, travel * 0.16),
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
-  }, []);
-
+  const borderOpacity = Math.max(0, Math.min(1, (progress - 0.985) / 0.015));
   return (
     <div
+      id="home"
       ref={container}
       className="relative h-[850vh] w-full bg-[#070103] sm:h-[1100vh]"
       onPointerMove={(event) => {
@@ -82,42 +73,17 @@ export function HeroExperience() {
         });
       }}
     >
-      <HeroHud onStartFlight={startFlight} />
+      <HeroHud />
+      <div className="cockpit-bezel" style={{ opacity: borderOpacity }} aria-hidden="true" />
+      <span id="dashboard" className="absolute top-[28%]" aria-hidden="true" />
+      <span id="leaderboard" className="absolute top-[58%]" aria-hidden="true" />
+      <span id="resources" className="absolute top-[86%]" aria-hidden="true" />
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
           <HeroCanvas progress={progress} pointer={pointer} />
         </div>
+        <h1 className="sr-only">Forkthis</h1>
 
-        <div
-          className="absolute inset-0 z-10 flex items-center justify-center px-6 text-center"
-          style={{
-            opacity: Math.max(0, 1 - progress / 0.12),
-            transform: `translateY(${-progress * 140}px)`,
-            pointerEvents: progress < 0.1 ? "auto" : "none",
-          }}
-        >
-          <div className="flex flex-col items-center">
-            <p className="mb-3 font-mono text-[10px] tracking-[0.42em] text-[#8ffe09] sm:text-xs">
-              CSI PRESENTS // GITHUB WORKSHOP 2026
-            </p>
-            <h1 className="glow-acid font-display text-[clamp(5rem,17vw,16rem)] font-bold leading-[0.72] tracking-[-0.055em] text-white sm:text-[clamp(7rem,14vw,16rem)]">
-              FORKTHIS
-            </h1>
-            <p className="mt-6 font-misc text-xs tracking-[0.28em] text-white/70 sm:text-sm">
-              FORK. BUILD. COLLABORATE. SHIP.
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                playClick();
-                startFlight();
-              }}
-              className="mt-7 rounded-full bg-[#8ffe09] px-7 py-3 font-misc text-xs font-bold tracking-[0.18em] text-[#071100] shadow-[0_0_28px_rgb(143_254_9/50%)] transition-transform hover:scale-105"
-            >
-              ENTER THE COCKPIT
-            </button>
-          </div>
-        </div>
 
         <div className="pointer-events-none absolute inset-y-0 right-4 z-20 hidden items-center md:flex">
           <div className="h-40 w-px bg-white/10">

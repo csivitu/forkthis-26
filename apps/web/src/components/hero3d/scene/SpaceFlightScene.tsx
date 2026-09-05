@@ -1,10 +1,9 @@
 "use client";
 
 import { Suspense } from "react";
+import { AsteroidField } from "./AsteroidField";
 import { FlightRig } from "./FlightRig";
-import { MilkyWay } from "./MilkyWay";
-import { PlanetarySystem } from "./PlanetarySystem";
-import { ShootingStars } from "./ShootingStars";
+import { OpeningLogo } from "./OpeningLogo";
 import { StarField } from "./StarField";
 import type { FlightInput } from "./types";
 
@@ -17,9 +16,10 @@ export function SpaceFlightScene({ progress, pointer }: FlightInput) {
       <directionalLight color="#ffb052" intensity={2.4} position={[18, 26, 24]} />
       <directionalLight color="#68ff72" intensity={0.7} position={[-20, -8, -80]} />
       <StarField />
-      <PlanetarySystem />
-      <ShootingStars />
-      <MilkyWay />
+      <AsteroidField />
+      <Suspense fallback={null}>
+        <OpeningLogo />
+      </Suspense>
       <Suspense fallback={null}>
         <FlightRig progress={progress} pointer={pointer} />
       </Suspense>

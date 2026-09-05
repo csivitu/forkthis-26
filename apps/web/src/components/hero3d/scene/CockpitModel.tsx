@@ -6,32 +6,91 @@ import * as THREE from "three";
 
 const COCKPIT_VERTEX_SHADER = /* glsl */ `
   varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
 
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+    vNormal = normalize(normalMatrix * normal);
+    vViewPosition = -viewPosition.xyz;
+    gl_Position = projectionMatrix * viewPosition;
   }
 `;
 
 const COCKPIT_FRAGMENT_SHADER = /* glsl */ `
   uniform sampler2D cockpitMap;
   varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
 
   void main() {
     vec4 sampleColor = texture2D(cockpitMap, vUv);
     float signal = max(sampleColor.r, max(sampleColor.g, sampleColor.b));
-    vec3 orange = vec3(1.0, 0.25, 0.045);
-    vec3 green = vec3(0.37, 1.0, 0.16);
-    vec3 red = vec3(1.0, 0.055, 0.025);
-    vec3 palette = mix(orange, green, smoothstep(0.08, 0.54, vUv.x));
-    palette = mix(palette, red, smoothstep(0.62, 0.96, vUv.x));
+    vec3 cockpitGreen = vec3(0.56, 1.0, 0.18);
+
+    vec3 normal = normalize(vNormal);
+    normal = gl_FrontFacing ? normal : -normal;
+    vec3 viewDirection = normalize(vViewPosition);
+    vec3 leftDirection = normalize(vec3(-0.72, 0.56, 0.88));
+    vec3 rightDirection = normalize(vec3(0.76, 0.38, 0.82));
+    float leftDiffuse = max(dot(normal, leftDirection), 0.0);
+    float rightDiffuse = max(dot(normal, rightDirection), 0.0);
+    float leftSpecular = pow(
+      max(dot(normal, normalize(leftDirection + viewDirection)), 0.0),
+      24.0
+    );
+    float rightSpecular = pow(
+      max(dot(normal, normalize(rightDirection + viewDirection)), 0.0),
+      28.0
+    );
+    vec3 reflectedLight = vec3(1.0) * (
+      leftDiffuse * 0.04 +
+      rightDiffuse * 0.035 +
+      leftSpecular * 0.32 +
+      rightSpecular * 0.28
+    );
+
+    vec3 surfaceTint = vec3(0.30, 0.38, 0.28);
     vec3 darkStructure =
-      sampleColor.rgb * vec3(0.92, 0.72, 0.60) + vec3(0.012, 0.004, 0.002);
-    vec3 coloredSignal = palette * signal * 1.42;
+      sampleColor.rgb * surfaceTint * 1.08 + vec3(0.006, 0.010, 0.006);
+    vec3 coloredSignal = cockpitGreen * signal * 1.62;
     vec3 finalColor = mix(darkStructure, coloredSignal, smoothstep(0.26, 0.84, signal));
+    finalColor += reflectedLight * (1.0 - smoothstep(0.64, 1.0, signal));
     gl_FragColor = vec4(finalColor, sampleColor.a);
   }
 `;
+
+function CockpitLight({
+  color,
+  position,
+  rotation,
+}: {
+  color: string;
+  position: [number, number, number];
+  rotation: number;
+}) {
+  return (
+    <group position={position} rotation={[0, 0, rotation]}>
+      <mesh renderOrder={11}>
+        <boxGeometry args={[0.38, 0.038, 0.025]} />
+        <meshBasicMaterial color={color} toneMapped={false} depthTest={false} />
+      </mesh>
+      <mesh position={[0, 0, -0.01]} renderOrder={10}>
+        <planeGeometry args={[0.58, 0.15]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.26}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          depthTest={false}
+          toneMapped={false}
+        />
+      </mesh>
+    </group>
+  );
+}
 
 export function CockpitModel() {
   const { scene } = useGLTF("/models/cockpit-raw.glb");
@@ -72,11 +131,25 @@ export function CockpitModel() {
   );
 
   return (
-    <primitive
-      object={cockpit.object}
-      position={[0, -1.5, 0]}
-      rotation={[0, -Math.PI / 2, 0]}
-    />
+    <group>
+      <primitive
+        object={cockpit.object}
+        position={[0, -1.65, 0]}
+        rotation={[0, -Math.PI / 2, 0]}
+        scale={1.05}
+      />
+      <mesh position={[0, -0.6, 0.16]} renderOrder={12}>
+        <planeGeometry args={[0.095, 0.08]} />
+        <meshBasicMaterial
+          color="#141916"
+          depthTest={false}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+      <CockpitLight color="#ffffff" position={[-0.98, 0.67, 0.08]} rotation={0.2} />
+      <CockpitLight color="#ffffff" position={[0.98, 0.67, 0.08]} rotation={-0.2} />
+    </group>
   );
 }
 

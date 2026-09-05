@@ -3,7 +3,8 @@ import * as THREE from "three";
 export const SPACE_PATH = new THREE.CatmullRomCurve3(
   [
     new THREE.Vector3(0, 6, 65),
-    new THREE.Vector3(5, 3, 15),
+    new THREE.Vector3(0, 2.5, 18),
+    new THREE.Vector3(0, 0.5, 4),
     new THREE.Vector3(-6, 8, -40),
     new THREE.Vector3(7, -2, -95),
     new THREE.Vector3(-7, 4, -155),

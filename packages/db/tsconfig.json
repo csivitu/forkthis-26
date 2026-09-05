@@ -1,0 +1,16 @@
+
+{
+  "extends": "@repo/typescript-config/base.json",
+  "include": [
+    "src",
+    "drizzle.config.ts"
+  ],
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "drizzle"
+  ]
+}

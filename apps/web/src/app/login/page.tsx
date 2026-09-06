@@ -10,6 +10,19 @@ type ParticipantStatus = {
   participantFound?: boolean;
 };
 
+async function requestParticipantStatus() {
+  const response = await fetch(`${API_URL}/api/debug/participant-status`, {
+    credentials: "include",
+  });
+  const data = (await response.json()) as ParticipantStatus;
+
+  if (!response.ok && response.status !== 401) {
+    throw new Error("Could not check participant status.");
+  }
+
+  return data;
+}
+
 export default function LoginPage() {
   const [status, setStatus] = useState<ParticipantStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -21,15 +34,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_URL}/api/debug/participant-status`, {
-        credentials: "include",
-      });
-      const data = (await response.json()) as ParticipantStatus;
-
-      if (!response.ok && response.status !== 401) {
-        throw new Error("Could not check participant status.");
-      }
-      setStatus(data);
+      setStatus(await requestParticipantStatus());
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Request failed.");
     } finally {
@@ -38,7 +43,24 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    void loadStatus();
+    let active = true;
+
+    requestParticipantStatus()
+      .then((data) => {
+        if (active) setStatus(data);
+      })
+      .catch((requestError: unknown) => {
+        if (active) {
+          setError(requestError instanceof Error ? requestError.message : "Request failed.");
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function signInWithGoogle() {

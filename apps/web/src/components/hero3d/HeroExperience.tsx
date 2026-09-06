@@ -83,19 +83,6 @@ export function HeroExperience() {
           <HeroCanvas progress={progress} pointer={pointer} />
         </div>
         <h1 className="sr-only">Forkthis</h1>
-
-
-        <div className="pointer-events-none absolute inset-y-0 right-4 z-20 hidden items-center md:flex">
-          <div className="h-40 w-px bg-white/10">
-            <div
-              className="w-px bg-[#8ffe09] shadow-[0_0_8px_#8ffe09]"
-              style={{ height: `${Math.max(2, progress * 100)}%` }}
-            />
-          </div>
-          <span className="ml-3 font-mono text-[9px] tracking-[0.25em] text-white/45 [writing-mode:vertical-rl]">
-            FLIGHT VECTOR {Math.round(progress * 100).toString().padStart(3, "0")}
-          </span>
-        </div>
       </div>
     </div>
   );

@@ -304,8 +304,8 @@ button {
     display: flex;
     height: 40px;
     align-items: center;
-    background: var(--acid);
-    color: #061100;
+    background: var(--acid-dim);
+    color: #faffef;
     pointer-events: auto;
     transition:
       background-color 260ms ease,
@@ -342,7 +342,7 @@ button {
 
   .mobile-header--open .mobile-header__brand,
   .mobile-header--open .mobile-header__toggle {
-    background: #bdff72;
+    background: #365c00;
   }
 
   .mobile-menu {

@@ -66,9 +66,13 @@ function Connector({ mirrored }: { mirrored: boolean }) {
       aria-hidden="true"
     >
       <g transform={mirrored ? "translate(175 0) scale(-1 1)" : undefined}>
-        <line x1="108" y1="1.045" x2="175" y2="1.045" stroke="#8FFE09" strokeWidth="2.09" />
-        <line y1="42.045" x2="67" y2="42.045" stroke="#8FFE09" strokeWidth="2.09" />
-        <line x1="66.264" y1="42.348" x2="107.599" y2="1.348" stroke="#8FFE09" strokeWidth="2.09" />
+        <path
+          d="M175 1.045H108L66.264 42.348H0"
+          stroke="#8FFE09"
+          strokeWidth="2.09"
+          vectorEffect="non-scaling-stroke"
+          data-timeline-connector-path
+        />
       </g>
     </svg>
   );
@@ -86,23 +90,28 @@ export function TimelineSection() {
     const context = gsap.context(() => {
       const title = element.querySelector<HTMLElement>("[data-timeline-title]");
       const track = element.querySelector<SVGElement>("[data-timeline-track]");
-      const slider = element.querySelector<HTMLElement>("[data-timeline-slider]");
       const cards = gsap.utils.toArray<HTMLElement>("[data-timeline-card]");
       const dots = gsap.utils.toArray<HTMLElement>("[data-timeline-dot]");
       const connectors = gsap.utils.toArray<SVGElement>("[data-timeline-connector]");
+      const connectorPaths = gsap.utils.toArray<SVGPathElement>("[data-timeline-connector-path]");
 
       if (reducedMotion) {
-        gsap.set([title, track, slider, ...cards, ...dots, ...connectors], { clearProps: "all" });
+        gsap.set([title, track, ...cards, ...dots, ...connectors, ...connectorPaths], {
+          clearProps: "all",
+        });
         return;
       }
 
       gsap.set(title, { autoAlpha: 0, y: -24 });
       gsap.set(track, { scaleY: 0, transformOrigin: "top center" });
-      gsap.set(slider, { autoAlpha: 0, x: 28 });
       gsap.set(dots, { autoAlpha: 0, scale: 0.25 });
-      gsap.set(connectors, { autoAlpha: 0, scaleX: 0, transformOrigin: "center center" });
+      gsap.set(connectors, { autoAlpha: 1 });
+      connectorPaths.forEach((path) => {
+        const length = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
+      });
       cards.forEach((card, index) => {
-        gsap.set(card, { autoAlpha: 0, x: index % 2 === 0 ? -80 : 80, scale: 0.95 });
+        gsap.set(card, { autoAlpha: 0, x: index % 2 === 0 ? -64 : 64, scale: 0.96 });
       });
 
       const animation = gsap.timeline({
@@ -113,18 +122,31 @@ export function TimelineSection() {
           end: "bottom bottom",
           scrub: 1,
           invalidateOnRefresh: true,
-          onUpdate: (self) => element.style.setProperty("--timeline-progress", self.progress.toFixed(4)),
         },
       });
 
       animation
         .to(title, { autoAlpha: 1, y: 0, duration: 0.1 })
-        .to(track, { scaleY: 1, duration: 0.42 }, 0.04)
-        .to(slider, { autoAlpha: 1, x: 0, duration: 0.14 }, 0.06)
-        .to(dots, { autoAlpha: 1, scale: 1, stagger: 0.1, duration: 0.13 }, 0.11)
-        .to(connectors, { autoAlpha: 1, scaleX: 1, stagger: 0.1, duration: 0.16 }, 0.14)
-        .to(cards, { autoAlpha: 1, x: 0, scale: 1, stagger: 0.1, duration: 0.22 }, 0.16)
-        .to([title, track, slider, ...dots, ...connectors], { autoAlpha: 0, y: -20, duration: 0.15 }, 0.84)
+        .to(track, { scaleY: 1, duration: 0.72 }, 0.04);
+
+      cards.forEach((card, index) => {
+        const dot = dots[index];
+        const connectorPath = connectorPaths[index];
+        if (!dot || !connectorPath) return;
+
+        const start = 0.12 + index * 0.16;
+        animation
+          .to(dot, { autoAlpha: 1, scale: 1, duration: 0.04 }, start)
+          .to(
+            connectorPath,
+            { strokeDashoffset: 0, duration: 0.09, ease: "none" },
+            start + 0.04,
+          )
+          .to(card, { autoAlpha: 1, x: 0, scale: 1, duration: 0.1 }, start + 0.13);
+      });
+
+      animation
+        .to([title, track, ...dots, ...connectors], { autoAlpha: 0, y: -20, duration: 0.15 }, 0.84)
         .to(cards, { autoAlpha: 0, y: -42, stagger: 0.02, duration: 0.16 }, 0.84);
     }, element);
 
@@ -172,13 +194,6 @@ export function TimelineSection() {
               </article>
             ))}
           </div>
-        </div>
-
-        <div className="timeline-slider" data-timeline-slider aria-hidden="true">
-          <span className="timeline-slider__shell" />
-          <span className="timeline-slider__rail">
-            <span className="timeline-slider__thumb" />
-          </span>
         </div>
       </div>
     </section>

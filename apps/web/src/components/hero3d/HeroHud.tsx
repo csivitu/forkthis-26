@@ -1,45 +1,65 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useRef } from "react";
+
+function SiteScrollbar() {
+  const thumb = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    let frame: number | null = null;
+
+    const update = () => {
+      frame = null;
+      const element = thumb.current;
+      const rail = element?.parentElement;
+      if (!element || !rail) return;
+
+      const maximumScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maximumScroll > 0 ? window.scrollY / maximumScroll : 0;
+      const maximumTravel = rail.clientHeight - element.offsetHeight;
+      element.style.transform = `translateY(${Math.max(0, Math.min(1, progress)) * maximumTravel}px)`;
+    };
+
+    const scheduleUpdate = () => {
+      if (frame === null) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return (
+    <div className="site-scrollbar" aria-hidden="true">
+      <span className="site-scrollbar__shell" />
+      <span className="site-scrollbar__cap site-scrollbar__cap--start" />
+      <span className="site-scrollbar__cap site-scrollbar__cap--end" />
+      <span className="site-scrollbar__rail">
+        <span ref={thumb} className="site-scrollbar__thumb" />
+      </span>
+    </div>
+  );
+}
+
 export function HeroHud() {
   return (
-    <header className="hero-navbar">
-      <nav className="hero-navbar__nav" aria-label="Primary navigation">
-        <div className="hero-navbar__layout">
-          <div className="hero-navbar__links hero-navbar__links--left">
-            <a className="hero-nav-link" href="#home">
-              Home
-            </a>
-            <a className="hero-nav-link" href="#dashboard">
-              Dashboard
-            </a>
-          </div>
-
-          <a className="hero-navbar__brand" href="#home" aria-label="Fork This home">
-            <Image
-              src="/assets/nav-logo.png"
-              alt=""
-              width={146}
-              height={21}
-              priority
-              className="hero-navbar__brand-image"
-            />
-          </a>
-
-          <div className="hero-navbar__links hero-navbar__links--right">
-            <a className="hero-nav-link" href="#leaderboard">
-              Leaderboard
-            </a>
-            <a className="hero-nav-link" href="#resources">
-              Resources
-            </a>
-          </div>
-        </div>
+    <header className="site-header">
+      <nav className="site-nav" aria-label="Primary navigation">
+        <a href="#resources">Resources</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#leaderboard">Leaderboard</a>
       </nav>
 
-      <a className="hero-navbar__login" href="/login">
-        Login
+      <a className="site-login" href="/login">
+        Log in
       </a>
+      <SiteScrollbar />
     </header>
   );
 }

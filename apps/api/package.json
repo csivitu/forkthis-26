@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target node",
-    "start": "bun dist/index.js"
+    "start": "bun dist/index.js",
+    "sync:prs": "bun src/scripts/sync-prs.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

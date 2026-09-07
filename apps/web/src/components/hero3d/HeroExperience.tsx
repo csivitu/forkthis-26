@@ -7,6 +7,9 @@ import { useHeroAudio } from "./HeroAudio";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
+const ABOUT_STOP_START = 0.22;
+const ABOUT_STOP_END = 0.44;
+const ABOUT_FLIGHT_POSITION = 0.28;
 type CalloutStyle = CSSProperties & {
   "--callout-reveal": number;
 };
@@ -16,8 +19,7 @@ type AboutStyle = CSSProperties & {
   "--about-shift": string;
 };
 
-function HeroAboutCallouts({ progress }: { progress: number }) {
-  const phase = Math.max(0, Math.min(1, (progress - 0.1) / 0.3));
+function HeroAboutCallouts({ phase }: { phase: number }) {
   const opacity = Math.max(0, Math.min(1, phase / 0.14, (1 - phase) / 0.18));
   const firstReveal = Math.max(0, Math.min(1, phase / 0.54));
   const secondReveal = Math.max(0, Math.min(1, (phase - 0.24) / 0.54));
@@ -118,6 +120,8 @@ export function HeroExperience() {
   const frameRequest = useRef<number | null>(null);
   const lastStage = useRef(1);
   const [progress, setProgress] = useState(0);
+  const [aboutPhase, setAboutPhase] = useState(0);
+  const [flightPaused, setFlightPaused] = useState(false);
   const [pointer, setPointer] = useState(INITIAL_POINTER);
   const { playAlert, playWave } = useHeroAudio();
 
@@ -128,11 +132,25 @@ export function HeroExperience() {
     const travel = element.offsetHeight - window.innerHeight;
     const scrolled = -element.getBoundingClientRect().top;
     const rawProgress = travel > 0 ? Math.max(0, Math.min(1, scrolled / travel)) : 0;
+    const inAboutStop = rawProgress >= ABOUT_STOP_START && rawProgress <= ABOUT_STOP_END;
     const flightProgress =
-      rawProgress < 0.6
-        ? (rawProgress / 0.6) * 0.72
-        : 0.72 + ((rawProgress - 0.6) / 0.4) * 0.28;
+      rawProgress < ABOUT_STOP_START
+        ? (rawProgress / ABOUT_STOP_START) * ABOUT_FLIGHT_POSITION
+        : rawProgress <= ABOUT_STOP_END
+          ? ABOUT_FLIGHT_POSITION
+          : ABOUT_FLIGHT_POSITION +
+            ((rawProgress - ABOUT_STOP_END) / (1 - ABOUT_STOP_END)) *
+              (1 - ABOUT_FLIGHT_POSITION);
+    const nextAboutPhase =
+      rawProgress <= ABOUT_STOP_START
+        ? 0
+        : rawProgress >= ABOUT_STOP_END
+          ? 1
+          : (rawProgress - ABOUT_STOP_START) / (ABOUT_STOP_END - ABOUT_STOP_START);
+
     setProgress(flightProgress);
+    setAboutPhase(nextAboutPhase);
+    setFlightPaused(inAboutStop);
   }, []);
 
   useEffect(() => {
@@ -180,9 +198,9 @@ export function HeroExperience() {
       <span id="resources" className="absolute top-[86%]" aria-hidden="true" />
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-          <HeroCanvas progress={progress} pointer={pointer} />
+          <HeroCanvas progress={progress} pointer={pointer} paused={flightPaused} />
         </div>
-        <HeroAboutCallouts progress={progress} />
+        <HeroAboutCallouts phase={aboutPhase} />
         <h1 className="sr-only">Forkthis</h1>
       </div>
     </div>

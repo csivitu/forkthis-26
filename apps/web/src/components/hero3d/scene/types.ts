@@ -3,9 +3,10 @@ export interface PointerPosition {
   y: number;
 }
 
-export interface FlightInput {
+export interface FlightState {
   progress: number;
   pointer: PointerPosition;
+  paused: boolean;
 }
 
 export interface PlanetConfig {

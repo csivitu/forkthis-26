@@ -3,11 +3,11 @@
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 import { SpaceFlightScene } from "./scene/SpaceFlightScene";
-import type { FlightInput } from "./scene/types";
+import type { FlightState } from "./scene/types";
 
 const SCENE_FOG = new THREE.FogExp2("#090203", 0.00135);
 
-export default function HeroCanvas({ progress, pointer }: FlightInput) {
+export default function HeroCanvas({ progress, pointer, paused }: FlightState) {
   return (
     <Canvas
       camera={{ position: [0, 6, 65], fov: 75, near: 0.01, far: 1000 }}
@@ -22,7 +22,7 @@ export default function HeroCanvas({ progress, pointer }: FlightInput) {
       scene={{ fog: SCENE_FOG }}
       dpr={[1, 1.5]}
     >
-      <SpaceFlightScene progress={progress} pointer={pointer} />
+      <SpaceFlightScene progress={progress} pointer={pointer} paused={paused} />
     </Canvas>
   );
 }

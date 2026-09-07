@@ -5,9 +5,9 @@ import { AsteroidField } from "./AsteroidField";
 import { FlightRig } from "./FlightRig";
 import { OpeningLogo } from "./OpeningLogo";
 import { StarField } from "./StarField";
-import type { FlightInput } from "./types";
+import type { FlightState } from "./types";
 
-export function SpaceFlightScene({ progress, pointer }: FlightInput) {
+export function SpaceFlightScene({ progress, pointer, paused }: FlightState) {
 
   return (
     <group>
@@ -21,7 +21,7 @@ export function SpaceFlightScene({ progress, pointer }: FlightInput) {
         <OpeningLogo />
       </Suspense>
       <Suspense fallback={null}>
-        <FlightRig progress={progress} pointer={pointer} />
+        <FlightRig progress={progress} pointer={pointer} paused={paused} />
       </Suspense>
     </group>
   );

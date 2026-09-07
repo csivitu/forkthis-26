@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CockpitModel } from "./CockpitModel";
 import { SPACE_PATH } from "./spaceMath";
-import type { FlightInput } from "./types";
+import type { FlightState } from "./types";
 
 const CAMERA_POINT = new THREE.Vector3();
 const LOOK_POINT = new THREE.Vector3();
@@ -51,34 +51,40 @@ function Headlights() {
   );
 }
 
-export function FlightRig({ progress, pointer }: FlightInput) {
+export function FlightRig({ progress, pointer, paused }: FlightState) {
   const rig = useRef<THREE.Group>(null);
   const smoothedProgress = useRef(0);
   const smoothedPointer = useRef({ x: 0, y: 0 });
+  const idleElapsed = useRef(0);
 
   useFrame((state, delta) => {
     if (!rig.current) return;
     const camera = state.camera;
 
     const frameDelta = Math.min(delta, 0.1);
-    smoothedProgress.current = THREE.MathUtils.damp(
-      smoothedProgress.current,
-      progress,
-      2,
-      frameDelta,
-    );
-    smoothedPointer.current.x = THREE.MathUtils.damp(
-      smoothedPointer.current.x,
-      pointer.x,
-      3.2,
-      frameDelta,
-    );
-    smoothedPointer.current.y = THREE.MathUtils.damp(
-      smoothedPointer.current.y,
-      pointer.y,
-      3.2,
-      frameDelta,
-    );
+    if (paused) {
+      smoothedProgress.current = progress;
+    } else {
+      smoothedProgress.current = THREE.MathUtils.damp(
+        smoothedProgress.current,
+        progress,
+        2,
+        frameDelta,
+      );
+      smoothedPointer.current.x = THREE.MathUtils.damp(
+        smoothedPointer.current.x,
+        pointer.x,
+        3.2,
+        frameDelta,
+      );
+      smoothedPointer.current.y = THREE.MathUtils.damp(
+        smoothedPointer.current.y,
+        pointer.y,
+        3.2,
+        frameDelta,
+      );
+      idleElapsed.current += frameDelta;
+    }
 
     const flightProgress = smoothedProgress.current;
     const lookProgress = Math.min(1, flightProgress + 0.022);
@@ -86,7 +92,7 @@ export function FlightRig({ progress, pointer }: FlightInput) {
     SPACE_PATH.getPointAt(lookProgress, LOOK_POINT);
     if (lookProgress === 1) LOOK_POINT.z -= 28;
 
-    const idleTime = state.clock.elapsedTime;
+    const idleTime = idleElapsed.current;
     CAMERA_POINT.y += Math.sin(idleTime * 0.32) * 0.18;
     CAMERA_POINT.x += Math.sin(idleTime * 0.21) * 0.12;
     camera.position.copy(CAMERA_POINT);
@@ -102,10 +108,14 @@ export function FlightRig({ progress, pointer }: FlightInput) {
     const cockpitOffset = 1.55 - 0.07 * flightProgress;
     rig.current.position.copy(camera.position).addScaledVector(FORWARD, cockpitOffset);
     COCKPIT_QUATERNION.copy(camera.quaternion);
-    rig.current.quaternion.slerp(
-      COCKPIT_QUATERNION,
-      1 - Math.exp(-2.4 * frameDelta),
-    );
+    if (paused) {
+      rig.current.quaternion.copy(COCKPIT_QUATERNION);
+    } else {
+      rig.current.quaternion.slerp(
+        COCKPIT_QUATERNION,
+        1 - Math.exp(-2.4 * frameDelta),
+      );
+    }
   }, -1);
 
   return (

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { HeroHud } from "./HeroHud";
+import { SiteHeader } from "../navigation/SiteHeader";
 import { useHeroAudio } from "./HeroAudio";
 import { ABOUT_FLIGHT_POSITION } from "./scene/spaceMath";
 import type { PointerPosition } from "./scene/types";
@@ -85,7 +85,7 @@ export function HeroExperience() {
         });
       }}
     >
-      <HeroHud />
+      <SiteHeader />
       <div className="cockpit-bezel" style={{ opacity: borderOpacity }} aria-hidden="true" />
       <span id="dashboard" className="absolute top-[28%]" aria-hidden="true" />
       <span id="leaderboard" className="absolute top-[58%]" aria-hidden="true" />

@@ -1,44 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Teko";
-  src: url("/fonts/Teko_SemiBold-s.p.4d580838.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 600 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Hail Mary Sans";
-  src: url("/fonts/Hail_Mary_Sans_v2.otf") format("opentype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Eurostile";
-  src: url("/fonts/Eurostile_Bold-s.p.a22f4418.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/fonts/70bc3e132a0a741e-s.p.15008bfb.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Spline Sans";
-  src: url("/fonts/d249839af5fc7f99-s.p.12490bb0.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-}
 
 :root {
   --acid: #8ffe09;
@@ -48,10 +9,6 @@
   --ink: #fcfcfc;
   --panel: #0d0d12;
   --frame-inset: 3px;
-  --font-display: "Teko", sans-serif;
-  --font-misc: "Eurostile", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-body: "Spline Sans", sans-serif;
 }
 
 * {
@@ -822,7 +779,7 @@ button {
   width: 469px;
   margin: 0;
   color: #fff;
-  font-family: "Hail Mary Sans", var(--font-display);
+  font-family: var(--font-title), var(--font-display);
   font-size: clamp(28px, 2.78vw, 40px);
   font-weight: 400;
   line-height: 1.25;

@@ -1,6 +1,6 @@
-import { HeroAudioProvider } from "@/components/hero3d/HeroAudio";
-import { HeroExperience } from "@/components/hero3d/HeroExperience";
-import { TimelineSection } from "@/components/TimelineSection";
+import { HeroAudioProvider } from "@/components/landing/hero/HeroAudio";
+import { HeroExperience } from "@/components/landing/hero/HeroExperience";
+import { TimelineSection } from "@/components/landing/timeline/TimelineSection";
 
 export default function Home() {
   return (

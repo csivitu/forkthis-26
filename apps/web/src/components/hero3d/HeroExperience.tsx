@@ -47,7 +47,25 @@ function HeroAboutCallouts({ progress }: { progress: number }) {
           </p>
         </div>
         <svg viewBox="0 0 532 112" fill="none" aria-hidden="true">
-          <path pathLength="1" d="M522 97L412 58H334" />
+          <defs>
+            <marker
+              id="about-arrow-primary"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto"
+            >
+              <path className="hero-about__arrowhead" d="M0 0L8 4L0 8Z" />
+            </marker>
+          </defs>
+          <path
+            className="hero-about__connector"
+            pathLength="1"
+            d="M522 97L412 58H334"
+            markerEnd="url(#about-arrow-primary)"
+          />
           <circle cx="522" cy="97" r="9" />
         </svg>
       </div>
@@ -64,7 +82,25 @@ function HeroAboutCallouts({ progress }: { progress: number }) {
           </p>
         </div>
         <svg viewBox="0 0 491 100" fill="none" aria-hidden="true">
-          <path pathLength="1" d="M10 10L78 49H197" />
+          <defs>
+            <marker
+              id="about-arrow-schedule"
+              viewBox="0 0 8 8"
+              refX="7"
+              refY="4"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto"
+            >
+              <path className="hero-about__arrowhead" d="M0 0L8 4L0 8Z" />
+            </marker>
+          </defs>
+          <path
+            className="hero-about__connector"
+            pathLength="1"
+            d="M10 10L78 49H197"
+            markerEnd="url(#about-arrow-schedule)"
+          />
           <circle cx="10" cy="10" r="9" />
         </svg>
       </div>

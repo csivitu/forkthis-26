@@ -341,51 +341,37 @@ button {
   top: 50%;
   right: 0;
   width: 37px;
-  height: min(542px, 84vh);
+  height: 248.76px;
+  background: #80ff00;
+  clip-path: polygon(
+    88% 0,
+    100% 0,
+    100% 100%,
+    88% 100%,
+    88% 92%,
+    12% 85%,
+    0 83%,
+    0 14%,
+    12% 12%,
+    88% 4%
+  );
   transform: translateY(-50%);
   pointer-events: none;
   transition: opacity 180ms ease;
 }
 
-.site-scrollbar__shell {
-  position: absolute;
-  z-index: 0;
-  top: 14.4%;
-  right: 0;
-  bottom: 17.2%;
-  left: 0;
-  border-radius: 14px 0 0 14px;
-  background: #80ff00;
-}
-
+.site-scrollbar__shell,
 .site-scrollbar__cap {
-  position: absolute;
-  right: 0;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  background: #80ff00;
-}
-
-.site-scrollbar__cap--start {
-  top: 0;
-  height: 14.4%;
-  clip-path: polygon(88% 0, 100% 0, 100% 100%, 0 100%, 12% 84%, 88% 4%);
-}
-
-.site-scrollbar__cap--end {
-  bottom: 0;
-  height: 17.2%;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 88% 100%, 88% 56%, 12% 10%);
+  display: none;
 }
 
 .site-scrollbar__rail {
   position: absolute;
-  top: 11.62%;
+  top: 29px;
   left: 13px;
   z-index: 1;
   width: 14px;
-  height: 72.88%;
+  height: 181px;
   border-radius: 14px;
   background: #55d300;
 }
@@ -395,7 +381,7 @@ button {
   top: 1px;
   left: 1px;
   width: 12px;
-  height: 25px;
+  height: 12px;
   border-radius: 12px;
   background: #d3e5e5;
   will-change: transform;
@@ -403,7 +389,7 @@ button {
 
 @media (max-width: 767px) {
   .site-header {
-    height: 62px;
+    height: 54px;
   }
 
   .site-nav,
@@ -413,11 +399,14 @@ button {
   }
 
   .mobile-header {
+    --mobile-header-color: #649627;
+
     position: fixed;
     z-index: 2;
-    inset: 8px 10px auto;
+    inset: 0 0 auto;
     display: block;
-    height: 54px;
+    height: 100vh;
+    border-inline: 3px solid var(--mobile-header-color);
     pointer-events: none;
   }
 
@@ -427,21 +416,22 @@ button {
     top: 0;
     right: 0;
     left: 0;
-    height: 4px;
-    background: #649627;
+    height: 54px;
+    background: var(--mobile-header-color);
     content: "";
+    transition: background-color 260ms ease;
   }
 
   .mobile-header::after {
     position: absolute;
     z-index: 0;
-    top: 54px;
+    top: 4px;
     right: 0;
     left: 0;
-    height: calc(100vh - 62px);
-    border-inline: 3px solid #649627;
+    height: 50px;
+    background: #000;
+    clip-path: polygon(32% 0, 68% 0, 75% 100%, 25% 100%);
     content: "";
-    opacity: 0.9;
   }
 
   .mobile-header__brand,
@@ -452,25 +442,20 @@ button {
     display: flex;
     height: 54px;
     align-items: center;
-    background: #649627;
     color: #fff;
     pointer-events: auto;
-    transition:
-      background-color 260ms ease,
-      color 260ms ease;
   }
 
   .mobile-header__brand {
     left: 0;
-    width: 33.5%;
-    clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+    width: 25%;
   }
 
   .mobile-header__logo {
     position: absolute;
-    top: 17px;
+    top: 18px;
     left: 8px;
-    width: min(97.65px, 80%);
+    width: min(97.65px, calc(100% - 12px));
     height: 16px;
     object-fit: contain;
     mix-blend-mode: screen;
@@ -478,11 +463,11 @@ button {
 
   .mobile-header__toggle {
     right: 0;
-    width: 30.2%;
+    width: 25%;
     justify-content: center;
     padding: 4px 0 0;
     border: 0;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 14% 100%);
+    background: transparent;
     font-family: var(--font-misc);
     font-size: 12px;
     font-weight: 400;
@@ -490,9 +475,8 @@ button {
     text-transform: uppercase;
   }
 
-  .mobile-header--open .mobile-header__brand,
-  .mobile-header--open .mobile-header__toggle {
-    background: #436229;
+  .mobile-header--open {
+    --mobile-header-color: #436229;
   }
 
   .mobile-menu {

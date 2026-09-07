@@ -1,12 +1,76 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { HeroHud } from "./HeroHud";
 import { useHeroAudio } from "./HeroAudio";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
+type CalloutStyle = CSSProperties & {
+  "--callout-reveal": number;
+};
+
+type AboutStyle = CSSProperties & {
+  "--about-opacity": number;
+  "--about-shift": string;
+};
+
+function HeroAboutCallouts({ progress }: { progress: number }) {
+  const phase = Math.max(0, Math.min(1, (progress - 0.1) / 0.3));
+  const opacity = Math.max(0, Math.min(1, phase / 0.14, (1 - phase) / 0.18));
+  const firstReveal = Math.max(0, Math.min(1, phase / 0.54));
+  const secondReveal = Math.max(0, Math.min(1, (phase - 0.24) / 0.54));
+
+  return (
+    <section
+      className="hero-about"
+      style={
+        {
+          "--about-opacity": opacity,
+          "--about-shift": `${(1 - phase) * 28 - Math.max(0, phase - 0.8) * 70}px`,
+        } as AboutStyle
+      }
+      aria-label="About Forkthis"
+      aria-hidden={opacity < 0.01}
+    >
+      <h2 className="sr-only">About Forkthis</h2>
+      <div
+        className="hero-about__callout hero-about__callout--primary"
+        style={{ "--callout-reveal": firstReveal } as CalloutStyle}
+      >
+        <div className="hero-about__card hero-about__card--primary">
+          <p>
+            Forkthis bridges the gap between learning and real-world application. Join our
+            collaborative environment to tackle real projects, contribute to open-source, and build
+            a standout portfolio.
+          </p>
+        </div>
+        <svg viewBox="0 0 532 112" fill="none" aria-hidden="true">
+          <path pathLength="1" d="M522 97L412 58H334" />
+          <circle cx="522" cy="97" r="9" />
+        </svg>
+      </div>
+
+      <div
+        className="hero-about__callout hero-about__callout--schedule"
+        style={{ "--callout-reveal": secondReveal } as CalloutStyle}
+      >
+        <div className="hero-about__card hero-about__card--schedule">
+          <p>
+            19th September: Git-Github Offline Workshop
+            <br />
+            20-21st September: Online Open Source Competition
+          </p>
+        </div>
+        <svg viewBox="0 0 491 100" fill="none" aria-hidden="true">
+          <path pathLength="1" d="M10 10L78 49H197" />
+          <circle cx="10" cy="10" r="9" />
+        </svg>
+      </div>
+    </section>
+  );
+}
 
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
@@ -82,6 +146,7 @@ export function HeroExperience() {
         <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
           <HeroCanvas progress={progress} pointer={pointer} />
         </div>
+        <HeroAboutCallouts progress={progress} />
         <h1 className="sr-only">Forkthis</h1>
       </div>
     </div>

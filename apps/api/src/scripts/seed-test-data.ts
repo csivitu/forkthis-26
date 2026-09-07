@@ -16,11 +16,19 @@ import { eq } from "drizzle-orm";
 import { db, repositories, users } from "@repo/db";
 
 // ---- EDIT THESE ----
-const TEST_REPO = {
-  owner: "aditiakansha",
-  name: "csi_test",
-  githubRepoId: "1347447683", // from `curl https://api.github.com/repos/{owner}/{repo}`, the "id" field
-};
+const TEST_REPOS = [
+  {
+    owner: "aditiakansha",
+    name: "csi_test",
+    githubRepoId: "1347447683", // from `curl https://api.github.com/repos/{owner}/{repo}`, the "id" field
+  },
+  {
+    owner: "aditiakansha",
+    name: "csi_test2",
+    githubRepoId: "1360444259", // from `curl https://api.github.com/repos/{owner}/{repo}`, the "id" field
+  },
+  // Add more repositories here using the same shape.
+];
 
 const TEST_USER = {
   email: "astral2911006@gmail.com",
@@ -29,24 +37,26 @@ const TEST_USER = {
 // ---------------------
 
 async function main() {
-  const [existingRepo] = await db
-    .select({ id: repositories.id })
-    .from(repositories)
-    .where(eq(repositories.githubRepoId, TEST_REPO.githubRepoId));
+  for (const testRepo of TEST_REPOS) {
+    const [existingRepo] = await db
+      .select({ id: repositories.id })
+      .from(repositories)
+      .where(eq(repositories.githubRepoId, testRepo.githubRepoId));
 
-  if (existingRepo) {
-    console.log(`Repo ${TEST_REPO.owner}/${TEST_REPO.name} already seeded (id: ${existingRepo.id})`);
-  } else {
-    const [inserted] = await db
-      .insert(repositories)
-      .values({
-        owner: TEST_REPO.owner,
-        name: TEST_REPO.name,
-        githubRepoId: TEST_REPO.githubRepoId,
-        isActive: true,
-      })
-      .returning({ id: repositories.id });
-    console.log(`Inserted repo ${TEST_REPO.owner}/${TEST_REPO.name} (id: ${inserted.id})`);
+    if (existingRepo) {
+      console.log(`Repo ${testRepo.owner}/${testRepo.name} already seeded (id: ${existingRepo.id})`);
+    } else {
+      const [inserted] = await db
+        .insert(repositories)
+        .values({
+          owner: testRepo.owner,
+          name: testRepo.name,
+          githubRepoId: testRepo.githubRepoId,
+          isActive: true,
+        })
+        .returning({ id: repositories.id });
+      console.log(`Inserted repo ${testRepo.owner}/${testRepo.name} (id: ${inserted.id})`);
+    }
   }
 
   const [existingUser] = await db

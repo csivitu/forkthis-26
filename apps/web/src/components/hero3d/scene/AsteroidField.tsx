@@ -345,7 +345,7 @@ export function AsteroidField({ aboutPhase }: { aboutPhase: number }) {
   const aboutMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#714a34",
+        color: INDIVIDUAL_COLORS[0],
         roughness: 0.97,
         metalness: 0.025,
         emissive: "#2d1a11",

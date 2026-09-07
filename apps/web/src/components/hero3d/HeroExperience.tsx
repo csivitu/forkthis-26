@@ -8,8 +8,7 @@ import { ABOUT_FLIGHT_POSITION } from "./scene/spaceMath";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
-const ABOUT_STOP_START = 0.22;
-const ABOUT_STOP_END = 0.44;
+const ABOUT_STOP_START = 0.68;
 
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
@@ -33,21 +32,15 @@ export function HeroExperience() {
     const travel = element.offsetHeight - window.innerHeight;
     const scrolled = -element.getBoundingClientRect().top;
     const rawProgress = travel > 0 ? Math.max(0, Math.min(1, scrolled / travel)) : 0;
-    const inAboutStop = rawProgress >= ABOUT_STOP_START && rawProgress <= ABOUT_STOP_END;
+    const inAboutStop = rawProgress >= ABOUT_STOP_START;
     const flightProgress =
       rawProgress < ABOUT_STOP_START
         ? (rawProgress / ABOUT_STOP_START) * ABOUT_FLIGHT_POSITION
-        : rawProgress <= ABOUT_STOP_END
-          ? ABOUT_FLIGHT_POSITION
-          : ABOUT_FLIGHT_POSITION +
-            ((rawProgress - ABOUT_STOP_END) / (1 - ABOUT_STOP_END)) *
-              (1 - ABOUT_FLIGHT_POSITION);
+        : ABOUT_FLIGHT_POSITION;
     const nextAboutPhase =
       rawProgress <= ABOUT_STOP_START
         ? 0
-        : rawProgress >= ABOUT_STOP_END
-          ? 1
-          : (rawProgress - ABOUT_STOP_START) / (ABOUT_STOP_END - ABOUT_STOP_START);
+        : (rawProgress - ABOUT_STOP_START) / (1 - ABOUT_STOP_START);
 
     setProgress(flightProgress);
     setAboutPhase(nextAboutPhase);
@@ -79,7 +72,7 @@ export function HeroExperience() {
     if (stage === 3) playAlert();
   }, [playAlert, playWave, progress]);
 
-  const borderOpacity = Math.max(0, Math.min(1, (progress - 0.985) / 0.015));
+  const borderOpacity = Math.max(0, Math.min(1, (aboutPhase - 0.96) / 0.04));
   return (
     <div
       id="home"

@@ -215,7 +215,7 @@ button {
   height: 74.5px;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 3.5px;
+  padding-bottom: 11.3px;
   border-radius: 15px;
   background: #649627;
   clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
@@ -281,7 +281,7 @@ button {
   height: 74.5px;
   align-items: flex-end;
   justify-content: flex-start;
-  padding: 0 0 0.5px 53px;
+  padding: 0 0 9.25px 53px;
   border-color: transparent;
   border-radius: 15px;
   background: #649627;
@@ -410,7 +410,7 @@ button {
 
   .mobile-header__logo {
     position: absolute;
-    top: 18px;
+    top: 19px;
     left: 8px;
     width: min(97.65px, calc(100% - 12px));
     height: 16px;

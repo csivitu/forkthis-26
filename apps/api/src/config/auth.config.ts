@@ -1,6 +1,6 @@
 import {betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import {db,users} from "@repo/db";
+import {db,users,userRole} from "@repo/db";
 import * as schema from "@repo/db";
 import {env} from "./env.config";
 import logger from "../utils/logger.util"
@@ -23,16 +23,19 @@ const err = args.find((a) => a instanceof Error);
 logger[level](err ? { err } : args.length ? { args } : {}, message);
     },
 },
-
-advanced:{
-database: {generateId: "uuid"},
+    onAPIError:{
+        throw: false,
+        errorURL: `${env.WEB_URL}/auth/error`,
     },
-user:{
-fields: { image: "avatarUrl"},
-additionalFields:{
-role: {type:"string", 
-defaultValue:"student", 
-input: false
+    advanced:{
+        database: {generateId: "uuid"},
+    },
+    user:{
+        fields: { image: "avatarUrl"},
+        additionalFields:{
+            role: {type:"string", 
+                defaultValue: userRole.Student, 
+                input: false
             },
 githubUsername: {
 type: "string",
@@ -119,10 +122,10 @@ if (!res.ok) {
                     logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
 return;
                 }
-const profile = await res.json();
-await db.update(users).set({
-githubId: String(profile.id),
-githubUsername: profile.login,
+                const profile = (await res.json()) as { id: number; login: string };
+                await db.update(users).set({
+                    githubId: String(profile.id),
+                    githubUsername: profile.login,
                 }).where(eq(users.id, account.userId));
             },
         },
@@ -134,14 +137,11 @@ clientId: env.GOOGLE_CLIENT_ID as string,
 clientSecret: env.GOOGLE_CLIENT_SECRET as string,
         },
 
-github:{
-clientId: env.GITHUB_CLIENT_ID as string,
-clientSecret: env.GITHUB_CLIENT_SECRET as string,
-scope:["read:user", "user:email"],
-mapProfileToUser:(p)=>({
-githubUsername: p.login,
-githubId: String(p.id),
-            })
+        github:{
+            clientId: env.GITHUB_CLIENT_ID as string,
+            clientSecret: env.GITHUB_CLIENT_SECRET as string,
+            scope:["read:user", "user:email"],
+            disableSignUp:true,
         },
     },
 emailAndPassword: { enabled: false },

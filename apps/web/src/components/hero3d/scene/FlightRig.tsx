@@ -62,15 +62,13 @@ export function FlightRig({ progress, pointer, paused }: FlightState) {
     const camera = state.camera;
 
     const frameDelta = Math.min(delta, 0.1);
-    if (paused) {
-      smoothedProgress.current = progress;
-    } else {
-      smoothedProgress.current = THREE.MathUtils.damp(
-        smoothedProgress.current,
-        progress,
-        2,
-        frameDelta,
-      );
+    smoothedProgress.current = THREE.MathUtils.damp(
+      smoothedProgress.current,
+      progress,
+      2,
+      frameDelta,
+    );
+    if (!paused) {
       smoothedPointer.current.x = THREE.MathUtils.damp(
         smoothedPointer.current.x,
         pointer.x,
@@ -108,14 +106,10 @@ export function FlightRig({ progress, pointer, paused }: FlightState) {
     const cockpitOffset = 1.55 - 0.07 * flightProgress;
     rig.current.position.copy(camera.position).addScaledVector(FORWARD, cockpitOffset);
     COCKPIT_QUATERNION.copy(camera.quaternion);
-    if (paused) {
-      rig.current.quaternion.copy(COCKPIT_QUATERNION);
-    } else {
-      rig.current.quaternion.slerp(
-        COCKPIT_QUATERNION,
-        1 - Math.exp(-2.4 * frameDelta),
-      );
-    }
+    rig.current.quaternion.slerp(
+      COCKPIT_QUATERNION,
+      1 - Math.exp(-2.4 * frameDelta),
+    );
   }, -1);
 
   return (

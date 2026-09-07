@@ -1,6 +1,6 @@
 import {betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import {db,users} from "@repo/db";
+import {db,users,userRole} from "@repo/db";
 import * as schema from "@repo/db";
 import {env} from "./env.config";
 import logger from "../utils/logger.util"
@@ -21,7 +21,10 @@ export const auth = betterAuth({
         logger[level](err ? { err } : args.length ? { args } : {}, message);
     },
 },
-
+    onAPIError:{
+        throw: false,
+        errorURL: `${env.WEB_URL}/auth/error`,
+    },
     advanced:{
         database: {generateId: "uuid"},
     },
@@ -29,7 +32,7 @@ export const auth = betterAuth({
         fields: { image: "avatarUrl"},
         additionalFields:{
             role: {type:"string", 
-                defaultValue:"student", 
+                defaultValue: userRole.Student, 
                 input: false
             },
             githubUsername: {
@@ -75,7 +78,7 @@ export const auth = betterAuth({
                     logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
                     return;
                 }
-                const profile = await res.json();
+                const profile = (await res.json()) as { id: number; login: string };
                 await db.update(users).set({
                     githubId: String(profile.id),
                     githubUsername: profile.login,
@@ -96,10 +99,6 @@ export const auth = betterAuth({
             clientSecret: env.GITHUB_CLIENT_SECRET as string,
             scope:["read:user", "user:email"],
             disableSignUp:true,
-            mapProfileToUser:(p)=>({
-                githubUsername: p.login,
-                githubId: String(p.id),
-            })
         },
     },
     

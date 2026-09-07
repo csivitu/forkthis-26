@@ -664,34 +664,37 @@ button {
   }
 }
 
-.hero-about {
-  position: absolute;
-  z-index: 2;
-  top: 26.1%;
-  left: calc(50% - 29px);
-  width: 532px;
-  height: 268px;
+.hero-about-anchor {
+  position: relative;
+  width: 0;
+  height: 0;
   opacity: var(--about-opacity);
-  transform: translateX(-50%) translateY(var(--about-shift));
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: opacity;
 }
 
 .hero-about__callout {
+  --about-scale: 1;
+
   position: absolute;
+  transform: scale(var(--about-scale));
+  will-change: transform;
 }
 
 .hero-about__callout--primary {
-  inset: 0 0 auto;
+  top: -97px;
+  left: -522px;
   width: 532px;
   height: 112px;
+  transform-origin: 522px 97px;
 }
 
 .hero-about__callout--schedule {
-  top: 168px;
-  left: 30px;
+  top: -10px;
+  left: -10px;
   width: 491px;
   height: 100px;
+  transform-origin: 10px 10px;
 }
 
 .hero-about__callout svg {
@@ -769,12 +772,8 @@ button {
 }
 
 @media (max-width: 767px) {
-  .hero-about {
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%) translateY(var(--about-shift))
-      scale(calc((100vw - 24px) / 532px));
-    transform-origin: top center;
+  .hero-about__callout {
+    --about-scale: calc((100vw - 56px) / 532px);
   }
 }
 

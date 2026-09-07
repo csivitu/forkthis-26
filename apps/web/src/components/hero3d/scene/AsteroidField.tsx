@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { type CSSProperties, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { createSeededRandom, SPACE_PATH } from "./spaceMath";
+import { ABOUT_FLIGHT_POSITION, createSeededRandom, SPACE_PATH } from "./spaceMath";
 
 const BELT_ROCK_COUNT = 32;
 const BELT_SHARD_COUNT = 44;
@@ -12,6 +13,27 @@ const BELT_CENTERS = [-92, -220];
 const ROCK_COLORS = ["#4f3528", "#624332", "#714a34", "#80543a", "#936345", "#a17250"];
 const SHARD_COLORS = ["#52372b", "#674634", "#76503a", "#8a5d42", "#9b6d50"];
 const INDIVIDUAL_COLORS = ["#432d24", "#594031", "#6b4936", "#7d5137", "#8f5d3e", "#a06c49"];
+
+const ABOUT_CAMERA_POSITION = SPACE_PATH.getPointAt(ABOUT_FLIGHT_POSITION);
+const ABOUT_LOOK_POSITION = SPACE_PATH.getPointAt(Math.min(1, ABOUT_FLIGHT_POSITION + 0.022));
+const ABOUT_FORWARD = ABOUT_LOOK_POSITION.clone().sub(ABOUT_CAMERA_POSITION).normalize();
+const ABOUT_RIGHT = ABOUT_FORWARD.clone().cross(new THREE.Vector3(0, 1, 0)).normalize();
+const ABOUT_UP = ABOUT_RIGHT.clone().cross(ABOUT_FORWARD).normalize();
+const ABOUT_ANCHOR_POSITIONS = [
+  ABOUT_CAMERA_POSITION.clone()
+    .addScaledVector(ABOUT_FORWARD, 26)
+    .addScaledVector(ABOUT_RIGHT, 6.8)
+    .addScaledVector(ABOUT_UP, 3),
+  ABOUT_CAMERA_POSITION.clone()
+    .addScaledVector(ABOUT_FORWARD, 28)
+    .addScaledVector(ABOUT_RIGHT, -6.5)
+    .addScaledVector(ABOUT_UP, -3.5),
+] as const;
+
+type CalloutStyle = CSSProperties & {
+  "--about-opacity": number;
+  "--callout-reveal": number;
+};
 
 type Debris = {
   centerX: number;
@@ -151,6 +173,133 @@ function createRockGeometry(seed: number, detail: number) {
   return geometry;
 }
 
+function AboutAsteroids({
+  phase,
+  geometry,
+  material,
+}: {
+  phase: number;
+  geometry: THREE.BufferGeometry;
+  material: THREE.Material;
+}) {
+  const opacity = Math.max(0, Math.min(1, phase / 0.14, (1 - phase) / 0.18));
+  const primaryReveal = Math.max(0, Math.min(1, phase / 0.54));
+  const scheduleReveal = Math.max(0, Math.min(1, (phase - 0.24) / 0.54));
+
+  return (
+    <>
+      <group position={ABOUT_ANCHOR_POSITIONS[0]}>
+        <mesh
+          geometry={geometry}
+          material={material}
+          rotation={[0.5, -0.35, 0.2]}
+          scale={[2.8, 2.35, 2.55]}
+        />
+        <Html zIndexRange={[20, 20]} style={{ pointerEvents: "none" }}>
+          <section
+            className="hero-about-anchor"
+            style={
+              {
+                "--about-opacity": opacity,
+                "--callout-reveal": primaryReveal,
+              } as CalloutStyle
+            }
+            aria-label="About Forkthis"
+            aria-hidden={opacity < 0.01}
+          >
+            <h2 className="sr-only">About Forkthis</h2>
+            <div className="hero-about__callout hero-about__callout--primary">
+              <div className="hero-about__card hero-about__card--primary">
+                <p>
+                  Forkthis bridges the gap between learning and real-world application. Join our
+                  collaborative environment to tackle real projects, contribute to open-source, and
+                  build a standout portfolio.
+                </p>
+              </div>
+              <svg viewBox="0 0 532 112" fill="none" aria-hidden="true">
+                <defs>
+                  <marker
+                    id="about-arrow-primary"
+                    viewBox="0 0 8 8"
+                    refX="7"
+                    refY="4"
+                    markerWidth="7"
+                    markerHeight="7"
+                    orient="auto"
+                  >
+                    <path className="hero-about__arrowhead" d="M0 0L8 4L0 8Z" />
+                  </marker>
+                </defs>
+                <path
+                  className="hero-about__connector"
+                  pathLength="1"
+                  d="M522 97L412 58H334"
+                  markerEnd="url(#about-arrow-primary)"
+                />
+                <circle cx="522" cy="97" r="9" />
+              </svg>
+            </div>
+          </section>
+        </Html>
+      </group>
+
+      <group position={ABOUT_ANCHOR_POSITIONS[1]}>
+        <mesh
+          geometry={geometry}
+          material={material}
+          rotation={[-0.25, 0.55, -0.4]}
+          scale={[2.45, 2.85, 2.3]}
+        />
+        <Html zIndexRange={[20, 20]} style={{ pointerEvents: "none" }}>
+          <section
+            className="hero-about-anchor"
+            style={
+              {
+                "--about-opacity": opacity,
+                "--callout-reveal": scheduleReveal,
+              } as CalloutStyle
+            }
+            aria-label="Forkthis schedule"
+            aria-hidden={opacity < 0.01}
+          >
+            <div className="hero-about__callout hero-about__callout--schedule">
+              <div className="hero-about__card hero-about__card--schedule">
+                <p>
+                  19th September: Git-Github Offline Workshop
+                  <br />
+                  20-21st September: Online Open Source Competition
+                </p>
+              </div>
+              <svg viewBox="0 0 491 100" fill="none" aria-hidden="true">
+                <defs>
+                  <marker
+                    id="about-arrow-schedule"
+                    viewBox="0 0 8 8"
+                    refX="7"
+                    refY="4"
+                    markerWidth="7"
+                    markerHeight="7"
+                    orient="auto"
+                  >
+                    <path className="hero-about__arrowhead" d="M0 0L8 4L0 8Z" />
+                  </marker>
+                </defs>
+                <path
+                  className="hero-about__connector"
+                  pathLength="1"
+                  d="M10 10L78 49H197"
+                  markerEnd="url(#about-arrow-schedule)"
+                />
+                <circle cx="10" cy="10" r="9" />
+              </svg>
+            </div>
+          </section>
+        </Html>
+      </group>
+    </>
+  );
+}
+
 function updateInstances(
   mesh: THREE.InstancedMesh,
   debris: Debris[],
@@ -185,7 +334,7 @@ function applyColors(mesh: THREE.InstancedMesh, debris: Debris[]) {
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 }
 
-export function AsteroidField() {
+export function AsteroidField({ aboutPhase }: { aboutPhase: number }) {
   const beltRocks = useRef<THREE.InstancedMesh>(null);
   const beltShards = useRef<THREE.InstancedMesh>(null);
   const individuals = useRef<THREE.InstancedMesh>(null);
@@ -193,6 +342,18 @@ export function AsteroidField() {
   const beltRockGeometry = useMemo(() => createRockGeometry(9127, 1), []);
   const shardGeometry = useMemo(() => createRockGeometry(4319, 0), []);
   const individualGeometry = useMemo(() => createRockGeometry(6779, 2), []);
+  const aboutMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#714a34",
+        roughness: 0.97,
+        metalness: 0.025,
+        emissive: "#2d1a11",
+        emissiveIntensity: 0.54,
+        flatShading: true,
+      }),
+    [],
+  );
   const beltRockDebris = useMemo(() => createBeltDebris(BELT_ROCK_COUNT, 4073, false), []);
   const beltShardDebris = useMemo(() => createBeltDebris(BELT_SHARD_COUNT, 7319, true), []);
   const individualDebris = useMemo(() => createIndividualDebris(INDIVIDUAL_COUNT, 1123), []);
@@ -217,8 +378,9 @@ export function AsteroidField() {
       beltRockGeometry.dispose();
       shardGeometry.dispose();
       individualGeometry.dispose();
+      aboutMaterial.dispose();
     },
-    [beltRockGeometry, individualGeometry, shardGeometry],
+    [aboutMaterial, beltRockGeometry, individualGeometry, shardGeometry],
   );
 
   useFrame((state) => {
@@ -231,6 +393,11 @@ export function AsteroidField() {
   return (
     <group>
       <hemisphereLight color="#ddd5ca" groundColor="#171411" intensity={0.62} />
+      <AboutAsteroids
+        phase={aboutPhase}
+        geometry={individualGeometry}
+        material={aboutMaterial}
+      />
       <instancedMesh
         ref={beltRocks}
         args={[beltRockGeometry, undefined, BELT_ROCK_COUNT]}

@@ -1,5 +1,7 @@
 import * as THREE from "three";
 
+export const ABOUT_FLIGHT_POSITION = 0.25;
+
 export const SPACE_PATH = new THREE.CatmullRomCurve3(
   [
     new THREE.Vector3(0, 6, 65),

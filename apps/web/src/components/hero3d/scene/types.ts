@@ -9,6 +9,10 @@ export interface FlightState {
   paused: boolean;
 }
 
+export interface HeroSceneState extends FlightState {
+  aboutPhase: number;
+}
+
 export interface PlanetConfig {
   position: [number, number, number];
   radius: number;

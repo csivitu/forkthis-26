@@ -1,8 +1,15 @@
 import type { Request, Response, NextFunction } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../config/auth.config";
+import {userRole} from "@repo/db"
 
-export interface AuthRequest extends Request {
+export interface AuthRequest<
+  P = unknown,
+  ResBody = unknown,
+  ReqBody = unknown,
+  ReqQuery = unknown
+
+> extends Request<P, ResBody,ReqBody,ReqQuery> {
   user?: NonNullable<Awaited<ReturnType<typeof
   auth.api.getSession>>>["user"];
 }
@@ -27,4 +34,11 @@ export const requireSession = async (
 
     req.user = session.user;
     next();
+};
+
+export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (req.user?.role !== userRole.Admin) {
+    return res.status(403).json({error: "ADMIN_REQUIRED"});
+  }
+  next();
 };

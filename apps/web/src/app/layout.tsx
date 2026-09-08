@@ -1,5 +1,20 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { IBM_Plex_Mono } from "next/font/google";
+import "./globals.css";
+
+
+const sixsound = localFont({
+  src: "../../public/fonts/sixsound.otf",
+  variable: "--font-sixsound",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
 import "./globals.css";
 
 const teko = localFont({
@@ -12,6 +27,7 @@ const hailMary = localFont({
   src: "../../public/fonts/Hail_Mary_Sans_v2.otf",
   variable: "--font-title",
   weight: "400",
+  display: "swap",
 });
 
 const eurostile = localFont({
@@ -41,13 +57,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={`${teko.variable} ${hailMary.variable} ${eurostile.variable} ${jetBrainsMono.variable} ${splineSans.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${teko.variable} ${hailMary.variable} ${sixsound.variable} ${ibmPlexMono.variable} ${eurostile.variable} ${jetBrainsMono.variable} ${splineSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-black text-white"
+      >
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
-
 :root {
+  --background: #000000;
+  --foreground: #ededed;
+
   --acid: #8ffe09;
   --acid-bright: #a5ff45;
   --acid-dim: #497a00;
@@ -9,6 +11,15 @@
   --ink: #fcfcfc;
   --panel: #0d0d12;
   --frame-inset: 3px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-hail-mary: var(--font-title);
+  --font-sixsound: var(--font-sixsound);
+  --font-mono: var(--font-ibm-plex-mono);
+  --font-sans: var(--font-sixsound);
 }
 
 * {
@@ -961,7 +972,6 @@ button {
   left: 47.7%;
 }
 
-
 @media (max-width: 767px) {
   .timeline-section {
     height: 340vh;
@@ -1051,7 +1061,6 @@ button {
   .timeline-event--4 .timeline-dot {
     top: 82%;
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {

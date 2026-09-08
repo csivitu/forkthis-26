@@ -401,29 +401,35 @@ export function FooterSection() {
                     </p>
                   </div>
 
-                  {/* ── Discord Button with Left-to-Right Hover Sweep (Centered) ── */}
-                  <div className="w-full flex justify-center relative z-10">
+                  {/* ── Discord Button: Rounded Rectangle, Right-Aligned, Rocket Arrow Animation ── */}
+                  <div className="w-full flex justify-end relative z-10">
                     <a
                       href="https://discord.gg"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group relative inline-flex items-center justify-center overflow-hidden px-6 py-2.5 rounded-[2px] bg-black border-2 border-[#8FFE09] uppercase tracking-wider transition-all duration-300 shadow-[0_0_16px_rgba(143,254,9,0.25)] cursor-pointer"
-                      style={{
-                        clipPath:
-                          "polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px))",
-                      }}
+                      className="group relative inline-flex items-center gap-2.5 overflow-hidden px-6 py-2.5 rounded-lg bg-black border-2 border-[#8FFE09] uppercase tracking-wider transition-all duration-300 shadow-[0_0_16px_rgba(143,254,9,0.35)] hover:shadow-[0_0_28px_rgba(143,254,9,0.6)] cursor-pointer"
                     >
-                      {/* Background Sweep: Smooth left-to-right fill on hover */}
+                      {/* Background Sweep: Complete edge-to-edge fill on hover without corner gaps */}
                       <span
-                        className="absolute inset-0 bg-[#8FFE09] -translate-x-[102%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
+                        className="absolute -inset-1 bg-[#8FFE09] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
                         aria-hidden="true"
                       />
 
-                      {/* Button Text: Sub-header font Sixsound, transitions to black on hover */}
-                      <span className="relative z-10 flex items-center gap-2 text-[#8FFE09] group-hover:text-black transition-colors duration-300 font-[family-name:var(--font-sixsound)] tracking-widest font-extrabold text-xs sm:text-sm">
-                        <span>JOIN DISCORD</span>
-                        <span className="flex items-center text-xs tracking-tighter transition-transform duration-300 group-hover:translate-x-1">
-                          ▶▶▶
+                      {/* Label */}
+                      <span className="relative z-10 font-[family-name:var(--font-sixsound)] tracking-widest font-extrabold text-xs sm:text-sm text-[#8FFE09] group-hover:text-black transition-colors duration-300 whitespace-nowrap">
+                        JOIN DISCORD
+                      </span>
+
+                      {/* Rocket arrows: looping wave from white to green, turns solid black on hover */}
+                      <span className="relative z-10 flex items-center gap-1 transition-transform duration-300 group-hover:translate-x-1.5">
+                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-1 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
+                          ▶
+                        </span>
+                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-2 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
+                          ▶
+                        </span>
+                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-3 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
+                          ▶
                         </span>
                       </span>
                     </a>
@@ -467,29 +473,28 @@ export function FooterSection() {
       </div>
 
       {/* ── 3. ELEGANT UNCLIPPED "FORKTHIS" BANNER & CREDITS ─────────── */}
-      <div className="relative w-full pt-12 sm:pt-16 pb-8 sm:pb-12 flex flex-col items-center justify-center">
+      <div className="relative w-full pt-16 sm:pt-24 md:pt-28 pb-12 sm:pb-20 md:pb-24 flex flex-col items-center justify-center overflow-hidden">
 
-        {/* Ambient Geodesic Wireframe Illustration in Background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20" aria-hidden="true">
-          <svg className="w-[420px] sm:w-[580px] h-[420px]" viewBox="0 0 100 100" fill="none" stroke="#264501" strokeWidth="0.75">
-            <polygon points="50,15 85,38 72,82 28,82 15,38" />
-            <polygon points="50,15 72,82 15,38 85,38 28,82" />
-            <circle cx="50" cy="50" r="35" strokeDasharray="1 2" />
-            <line x1="50" y1="15" x2="50" y2="85" />
-            <line x1="15" y1="50" x2="85" y2="50" />
-          </svg>
-        </div>
+        {/* Geodesic Photo Background — prominent and clearly visible behind FORKTHIS */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/image%20398_1.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover sm:object-contain object-center pointer-events-none select-none mix-blend-screen"
+          style={{ opacity: 0.85 }}
+        />
 
-        {/* FORKTHIS in Hail Mary font (#264501, completely unclipped, responsive) */}
-        <div className="relative z-10 w-full text-center px-4 sm:px-8 select-none py-2 sm:py-4">
-          <div className="flex flex-col sm:flex-row items-center justify-center text-[#264501] font-[family-name:var(--font-title)] font-extrabold tracking-[0.14em] leading-normal text-[clamp(3.2rem,11.5vw,7.8rem)] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] sm:gap-4 md:gap-6">
+        {/* FORKTHIS in Hail Mary font (#264501, dynamically responsive across mobile, tablet, and 1024px+ screens) */}
+        <div className="relative z-10 w-full text-center px-4 sm:px-6 md:px-8 select-none py-6 sm:py-10 md:py-12 flex justify-center">
+          <div className="inline-flex flex-row flex-nowrap items-center justify-center text-[#264501] font-[family-name:var(--font-title)] font-extrabold tracking-[0.04em] sm:tracking-[0.08em] md:tracking-[0.12em] lg:tracking-[0.14em] leading-none text-[clamp(2.4rem,8.2vw,7.8rem)] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] gap-3 sm:gap-5 md:gap-7 lg:gap-9 whitespace-nowrap">
             <span className="inline-block py-1">FORK</span>
             <span className="inline-block py-1">THIS</span>
           </div>
         </div>
 
         {/* Bottom Credits: Made with 🤍 by CSI-VIT */}
-        <div className="relative z-10 mt-4 sm:mt-6 text-center">
+        <div className="relative z-10 mt-6 sm:mt-8 md:mt-10 text-center">
           <p className="font-[family-name:var(--font-ibm-plex-mono)] font-mono text-xs sm:text-sm font-semibold tracking-wider text-[#8FFE09]">
             Made with <span className="text-white drop-shadow-sm">🤍</span> by CSI-VIT
           </p>

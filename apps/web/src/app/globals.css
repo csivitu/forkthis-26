@@ -1138,3 +1138,30 @@ button {
 .star-pulse-glow {
   animation: starPulseGlow 2.5s ease-in-out infinite;
 }
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Discord Button Looping Arrow Animation (White to Green Chaser)
+────────────────────────────────────────────────────────────────────────────── */
+@keyframes arrowCycle {
+  0%, 100% {
+    color: #ffffff;
+    opacity: 0.45;
+  }
+  50% {
+    color: #8FFE09;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(143, 254, 9, 0.9));
+  }
+}
+
+.animate-arrow-1 {
+  animation: arrowCycle 1.2s ease-in-out infinite 0s;
+}
+
+.animate-arrow-2 {
+  animation: arrowCycle 1.2s ease-in-out infinite 0.25s;
+}
+
+.animate-arrow-3 {
+  animation: arrowCycle 1.2s ease-in-out infinite 0.5s;
+}

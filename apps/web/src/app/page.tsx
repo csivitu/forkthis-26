@@ -13,8 +13,8 @@ export default function Home() {
       </HeroAudioProvider>
       <TimelineSection />
 
-      {/* FAQ Section */}
-      <section id="faqs" className="relative z-10 w-full flex flex-col items-center justify-start pb-36 sm:pb-48 md:pb-60 overflow-x-hidden">
+      {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}
+      <section id="faqs" className="relative z-10 w-full flex flex-col items-center justify-start pb-24 overflow-x-hidden">
         <div className="relative z-10 w-full flex flex-col items-center">
           <FAQHeader />
           <div className="w-full mt-4 sm:mt-6 md:mt-8">

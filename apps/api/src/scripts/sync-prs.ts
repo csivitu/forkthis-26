@@ -35,15 +35,16 @@ const gh = {
   },
 };
 
-// Fetches only the fields we actually store: issue number, title, and labels
-// (used to derive difficulty). `search` type ISSUE covers both issues and
-// PRs on GitHub's side — the inline fragment `... on Issue` filters to just
-// issues here.
+// Fetches only the fields we actually store: issue number, title, state,
+// and labels (used to derive difficulty). `state` was added so open/closed
+// status can be tracked in the DB instead of issues staying "open" forever
+// once inserted. `search` type ISSUE covers both issues and PRs on GitHub's
+// side — the inline fragment `... on Issue` filters to just issues here.
 const ISSUES_QUERY = gql`
   query($searchQuery: String!, $after: String) {
     search(query: $searchQuery, type: ISSUE, first: 50, after: $after) {
       pageInfo { hasNextPage endCursor }
-      nodes { ... on Issue { number title labels(first: 10) { nodes { name } } } }
+      nodes { ... on Issue { number title state labels(first: 10) { nodes { name } } } }
     }
   }
 `;
@@ -82,7 +83,7 @@ async function searchAll(query: string, searchQuery: string, label: string) {
 
 // On a repo's first-ever sync, `since` is null → no filter, fetch everything.
 // On every sync after that, only fetch issues/PRs updated on/after the last
-// poll date, so we're not re-fetching the entire repo's history every 15 min.
+// poll date, so we're not re-fetching the entire repo's history every 30 min.
 function sinceFilter(since: Date | null) {
   return since ? `updated:>=${since.toISOString()}` : "";
 }
@@ -96,22 +97,38 @@ function getDifficulty(labels: { name: string }[]): Difficulty | null {
 // --- ISSUE SYNC ---
 // Inserts new issues (only if labeled with a difficulty — points/difficulty
 // are NOT NULL columns, so unlabeled issues are skipped until an admin
-// labels them on GitHub). Existing issues get title/difficulty refreshed,
-// but `points` is never overwritten once set.
-async function syncIssues(repo: { id: string; owner: string; name: string; lastPolledAt: Date | null }) {
+// labels them on GitHub). Existing issues get title/difficulty/status
+// refreshed, but `points` is never overwritten once set.
+//
+// `syncedAt` is passed in from the caller (== the run's `startedAt`) rather
+// than each row calling `new Date()` independently, so every row touched by
+// one sync run gets the exact same timestamp instead of drifting by however
+// long the run takes.
+async function syncIssues(
+  repo: { id: string; owner: string; name: string; lastPolledAt: Date | null },
+  syncedAt: Date,
+) {
   const nodes = await searchAll(ISSUES_QUERY, `repo:${repo.owner}/${repo.name} is:issue ${sinceFilter(repo.lastPolledAt)}`, "syncIssues");
   let skipped = 0;
 
   for (const node of nodes) {
     const difficulty = getDifficulty(node.labels.nodes);
-    const [existing] = await db.select({ id: issues.id }).from(issues)
+    const githubStatus = node.state === "CLOSED" ? "closed" : "open";
+    const [existing] = await db.select({ id: issues.id, status: issues.status }).from(issues)
       .where(and(eq(issues.repositoryId, repo.id), eq(issues.githubIssueNumber, node.number)));
 
     if (existing) {
-      // Update only title/difficulty/freshness. Never touch `points` here —
-      // admins may have manually adjusted it after initial insert.
-      await db.update(issues).set({ title: node.title, ...(difficulty ? { difficulty } : {}), lastSyncedAt: new Date() })
-        .where(eq(issues.id, existing.id));
+      // "solved" is sticky: it means points were already auto-awarded via a
+      // merged PR (see tryAutoAward below). GitHub's open/closed state never
+      // overrides that once set — reopening an issue on GitHub does NOT
+      // revert its DB status or claw back points. Never touch `points`
+      // here either — admins may have manually adjusted it after insert.
+      await db.update(issues).set({
+        title: node.title,
+        ...(difficulty ? { difficulty } : {}),
+        ...(existing.status !== "solved" ? { status: githubStatus } : {}),
+        lastSyncedAt: syncedAt,
+      }).where(eq(issues.id, existing.id));
     } else if (!difficulty) {
       // Can't insert yet — difficulty/points are required (NOT NULL).
       // Will be picked up on a future sync once labeled.
@@ -119,7 +136,7 @@ async function syncIssues(repo: { id: string; owner: string; name: string; lastP
     } else {
       await db.insert(issues).values({
         repositoryId: repo.id, githubIssueNumber: node.number,
-        title: node.title, difficulty, points: POINTS[difficulty], status: "open", lastSyncedAt: new Date(),
+        title: node.title, difficulty, points: POINTS[difficulty], status: githubStatus, lastSyncedAt: syncedAt,
       });
     }
   }
@@ -135,6 +152,11 @@ async function syncPRs(repo: { id: string; owner: string; name: string; lastPoll
 
 // Upserts a single PR row, resolving its linked issue + platform user where
 // possible, then triggers an auto-award check if this PR just became merged.
+//
+// Note: PR rows use GitHub's own timestamps (node.updatedAt / node.mergedAt)
+// rather than a local `syncedAt`, since those reflect actual GitHub state
+// and there's no local-clock-driven field on pull_requests analogous to
+// issues.lastSyncedAt today.
 async function processPR(repo: { id: string; owner: string; name: string }, node: any) {
   const linkedIssueNum = node.closingIssuesReferences.nodes[0]?.number;
 
@@ -214,21 +236,31 @@ async function tryAutoAward(issueId: string, prId: string, userId: string) {
 }
 
 // --- ENTRY POINT ---
-async function main() {
+// Exported (not just a bare `main()`) so apps/api/src/index.ts can import
+// and call this directly on a setInterval loop alongside the Express
+// server, instead of running as a separate script/process. `import.meta.main`
+// below still lets this run standalone via `bun run sync:prs` for manual
+// or debug runs — it just no longer calls process.exit() itself, since that
+// would kill the API server if imported and awaited from there.
+export async function runSync() {
   const repos = await db.select({ id: repositories.id, owner: repositories.owner, name: repositories.name, lastPolledAt: repositories.lastPolledAt })
     .from(repositories).where(eq(repositories.isActive, true));
 
   for (const repo of repos) {
     const startedAt = new Date();
     try {
-      const { fetched: issuesFetched } = await syncIssues(repo);
+      const { fetched: issuesFetched } = await syncIssues(repo, startedAt);
       const prsFetched = await syncPRs(repo);
-      // lastPolledAt is bumped only on success — a failed run keeps the old
-      // timestamp so the next attempt re-checks the same window rather than
-      // silently skipping whatever failed to sync.
-      await db.update(repositories).set({ lastPolledAt: new Date() }).where(eq(repositories.id, repo.id));
+      // lastPolledAt is bumped to startedAt (not `new Date()` taken here) —
+      // using the run's start time, not its end time, means an issue/PR
+      // updated on GitHub after this run's query executed but before the
+      // run finished will still be >= lastPolledAt on the NEXT sync, so it
+      // isn't silently skipped by falling between two polling windows.
+      // A failed run doesn't bump this at all, so the next attempt
+      // re-checks the same window rather than silently skipping whatever
+      // failed to sync.
+      await db.update(repositories).set({ lastPolledAt: startedAt }).where(eq(repositories.id, repo.id));
       await db.insert(syncLogs).values({ repositoryId: repo.id, status: "success", issuesFetched, prsFetched, startedAt, completedAt: new Date() });
-      // this line is added to print to the console for debugging 
       console.log(`[${new Date().toISOString()}] ${repo.owner}/${repo.name}: issues fetched=${issuesFetched}, PRs fetched=${prsFetched}`);
     } catch (err: any) {
       console.error(`Sync failed for ${repo.owner}/${repo.name}`, err);
@@ -237,4 +269,6 @@ async function main() {
   }
 }
 
-main().catch(err => { console.error(err); process.exit(1); }).finally(() => process.exit(0));
+if (import.meta.main) {
+  runSync().catch(err => { console.error(err); process.exit(1); });
+}

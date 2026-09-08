@@ -15,7 +15,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-ibm-plex-mono",
   display: "swap",
-import "./globals.css";
+});
 
 const teko = localFont({
   src: "../../public/fonts/Teko_SemiBold-s.p.4d580838.woff2",

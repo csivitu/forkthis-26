@@ -11,12 +11,7 @@ export const FAQ_ITEMS: FAQItemData[] = [
     answer:
       "The program is open to all students, regardless of their year of study or branch. Whether you're a beginner or an experienced coder, there's something for everyone.",
   },
-  {
-    id: "points-redeemable",
-    question: "ARE THE POINTS EARNED DURING THE COURSE OF THE EVENT REDEEMABLE?",
-    answer:
-      "The program is open to all students, regardless of their year of study or branch. Whether you're a beginner or an experienced coder, there's something for everyone.",
-  },
+
   {
     id: "venue-items",
     question: "WHAT DO WE NEED TO BRING TO THE VENUE?",

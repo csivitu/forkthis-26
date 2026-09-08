@@ -5,6 +5,7 @@ import { issues } from "./issues.js";
 import { pullRequests } from "./pull-request.js";
 import { pointTransactions } from "./point-transactions.js";
 import { syncLogs } from "./sync-logs.js";
+import { sessions, accounts} from "./auth.js";
 
 export const usersRelations = relations(users, ({ many }) => ({
   pullRequests: many(pullRequests),
@@ -16,6 +17,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   pointTransactionsAwarded: many(pointTransactions, {
     relationName: "awarder",
   }),
+  sessions: many(sessions),
+  accounts: many(accounts),
 }));
 
 export const repositoriesRelations = relations(repositories, ({ many }) => ({

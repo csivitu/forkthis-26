@@ -3,6 +3,7 @@ import { HeroExperience } from "@/components/landing/hero/HeroExperience";
 import { TimelineSection } from "@/components/landing/timeline/TimelineSection";
 import { FAQHeader } from "@/components/faq/faq-header";
 import { FAQAccordion } from "@/components/faq/faq-accordion";
+import { FooterSection } from "@/components/footer/FooterSection";
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Footer Section */}
+      <FooterSection />
 
       <div className="scanlines pointer-events-none fixed inset-0 z-[90] opacity-40" aria-hidden="true" />
       <div className="noise-overlay pointer-events-none fixed inset-0 z-[89] opacity-35" aria-hidden="true" />

@@ -119,10 +119,10 @@ if (!res.ok) {
                     logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
 return;
                 }
-const profile = await res.json();
+const profile = (await res.json()) as { id?: string | number; login?: string };
 await db.update(users).set({
-githubId: String(profile.id),
-githubUsername: profile.login,
+githubId: String(profile.id ?? ""),
+githubUsername: profile.login ?? "",
                 }).where(eq(users.id, account.userId));
             },
         },

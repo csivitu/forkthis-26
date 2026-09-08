@@ -174,7 +174,11 @@ async function processPR(repo: { id: string; owner: string; name: string }, node
     ? (await db.select({ id: users.id }).from(users).where(eq(users.githubUsername, node.author.login)))[0]?.id ?? null
     : null;
 
-  const status = node.merged ? "merged" : node.state === "CLOSED" ? "closed_unmerged" : "open";
+  const status: typeof pullRequests.$inferInsert["status"] = node.merged
+    ? "merged"
+    : node.state === "CLOSED"
+      ? "closed_unmerged"
+      : "open";
   // GitHub computes mergeability async — null means "not computed yet",
   // not "unmergeable". Only MERGEABLE/CONFLICTING map to true/false.
   const isMergeable = node.mergeable === "MERGEABLE" ? true : node.mergeable === "CONFLICTING" ? false : null;
@@ -182,7 +186,7 @@ async function processPR(repo: { id: string; owner: string; name: string }, node
   const [existing] = await db.select({ id: pullRequests.id, status: pullRequests.status }).from(pullRequests)
     .where(and(eq(pullRequests.repositoryId, repo.id), eq(pullRequests.githubPrNumber, node.number)));
 
-  const prData = {
+  const prData: Omit<typeof pullRequests.$inferInsert, "repositoryId" | "githubPrNumber" | "openedAt"> = {
     issueId, userId, githubAuthorUsername: node.author?.login ?? "unknown",
     headSha: node.headRefOid, status, isMergeable,
     updatedAt: new Date(node.updatedAt), mergedAt: node.mergedAt ? new Date(node.mergedAt) : null,
@@ -194,8 +198,12 @@ async function processPR(repo: { id: string; owner: string; name: string }, node
     await db.update(pullRequests).set(prData).where(eq(pullRequests.id, prId));
   } else {
     const [inserted] = await db.insert(pullRequests).values({
-      ...prData, repositoryId: repo.id, githubPrNumber: node.number, openedAt: new Date(node.createdAt),
+      ...prData,
+      repositoryId: repo.id,
+      githubPrNumber: node.number,
+      openedAt: new Date(node.createdAt),
     }).returning({ id: pullRequests.id });
+    if (!inserted) throw new Error(`Failed to insert PR #${node.number} for ${repo.owner}/${repo.name}`);
     prId = inserted.id;
   }
 

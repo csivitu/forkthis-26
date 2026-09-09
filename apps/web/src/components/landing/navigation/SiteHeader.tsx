@@ -53,23 +53,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       }`}
     >
       <nav className="site-nav" aria-label="Primary navigation">
-        {landingOnly ? (
-          <>
-            <button type="button" onClick={openLockedSection}>Resources</button>
-            <button type="button" onClick={openLockedSection}>Dashboard</button>
-            <button type="button" onClick={openLockedSection}>Leaderboard</button>
-          </>
-        ) : (
-          <>
-            <Link href="/resources">Resources</Link>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#leaderboard">Leaderboard</a>
-          </>
-        )}
-      </nav>
-
-      <nav className="timeline-nav" aria-label="Timeline navigation">
-        <div className="timeline-nav__links timeline-nav__links--left">
+        <div className="site-nav__links site-nav__links--left">
           <a href={`${anchorPrefix}#home`}>Home</a>
           {landingOnly ? (
             <button type="button" onClick={openLockedSection}>Dashboard</button>
@@ -77,21 +61,15 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
             <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
           )}
         </div>
-        <a className="timeline-nav__brand" href={`${anchorPrefix}#home`} aria-label="Fork This home">
-          <Image
-            src="/assets/nav-logo.png"
-            alt=""
-            width={146}
-            height={21}
-            priority
-            className="timeline-nav__logo"
-          />
-        </a>
-        <div className="timeline-nav__links timeline-nav__links--right">
+        <div className="site-nav__links site-nav__links--right">
           {landingOnly ? (
             <>
-              <button type="button" onClick={openLockedSection}>Leaderboard</button>
-              <button type="button" onClick={openLockedSection}>Resources</button>
+              <button type="button" onClick={openLockedSection}>
+                Leaderboard
+              </button>
+              <button type="button" onClick={openLockedSection}>
+                Resources
+              </button>
             </>
           ) : (
             <>
@@ -101,6 +79,23 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           )}
         </div>
       </nav>
+
+      <div className="timeline-nav">
+        <a
+          className="timeline-nav__brand"
+          href={`${anchorPrefix}#home`}
+          aria-label="Fork This home"
+        >
+          <Image
+            src="/assets/nav-logo.png"
+            alt=""
+            width={146}
+            height={21}
+            priority
+            className="timeline-nav__logo"
+          />
+        </a>
+      </div>
 
       {landingOnly ? (
         <button type="button" className="site-login" onClick={openLockedSection}>

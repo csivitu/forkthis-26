@@ -8,7 +8,7 @@ import { ABOUT_FLIGHT_POSITION } from "./scene/spaceMath";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
-const ABOUT_STOP_START = 0.68;
+const ABOUT_STOP_START = 0.4;
 
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
@@ -77,7 +77,7 @@ export function HeroExperience() {
     <div
       id="home"
       ref={container}
-      className="relative h-[850vh] w-full bg-[#070103] sm:h-[1100vh]"
+      className="relative h-[500svh] w-full bg-[#070103] sm:h-[600vh]"
       onPointerMove={(event) => {
         setPointer({
           x: (event.clientX / window.innerWidth) * 2 - 1,

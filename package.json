@@ -35,5 +35,8 @@
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "@repo/db": "workspace:*"
+  },
+  "overrides": {
+    "drizzle-orm": "0.44.7"
   }
 }

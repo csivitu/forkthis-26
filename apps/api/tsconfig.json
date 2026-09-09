@@ -20,7 +20,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
       "@repo/db": ["../../packages/db/src/index.ts"]
-    }
+    },
+    "types": ["bun-types", "node"]
   },
   "include": ["src/**/*"]
 }

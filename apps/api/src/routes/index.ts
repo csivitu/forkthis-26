@@ -1,8 +1,8 @@
 import { Router } from "express";
-import moduleRoutes from "../modules/module/module.routes";
+import dashboardRoutes from "../modules/dashboard/dashboard.routes";
 
 const router = Router();
 
-router.use("/module", moduleRoutes);
+router.use("/dashboard", dashboardRoutes);
 
 export default router;

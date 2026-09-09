@@ -12,7 +12,7 @@ export async function getLeaderboard(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const limit = Math.min(Number(req.query.limit) || LEADERBOARD_DEFAULT_LIMIT, LEADERBOARD_MAX_LIMIT);
+  const limit = Math.min(Math.max(Number(req.query.limit) || LEADERBOARD_DEFAULT_LIMIT,1), LEADERBOARD_MAX_LIMIT);
   const page = Math.max(Number(req.query.page) || 1 , 1);
   const offset = (page - 1 ) * limit;
   try {

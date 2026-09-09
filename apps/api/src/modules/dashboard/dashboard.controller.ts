@@ -1,6 +1,6 @@
 import type { Response, NextFunction } from "express";
 import { db, repositories, issues, pointTransactions, pullRequests } from "@repo/db";
-import { eq, and, desc, sum, isNotNull } from "drizzle-orm";
+import { eq, and, desc, sum, count, isNotNull } from "drizzle-orm";
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
@@ -8,7 +8,7 @@ import type { PointTransactionsSummary, IssuesByRepositoryResponse } from "./das
 import type { AuthRequest } from "../../middleware/auth.middleware";
 
 
-const getGloballySolvedIssuesCount = async (userId: string): Promise<number> => {
+const getIssuesSolvedCount = async (userId: string): Promise<number> => {
   const [solvedPrs, solvedPoints] = await Promise.all([
     db
       .select({ issueId: pullRequests.issueId })
@@ -90,7 +90,7 @@ export const getIssuesByRepository = async (
       throw new ApiError(404, "NOT_FOUND", `Repository with id '${id}' not found`);
     }
 
-    const [rows, totalGloballySolvedIssues] = await Promise.all([
+    const [rows, issuesSolved] = await Promise.all([
       db
         .select({
           id: issues.id,
@@ -106,12 +106,12 @@ export const getIssuesByRepository = async (
         .where(eq(issues.repositoryId, id))
         .orderBy(desc(issues.createdAt)),
 
-      getGloballySolvedIssuesCount(userId),
+      getIssuesSolvedCount(userId),
     ]);
 
     const payload: IssuesByRepositoryResponse = {
       issues: rows,
-      totalGloballySolvedIssues,
+      issuesSolved,
     };
 
     responseOk(res, payload);
@@ -129,7 +129,7 @@ export const getPointTransactions = async (
   try {
     const userId = req.user!.id;
 
-    const [transactions, totalResult, totalSolvedIssues] = await Promise.all([
+    const [transactions, totalResult, issuesSolved, maxPointsResult, totalIssuesResult] = await Promise.all([
       db
         .select({
           id: pointTransactions.id,
@@ -144,22 +144,36 @@ export const getPointTransactions = async (
         .where(eq(pointTransactions.userId, userId))
         .orderBy(desc(pointTransactions.createdAt)),
 
-      // Total points across all transactions
+      // Total points earned by this user across all transactions
       db
         .select({ total: sum(pointTransactions.points) })
         .from(pointTransactions)
         .where(eq(pointTransactions.userId, userId)),
 
-      // Total distinct issues solved globally
-      getGloballySolvedIssuesCount(userId),
+      // Total distinct issues solved by this user
+      getIssuesSolvedCount(userId),
+
+      // Max possible points: sum of points on all issues in the DB
+      db
+        .select({ total: sum(issues.points) })
+        .from(issues),
+
+      // Total number of issues in the DB
+      db
+        .select({ total: count(issues.id) })
+        .from(issues),
     ]);
 
     const totalPoints = Number(totalResult[0]?.total ?? 0);
+    const maxPoints = Number(maxPointsResult[0]?.total ?? 0);
+    const totalIssues = Number(totalIssuesResult[0]?.total ?? 0);
 
     const payload: PointTransactionsSummary = {
       transactions,
       totalPoints,
-      totalGloballySolvedIssues: totalSolvedIssues,
+      issuesSolved,
+      maxPoints,
+      totalIssues,
     };
 
     responseOk(res, payload);

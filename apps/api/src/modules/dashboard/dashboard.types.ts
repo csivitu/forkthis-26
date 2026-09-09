@@ -8,11 +8,13 @@ export type PointTransactionRow = Pick<PointTransaction, "id" | "userId" | "issu
 
 export interface IssuesByRepositoryResponse {
   issues: IssueRow[];
-  totalGloballySolvedIssues: number;
+  issuesSolved: number;
 }
 
 export interface PointTransactionsSummary {
   transactions: PointTransactionRow[];
   totalPoints: number;
-  totalGloballySolvedIssues: number;
+  issuesSolved: number;
+  maxPoints: number;
+  totalIssues: number;
 }

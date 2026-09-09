@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 
 const MOBILE_LINKS = [
-  { href: "#resources", label: "Resources" },
+  { href: "/resources", label: "Resources" },
   { href: "#dashboard", label: "Dashboard" },
   { href: "#leaderboard", label: "Leaderboard" },
   { href: "/login", label: "Log in" },
@@ -42,9 +43,15 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       <span className="mobile-menu__cross mobile-menu__cross--right" aria-hidden="true" />
       <nav className="mobile-menu__links" aria-label="Mobile navigation">
         {MOBILE_LINKS.map((link) => (
-          <a key={link.href} href={link.href} onClick={onClose} tabIndex={open ? 0 : -1}>
-            <span>{link.label}</span>
-          </a>
+          link.href.startsWith("/") ? (
+            <Link key={link.href} href={link.href} onClick={onClose} tabIndex={open ? 0 : -1}>
+              <span>{link.label}</span>
+            </Link>
+          ) : (
+            <a key={link.href} href={link.href} onClick={onClose} tabIndex={open ? 0 : -1}>
+              <span>{link.label}</span>
+            </a>
+          )
         ))}
       </nav>
       <div className="mobile-menu__footer" aria-hidden="true">

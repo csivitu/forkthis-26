@@ -4,6 +4,19 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { ResourceItem } from "./resource-data";
 
+const CARD_CLIP_PATH = `polygon(
+  28px 0px,
+  calc(100% - 28px) 0px,
+  100% 28px,
+  100% 62%,
+  calc(100% - 22px) calc(62% + 22px),
+  calc(100% - 22px) calc(100% - 28px),
+  calc(100% - 50px) 100%,
+  28px 100%,
+  0px calc(100% - 28px),
+  0px 28px
+)`;
+
 // ─── Card Media ───────────────────────────────────────────────────────────────
 // Renders the appropriate image based on the item's imageType:
 //  • youtube  → full-bleed cover thumbnail
@@ -13,7 +26,10 @@ import { ResourceItem } from "./resource-data";
 function CardMedia({ item }: { item: ResourceItem }) {
   if (item.imageUrl && item.imageType === "youtube") {
     return (
-      <div className="w-full aspect-[16/10] overflow-hidden select-none rounded-[2px] relative">
+      <div
+        className="w-full aspect-[16/10] overflow-hidden select-none relative"
+        style={{ backgroundColor: "transparent" }}
+      >
         <Image
           src={item.imageUrl}
           alt={item.title}
@@ -21,42 +37,53 @@ function CardMedia({ item }: { item: ResourceItem }) {
           className="object-cover"
           sizes="(max-width: 640px) 100vw, 460px"
         />
+        {/* plain rectangular bright green outline for thumbnail (half thickness) */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{ border: "1.5px solid #8FFE09", boxSizing: "border-box", backgroundColor: "transparent" }}
+        />
       </div>
     );
   }
 
   if (item.imageUrl && item.imageType === "article") {
     return (
-      <div className="w-full aspect-[16/10] bg-[#0d1b0c] flex items-center justify-center overflow-hidden select-none rounded-[2px] relative">
-        <Image
-          src={item.imageUrl}
-          alt={item.title}
-          width={120}
-          height={120}
-          className="object-contain drop-shadow-lg"
-        />
+      <div className="w-full aspect-[16/10] flex items-center justify-center overflow-hidden select-none relative" style={{ backgroundColor: "transparent" }}>
+        <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden flex items-center justify-center bg-transparent">
+          <Image
+            src={item.imageUrl}
+            alt={item.title}
+            width={200}
+            height={200}
+            className="object-cover"
+            style={{ backgroundColor: "transparent" }}
+          />
+        </div>
       </div>
     );
   }
 
   if (item.imageUrl && item.imageType === "github") {
     return (
-      <div className="w-full aspect-[16/10] bg-[#0d1b0c] flex items-center justify-center overflow-hidden select-none rounded-[2px] relative">
-        <Image
-          src={item.imageUrl}
-          alt={item.title}
-          width={100}
-          height={100}
-          className="object-contain"
-          style={{ filter: "brightness(2.5) contrast(0.85)" }}
-        />
+      <div className="w-full aspect-[16/10] flex items-center justify-center overflow-hidden select-none relative" style={{ backgroundColor: "transparent" }}>
+        <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden flex items-center justify-center bg-transparent">
+          <Image
+            src={item.imageUrl}
+            alt={item.title}
+            width={200}
+            height={200}
+            className="object-cover"
+            style={{ backgroundColor: "transparent" }}
+          />
+        </div>
       </div>
     );
   }
 
   // Fallback placeholder
   return (
-    <div className="w-full aspect-[16/10] bg-[#bcbcbc] flex items-center justify-center overflow-hidden select-none rounded-[2px]">
+    <div className="w-full aspect-[16/10] bg-transparent flex items-center justify-center overflow-hidden select-none">
       <svg
         className="w-14 h-14 sm:w-16 sm:h-16 text-[#e2e2e2] drop-shadow-sm"
         viewBox="0 0 100 100"
@@ -81,19 +108,6 @@ interface ResourceCardProps {
   onHover?: () => void;
   onLeave?: () => void;
 }
-
-const CARD_CLIP_PATH = `polygon(
-  28px 0px,
-  calc(100% - 28px) 0px,
-  100% 28px,
-  100% 62%,
-  calc(100% - 22px) calc(62% + 22px),
-  calc(100% - 22px) calc(100% - 28px),
-  calc(100% - 50px) 100%,
-  28px 100%,
-  0px calc(100% - 28px),
-  0px 28px
-)`;
 
 export function ResourceCard({
   item,

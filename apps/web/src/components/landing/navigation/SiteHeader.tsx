@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
@@ -45,7 +46,7 @@ export function SiteHeader() {
       }`}
     >
       <nav className="site-nav" aria-label="Primary navigation">
-        <a href="#resources">Resources</a>
+        <Link href="/resources">Resources</Link>
         <a href="#dashboard">Dashboard</a>
         <a href="#leaderboard">Leaderboard</a>
       </nav>
@@ -67,7 +68,7 @@ export function SiteHeader() {
         </a>
         <div className="timeline-nav__links timeline-nav__links--right">
           <a href="#leaderboard">Leaderboard</a>
-          <a href="#resources">Resources</a>
+          <Link href="/resources">Resources</Link>
         </div>
       </nav>
 

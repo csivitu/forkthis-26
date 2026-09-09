@@ -70,7 +70,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "Comprehensive documentation on Git and GitHub provided by Chaicode.",
         buttonText: "Read Docs",
         url: "https://docs.github.com/en",
-        imageUrl: "/images/art.png",
+        imageUrl: "/images/github_o.png",
         imageType: "article",
       },
       {
@@ -81,7 +81,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A downloadable PDF cheat sheet for Git commands, provided by GitLab.",
         buttonText: "Open PDFs",
         url: "https://about.gitlab.com/images/press/git-cheat-sheet.pdf",
-        imageUrl: "/images/art.png",
+        imageUrl: "/images/github_o.png",
         imageType: "article",
       },
       {
@@ -92,7 +92,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A beginner's guide to understanding Git and GitHub, focusing on version control",
         buttonText: "Read Article",
         url: "https://www.freecodecamp.org/news/git-and-github-for-beginners/",
-        imageUrl: "/images/art.png",
+        imageUrl: "/images/github_o.png",
         imageType: "article",
       },
       {
@@ -103,7 +103,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "The welcome page for a comprehensive guide to Git and GitHub, curated for the 'Chai aur Git Welcome'",
         buttonText: "Read Article",
         url: "https://docs.chaicode.com/chai-aur-git/welcome",
-        imageUrl: "/images/art.png",
+        imageUrl: "/images/github_o.png",
         imageType: "article",
       },
     ],
@@ -121,7 +121,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A collection of useful Git commands and cheats for quick reference.",
         buttonText: "View on GitHub",
         url: "https://github.com/excalith/git-cheats",
-        imageUrl: "/images/github.png",
+        imageUrl: "/images/github_c.png",
         imageType: "github",
       },
       {
@@ -132,7 +132,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "Official documentation and resources from GitHub to start your journey.",
         buttonText: "View on GitHub",
         url: "https://docs.github.com/en/get-started/start-your-journey/git-and-github-learning-resources",
-        imageUrl: "/images/github.png",
+        imageUrl: "/images/github_c.png",
         imageType: "github",
       },
       {
@@ -143,7 +143,7 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A downloadable PDF cheat sheet with common Git commands, provided directly by GitHub",
         buttonText: "View on GitHub",
         url: "https://training.github.com/downloads/github-git-cheat-sheet.pdf",
-        imageUrl: "/images/github.png",
+        imageUrl: "/images/github_c.png",
         imageType: "github",
       },
     ],

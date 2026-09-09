@@ -21,8 +21,15 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
     const update = () => {
       frame = null;
       const timeline = document.getElementById("timeline");
-      const bounds = timeline?.getBoundingClientRect();
-      const active = Boolean(bounds && bounds.top <= 1 && bounds.bottom > 1);
+      const footerStart = document.querySelector<HTMLElement>("[data-nav-logo-exit]");
+      const timelineBounds = timeline?.getBoundingClientRect();
+      const footerBounds = footerStart?.getBoundingClientRect();
+      const footerExitLine = window.innerHeight * 0.75;
+      const active = Boolean(
+        timelineBounds &&
+          timelineBounds.top <= 1 &&
+          (!footerBounds || footerBounds.top > footerExitLine),
+      );
       setTimelineActive((current) => (current === active ? current : active));
     };
 

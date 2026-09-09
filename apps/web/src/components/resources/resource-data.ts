@@ -5,6 +5,8 @@ export interface ResourceItem {
   description: string;
   buttonText: string;
   url: string;
+  imageUrl?: string;
+  imageType?: "youtube" | "article" | "github";
 }
 
 export interface ResourceSection {
@@ -27,7 +29,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "A YouTube tutorial on learning Git, covering all essential commands and concepts",
         buttonText: "Watch video",
-        url: "https://www.youtube.com/watch?v=RGOj5yH7evk",
+        url: "https://www.youtube.com/watch?v=8JJ101D3knE",
+        imageUrl: "/images/yt-thumb-1.jpg",
+        imageType: "youtube",
       },
       {
         id: "yt-2",
@@ -36,7 +40,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "A complete guide to using GitHub for version control and collaboration on code.",
         buttonText: "Watch video",
-        url: "https://www.youtube.com/watch?v=HkdAHXoRtos",
+        url: "https://www.youtube.com/watch?v=zTjRZNkhiEU",
+        imageUrl: "/images/yt-thumb-2.jpg",
+        imageType: "youtube",
       },
       {
         id: "yt-3",
@@ -46,6 +52,8 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A beginner-friendly crash course on Git and GitHub, perfect for newcomers.",
         buttonText: "Watch video",
         url: "https://www.youtube.com/watch?v=RGOj5yH7evk",
+        imageUrl: "/images/yt-thumb-3.jpg",
+        imageType: "youtube",
       },
     ],
   },
@@ -62,6 +70,8 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "Comprehensive documentation on Git and GitHub provided by Chaicode.",
         buttonText: "Read Docs",
         url: "https://docs.github.com/en",
+        imageUrl: "/images/art.png",
+        imageType: "article",
       },
       {
         id: "art-2",
@@ -71,6 +81,8 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A downloadable PDF cheat sheet for Git commands, provided by GitLab.",
         buttonText: "Open PDFs",
         url: "https://about.gitlab.com/images/press/git-cheat-sheet.pdf",
+        imageUrl: "/images/art.png",
+        imageType: "article",
       },
       {
         id: "art-3",
@@ -80,6 +92,8 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
           "A beginner's guide to understanding Git and GitHub, focusing on version control",
         buttonText: "Read Article",
         url: "https://www.freecodecamp.org/news/git-and-github-for-beginners/",
+        imageUrl: "/images/art.png",
+        imageType: "article",
       },
       {
         id: "art-4",
@@ -88,7 +102,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "The welcome page for a comprehensive guide to Git and GitHub, curated for the 'Chai aur Git Welcome'",
         buttonText: "Read Article",
-        url: "https://chaicode.com",
+        url: "https://docs.chaicode.com/chai-aur-git/welcome",
+        imageUrl: "/images/art.png",
+        imageType: "article",
       },
     ],
   },
@@ -104,7 +120,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "A collection of useful Git commands and cheats for quick reference.",
         buttonText: "View on GitHub",
-        url: "https://github.com/excalith/git-cheat-sheet",
+        url: "https://github.com/excalith/git-cheats",
+        imageUrl: "/images/github.png",
+        imageType: "github",
       },
       {
         id: "gh-2",
@@ -113,7 +131,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "Official documentation and resources from GitHub to start your journey.",
         buttonText: "View on GitHub",
-        url: "https://github.com/skills",
+        url: "https://docs.github.com/en/get-started/start-your-journey/git-and-github-learning-resources",
+        imageUrl: "/images/github.png",
+        imageType: "github",
       },
       {
         id: "gh-3",
@@ -122,7 +142,9 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         description:
           "A downloadable PDF cheat sheet with common Git commands, provided directly by GitHub",
         buttonText: "View on GitHub",
-        url: "https://github.com/training/git-cheat-sheets",
+        url: "https://training.github.com/downloads/github-git-cheat-sheet.pdf",
+        imageUrl: "/images/github.png",
+        imageType: "github",
       },
     ],
   },

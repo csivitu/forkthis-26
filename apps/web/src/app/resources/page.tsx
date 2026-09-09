@@ -19,27 +19,33 @@ export default function ResourcesPage() {
       {/* Fixed right-side section navigator */}
       <SectionSidebar />
 
-      <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">
+      <main className="w-full max-w-[1540px] mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">
         {/* ── YOUTUBE VIDEOS ─────────────────────────────────────────── */}
-        <section id={youtubeSection.id} className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28">
+        <section
+          id={youtubeSection.id}
+          className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28"
+        >
           <SectionHeader title={youtubeSection.title} />
 
-          <div className="md:pl-4 lg:pl-8 md:pr-[148px] lg:pr-[164px]">
+          <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">
             <ResourceGrid
               items={youtubeSection.items}
-              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 justify-items-center"
+              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8 lg:gap-10 xl:gap-12 justify-items-center"
             />
           </div>
         </section>
 
         {/* ── ARTICLES ───────────────────────────────────────────────── */}
-        <section id={articlesSection.id} className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28">
+        <section
+          id={articlesSection.id}
+          className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28"
+        >
           <SectionHeader title={articlesSection.title} />
 
-          <div className="md:pl-4 lg:pl-8 md:pr-[148px] lg:pr-[164px]">
+          <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">
             <ResourceGrid
               items={articlesSection.items}
-              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-5 sm:gap-6 xl:gap-8 justify-items-center"
+              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 sm:gap-7 xl:gap-8 justify-items-center"
             />
           </div>
         </section>
@@ -48,10 +54,10 @@ export default function ResourcesPage() {
         <section id={githubSection.id} className="scroll-mt-12 pb-8">
           <SectionHeader title={githubSection.title} />
 
-          <div className="md:pl-4 lg:pl-8 md:pr-[148px] lg:pr-[164px]">
+          <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">
             <ResourceGrid
               items={githubSection.items}
-              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 justify-items-center"
+              gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8 lg:gap-10 xl:gap-12 justify-items-center"
             />
           </div>
         </section>
@@ -59,5 +65,3 @@ export default function ResourcesPage() {
     </div>
   );
 }
-
-

@@ -39,7 +39,7 @@ export function SectionSidebar() {
   return (
     <aside
       aria-label="Section navigation"
-      className="fixed right-3 md:right-4 lg:right-5 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-4 select-none"
+      className="fixed right-3.5 md:right-5 lg:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-6 select-none"
     >
       {RESOURCE_SECTIONS.map((section) => {
         const isActive = activeSection === section.id;
@@ -47,14 +47,14 @@ export function SectionSidebar() {
           <button
             key={section.id}
             onClick={() => scrollToSection(section.id)}
-            className="group flex items-center gap-2 cursor-pointer outline-none focus:outline-none transition-all duration-200"
+            className="group flex items-center gap-3 cursor-pointer outline-none focus:outline-none transition-all duration-200"
           >
             {/* Label */}
             <span
-              className={`font-mono text-[11px] sm:text-xs tracking-wider transition-colors duration-200 ${
+              className={`font-mono text-xs sm:text-sm md:text-[15px] tracking-wider transition-colors duration-200 ${
                 isActive
-                  ? "text-[#8FFE09] font-semibold"
-                  : "text-[#52525b] group-hover:text-[#a1a1aa]"
+                  ? "text-[#8FFE09] font-bold drop-shadow-[0_0_8px_rgba(143,254,9,0.5)]"
+                  : "text-[#71717a] group-hover:text-[#d4d4d8]"
               }`}
             >
               {section.navLabel}
@@ -62,10 +62,10 @@ export function SectionSidebar() {
 
             {/* Pill indicator */}
             <span
-              className={`h-1.5 w-5 sm:w-6 rounded-full transition-all duration-300 ${
+              className={`h-2 w-7 sm:w-8 rounded-full transition-all duration-300 ${
                 isActive
-                  ? "bg-[#8FFE09] shadow-[0_0_8px_rgba(143,254,9,0.75)]"
-                  : "bg-[#27272a] group-hover:bg-[#3f3f46]"
+                  ? "bg-[#8FFE09] shadow-[0_0_12px_rgba(143,254,9,0.85)] scale-105"
+                  : "bg-[#3f3f46] group-hover:bg-[#52525b]"
               }`}
             />
           </button>
@@ -74,5 +74,3 @@ export function SectionSidebar() {
     </aside>
   );
 }
-
-

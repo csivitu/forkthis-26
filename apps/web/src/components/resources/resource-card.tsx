@@ -1,10 +1,60 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { ResourceItem } from "./resource-data";
 
-// ─── Placeholder Media ────────────────────────────────────────────────────────
-export function PlaceholderMedia() {
+// ─── Card Media ───────────────────────────────────────────────────────────────
+// Renders the appropriate image based on the item's imageType:
+//  • youtube  → full-bleed cover thumbnail
+//  • article  → centered art.png on a dark tinted bg
+//  • github   → centered, brightened github logo on dark bg
+//  • fallback → grey placeholder with SVG icon
+function CardMedia({ item }: { item: ResourceItem }) {
+  if (item.imageUrl && item.imageType === "youtube") {
+    return (
+      <div className="w-full aspect-[16/10] overflow-hidden select-none rounded-[2px] relative">
+        <Image
+          src={item.imageUrl}
+          alt={item.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 100vw, 460px"
+        />
+      </div>
+    );
+  }
+
+  if (item.imageUrl && item.imageType === "article") {
+    return (
+      <div className="w-full aspect-[16/10] bg-[#0d1b0c] flex items-center justify-center overflow-hidden select-none rounded-[2px] relative">
+        <Image
+          src={item.imageUrl}
+          alt={item.title}
+          width={120}
+          height={120}
+          className="object-contain drop-shadow-lg"
+        />
+      </div>
+    );
+  }
+
+  if (item.imageUrl && item.imageType === "github") {
+    return (
+      <div className="w-full aspect-[16/10] bg-[#0d1b0c] flex items-center justify-center overflow-hidden select-none rounded-[2px] relative">
+        <Image
+          src={item.imageUrl}
+          alt={item.title}
+          width={100}
+          height={100}
+          className="object-contain"
+          style={{ filter: "brightness(2.5) contrast(0.85)" }}
+        />
+      </div>
+    );
+  }
+
+  // Fallback placeholder
   return (
     <div className="w-full aspect-[16/10] bg-[#bcbcbc] flex items-center justify-center overflow-hidden select-none rounded-[2px]">
       <svg
@@ -32,11 +82,24 @@ interface ResourceCardProps {
   onLeave?: () => void;
 }
 
+const CARD_CLIP_PATH = `polygon(
+  28px 0px,
+  calc(100% - 28px) 0px,
+  100% 28px,
+  100% 62%,
+  calc(100% - 22px) calc(62% + 22px),
+  calc(100% - 22px) calc(100% - 28px),
+  calc(100% - 50px) 100%,
+  28px 100%,
+  0px calc(100% - 28px),
+  0px 28px
+)`;
+
 export function ResourceCard({
   item,
   isHovered = false,
   displacementX = 0,
-  cardMaxWidthClass = "max-w-[340px] sm:max-w-[360px] md:max-w-[375px]",
+  cardMaxWidthClass = "max-w-[390px] sm:max-w-[430px] md:max-w-[460px]",
   onHover,
   onLeave,
 }: ResourceCardProps) {
@@ -66,85 +129,90 @@ export function ResourceCard({
       }}
     >
       {/* ── Number heading (001, 002...) ──
-          STATIC: Sits directly above the card at z-0.
-          When hovered, the card body (z-30) scales up and translates upward,
-          completely covering the number heading on top. */}
+          Aligned with the beginning of the top horizontal edge (28px from left edge) */}
       <div
-        className="font-sixsound text-[#464343] font-bold tracking-widest pl-1 mb-1.5 select-none pointer-events-none"
-        style={{ fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)", position: "relative", zIndex: 0 }}
+        className="font-sixsound text-[#464343] font-bold tracking-widest pl-[28px] mb-1.5 select-none pointer-events-none"
+        style={{
+          fontSize: "clamp(0.92rem, 1.15vw, 1.1rem)",
+          position: "relative",
+          zIndex: 0,
+        }}
       >
         {item.number}
       </div>
 
-      {/* ── Card Body (Enlarges on hover, NO rotation) ──
-          - transformOrigin: "50% 50%"
-          - No rotation (rotate: 0deg)
-          - Growth & upward expansion: scale(1.1) translateY(-22px) -> covers the number completely
-          - zIndex: rises to 30 on hover to cover the number */}
+      {/* ── Card Body (Enlarges on hover with luminous neon green glow) ── */}
       <div
-        className="futuristic-card-outer group p-[2.5px] bg-[#1a3817] hover:bg-[#2d5a10] hover:shadow-[0_0_36px_rgba(143,254,9,0.4)] flex-1 flex flex-col cursor-pointer"
+        className="futuristic-card-outer group p-[2px] flex-1 flex flex-col cursor-pointer"
         style={{
+          clipPath: CARD_CLIP_PATH,
+          backgroundColor: activeHover ? "#5cb818" : "#1a3318",
+          filter: activeHover
+            ? "drop-shadow(0 0 10px rgba(143, 254, 9, 0.85)) drop-shadow(0 0 24px rgba(143, 254, 9, 0.55)) drop-shadow(0 0 45px rgba(143, 254, 9, 0.28))"
+            : "drop-shadow(0 0 1px rgba(0, 0, 0, 0.5))",
           transform: activeHover
-            ? "scale(1.1) translateY(-22px)"
+            ? "scale(1.05) translateY(-16px)"
             : "scale(1) translateY(0)",
           transformOrigin: "50% 50%",
-          transition: "transform 260ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, background-color 200ms ease",
+          transition:
+            "transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms ease, filter 220ms ease",
           position: "relative",
           zIndex: activeHover ? 30 : 10,
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Inner dark panel with sci-fi polygon shape */}
-        <div className="futuristic-card-inner bg-[#0b170a] pt-3.5 pb-4.5 pl-3.5 sm:pl-4.5 pr-6.5 sm:pr-8.5 flex flex-col justify-between flex-1 min-h-[340px] sm:min-h-[360px]">
-
-          <div className="flex flex-col px-1">
+        {/* Inner dark panel with matching sci-fi polygon shape, shifted lower down */}
+        <div
+          className="futuristic-card-inner bg-[#132512] pt-6 sm:pt-7 md:pt-8 pb-5 sm:pb-6 pl-4.5 sm:pl-5 pr-7 sm:pr-8 flex flex-col justify-between flex-1 min-h-[380px] sm:min-h-[410px] md:min-h-[430px]"
+          style={{ clipPath: CARD_CLIP_PATH }}
+        >
+          <div className="flex flex-col">
             {/* Top Media */}
-            <PlaceholderMedia />
+            <CardMedia item={item} />
 
             {/* Card title — neon green, Sixsound font */}
             <h3
-              className="font-sixsound text-[#8FFE09] font-bold tracking-wide mt-3 mb-1.5 leading-snug sm:leading-tight break-words"
-              style={{ fontSize: "clamp(1rem, 2.8vw, 1.18rem)" }}
+              className="font-sixsound text-[#8FFE09] font-bold tracking-wide mt-4 mb-2.5 leading-snug sm:leading-tight break-words"
+              style={{ fontSize: "clamp(1.1rem, 2.8vw, 1.32rem)" }}
             >
               {item.title}
             </h3>
 
             {/* Description — text-justify with generous internal margin and break-words */}
-            <p
-              className="font-mono text-[#9ca3af] leading-relaxed mb-4 font-normal text-justify break-words text-[0.74rem] sm:text-[0.79rem]"
-            >
+            <p className="font-mono text-[#9ca3af] leading-relaxed mb-5 font-normal text-justify break-words text-[0.78rem] sm:text-[0.85rem]">
               {item.description}
             </p>
           </div>
 
-          {/* ── Action Button with REAL space between text button and arrow box ── */}
+          {/* ── Action Button with identical vertical height for button and arrow box ── */}
           <a
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 sm:gap-2.5 self-start cursor-pointer mt-auto select-none group/btn px-1"
+            className="inline-flex items-center gap-2 self-start cursor-pointer mt-auto select-none group/btn"
           >
             {/* Main button box */}
-            <span
-              className="bg-[#8FFE09] text-black font-bold font-mono uppercase tracking-wider px-3 py-1.5 transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)] flex items-center text-[0.7rem] sm:text-[0.75rem]"
-            >
+            <span className="bg-[#8FFE09] text-black font-bold font-mono uppercase tracking-wider px-4 h-8.5 sm:h-9 flex items-center justify-center text-[0.74rem] sm:text-[0.8rem] leading-none transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
               {item.buttonText}
             </span>
 
-            {/* Separate arrow box */}
-            <span className="bg-[#8FFE09] text-black px-2 py-1.5 transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)] flex items-center justify-center">
+            {/* Separate arrow box with EXACT matching height and width */}
+            <span className="bg-[#8FFE09] text-black w-8.5 h-8.5 sm:w-9 sm:h-9 flex items-center justify-center shrink-0 transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
               <svg
-                className="w-3.5 h-3.5 stroke-[2.5] transition-transform duration-200 group-hover/btn:translate-x-0.5"
+                className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover/btn:translate-x-0.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
               </svg>
             </span>
           </a>
-
         </div>
       </div>
     </div>
@@ -196,4 +264,3 @@ export function ResourceGrid({
     </div>
   );
 }
-

@@ -4,6 +4,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:api": "turbo run dev --filter=api",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
@@ -29,9 +31,10 @@
     "packages/*"
   ],
   "dependencies": {
+    "@repo/db": "workspace:*",
+    "dev": "^0.1.5",
     "express": "^5.2.1",
     "pino": "^10.3.1",
-    "pino-http": "^11.0.0",
-    "@repo/db": "workspace:*"
+    "pino-http": "^11.0.0"
   }
 }

@@ -1,43 +1,44 @@
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { env } from "../config/env.config";
+import { fromNodeHeaders } from "better-auth/node";
+import { auth } from "../config/auth.config";
+import {userRole} from "@repo/db"
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: number;
-    email: string;
-    [key: string]: unknown;
-  };
+export interface AuthRequest<
+  P = unknown,
+  ResBody = unknown,
+  ReqBody = unknown,
+  ReqQuery = unknown
+
+> extends Request<P, ResBody,ReqBody,ReqQuery> {
+  user?: NonNullable<Awaited<ReturnType<typeof
+  auth.api.getSession>>>["user"];
 }
 
-export const authMiddleware = (
+export const requireSession = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const authorization = req.headers["authorization"] || req.headers["Authorization"];
+  const session = await auth.api.getSession({ headers:
+    fromNodeHeaders(req.headers)  });
 
-  if (!authorization || typeof authorization !== "string") {
-    return res.status(401).json({ error: "Missing Authorization header" });
-  }
+    if (!session){
+      return res.status(401).json({ error:
+        "UNAUTHENTICATED"});
+    }
 
-  const token = authorization.startsWith("Bearer ")
-    ? authorization.slice(7)
-    : authorization;
+    if(!session.user.githubId) {
+      return res.status(403).json({ error:
+        "GITHUB_LINK_REQUIRED"});
+    }
 
-  if (!token) {
-    return res.status(401).json({ error: "Missing token" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, env.JWT_SECRET, {
-      algorithms: ["HS256"],
-    }) as { id: number; email: string };
-
-    req.user = decoded;
+    req.user = session.user;
     next();
-  } catch (err) {
-    console.error("authMiddleware error", err);
-    return res.status(401).json({ error: "Invalid or expired token" });
+};
+
+export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (req.user?.role !== userRole.Admin) {
+    return res.status(403).json({error: "ADMIN_REQUIRED"});
   }
+  next();
 };

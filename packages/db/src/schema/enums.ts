@@ -2,13 +2,18 @@ import { pgEnum } from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("user_role", ["student", "admin"]);
 
+export const userRole = {
+  Student: "student",
+  Admin: "admin",
+} as const;
+
 export const issueDifficultyEnum = pgEnum("issue_difficulty", [
   "easy",
   "medium",
   "hard",
 ]);
 
-export const issueStatusEnum = pgEnum("issue_status", ["open", "solved"]);
+export const issueStatusEnum = pgEnum("issue_status", ["open", "solved","closed"]);
 
 export const pullRequestStatusEnum = pgEnum("pull_request_status", [
   "open",

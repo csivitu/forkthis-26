@@ -5,6 +5,7 @@
     "module": "Preserve",
     "moduleDetection": "force",
     "jsx": "react-jsx",
+    "types": ["bun"],
     "allowJs": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -18,9 +19,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
-    "baseUrl": "../..",
     "paths": {
-      "@repo/db": ["packages/db/src/index.ts"]
+      "@repo/db": ["../../packages/db/src/index.ts"]
     }
   },
   "include": ["src/**/*"]

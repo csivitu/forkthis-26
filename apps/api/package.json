@@ -4,9 +4,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/index.ts",
+    "dev": "bun --env-file=../../.env --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target node",
-    "start": "bun dist/index.js"
+    "start": "bun --env-file=../../.env dist/index.js",
+    "sync:prs": "bun --env-file=../../.env src/scripts/sync-prs.ts",
+    "seed:test": "bun --env-file=../../.env src/scripts/seed-test-data.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -26,6 +28,7 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.44.0",
     "express": "^5.2.1",
+    "graphql": "^17.0.2",
     "jsonwebtoken": "^9.0.3",
     "zod": "^4.4.3"
   }

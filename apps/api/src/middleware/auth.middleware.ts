@@ -38,7 +38,6 @@ export const requireSession = async (
 
 export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
   if (req.user?.role !== userRole.Admin) {
-     console.log("req.user in requireAdmin:", req.user);
     return res.status(403).json({error: "ADMIN_REQUIRED"});
   }
   next();

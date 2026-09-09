@@ -307,6 +307,7 @@ button {
   border-radius: 15px;
   background: #649627;
   clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+  clip-path: polygon(round 14px, 0 0, 100% 0, 92% 100%, 8% 100%);
   transform: translate(-50%, -60px) scale(1.16);
   transform-origin: 50% 0;
   transition: transform 640ms var(--nav-transition-ease);
@@ -350,6 +351,7 @@ button {
   border-radius: 10px;
   background: rgb(143 254 9 / 20%);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(round 10px, 0 0, 100% 0, 100% 100%, 0 100%);
   pointer-events: auto;
   transition:
     top 640ms var(--nav-transition-ease),
@@ -382,6 +384,7 @@ button {
   border-radius: 15px;
   background: #649627;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%);
+  clip-path: polygon(round 14px, 0 0, 100% 0, 100% 100%, 8% 100%);
 }
 
 .mobile-header,

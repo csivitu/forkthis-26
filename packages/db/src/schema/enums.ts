@@ -13,7 +13,7 @@ export const issueDifficultyEnum = pgEnum("issue_difficulty", [
   "hard",
 ]);
 
-export const issueStatusEnum = pgEnum("issue_status", ["open", "solved"]);
+export const issueStatusEnum = pgEnum("issue_status", ["open", "solved","closed"]);
 
 export const pullRequestStatusEnum = pgEnum("pull_request_status", [
   "open",

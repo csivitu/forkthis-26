@@ -112,25 +112,25 @@ export const auth = betterAuth({
                 },
             },
         },
-        account: {
-            create: {
-                after: async (account) => {
-                    if (account.providerId !== "github") return;
-                    const res = await fetch("https://api.github.com/user", {
-                        headers: { Authorization: `Bearer ${account.accessToken}` },
-                    });
-                    if (!res.ok) {
-                        logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
-                        return;
-                    }
-                    const profile = (await res.json()) as { id: number; login: string };
-                    await db.update(users).set({
-                        githubId: String(profile.id),
-                        githubUsername: profile.login,
-                    }).where(eq(users.id, account.userId));
-                },
+account: {
+create: {
+after: async (account) => {
+if (account.providerId !== "github") return;
+const res = await fetch("https://api.github.com/user", {
+headers: { Authorization: `Bearer ${account.accessToken}` },
+                });
+if (!res.ok) {
+                    logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
+return;
+                }
+const profile = (await res.json()) as { id?: string | number; login?: string };
+await db.update(users).set({
+githubId: String(profile.id ?? ""),
+githubUsername: profile.login ?? "",
+                }).where(eq(users.id, account.userId));
             },
         },
+    },
     },
     socialProviders: {
         google: {

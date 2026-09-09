@@ -73,7 +73,7 @@ export const getIssuesByRepository = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = req.params.id as string;
+    const id = (req.params as { id: string }).id;
     const userId = req.user!.id;
 
     if (!id) {
@@ -116,7 +116,7 @@ export const getIssuesByRepository = async (
 
     responseOk(res, payload);
   } catch (error) {
-    logger.error({ err: error, repositoryId: req.params?.id }, "Failed to get issues by repository");
+    logger.error({ err: error, repositoryId: (req.params as { id: string }).id }, "Failed to get issues by repository");
     next(error);
   }
 };

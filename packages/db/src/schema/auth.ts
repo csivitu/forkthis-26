@@ -1,6 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import { pgTable, text, timestamp, uuid, index } from "drizzle-orm/pg-core";
-import { users } from "./users.js";   // ← import the real table instead of defining a new one
+import { users } from "./users.js";  
 
 export const sessions = pgTable(
   "sessions",
@@ -23,7 +23,7 @@ export const accounts = pgTable(
     id: uuid("id").default(sql`pg_catalog.gen_random_uuid()`).primaryKey(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
-    issuer:text("issuer").notNull(),
+    issuer:text("issuer"),
     userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),

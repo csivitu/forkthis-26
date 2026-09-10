@@ -10,6 +10,7 @@ import { auth } from "./config/auth.config";
 import { eq } from "drizzle-orm";
 import { participantsDb } from "../../../packages/db/sqlite/client";
 import { participants } from "../../../packages/db/sqlite/schema";
+import { extractRegNo } from "./utils/regno.util";
 
 
 const app = express();
@@ -52,16 +53,17 @@ app.get("/api/debug/participant-status", async (req, res, next) => {
       return res.status(401).json({ authenticated: false });
     }
 
-    const email = session.user.email.toLowerCase();
-    const participant = await participantsDb
-      .select({ email: participants.email })
-      .from(participants)
-      .where(eq(participants.email, email))
-      .get();
-
+    const regNo = extractRegNo(session.user.name);
+    const participant = regNo
+      ? await participantsDb
+          .select({ regno: participants.regno })
+          .from(participants)
+          .where(eq(participants.regno, regNo))
+          .get()
+      : undefined;
     return res.json({
       authenticated: true,
-      email,
+      regNo,
       participantFound: Boolean(participant),
     });
   } catch (error) {

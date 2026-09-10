@@ -3,10 +3,11 @@
   "extends": "@repo/typescript-config/base.json",
   "include": [
     "src",
-    "drizzle.config.ts"
+    "drizzle.config.ts",
+    "sqlite"
   ],
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node","bun"]
   },
   "exclude": [
     "node_modules",

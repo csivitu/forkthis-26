@@ -1,44 +1,25 @@
 import type { Response, NextFunction } from "express";
-import { db, repositories, issues, pointTransactions, pullRequests } from "@repo/db";
-import { eq, and, desc, sum, count, isNotNull } from "drizzle-orm";
+import { db, repositories, issues, pointTransactions } from "@repo/db";
+import { eq, and, desc, sum, count, countDistinct, isNotNull } from "drizzle-orm";
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import type { PointTransactionsSummary, IssuesByRepositoryResponse } from "./dashboard.types";
+import type { PointTransactionsSummary, IssuesByRepositoryResponse, RepositoryRow } from "./dashboard.types";
 import type { AuthRequest } from "../../middleware/auth.middleware";
 
 
 const getIssuesSolvedCount = async (userId: string): Promise<number> => {
-  const [solvedPrs, solvedPoints] = await Promise.all([
-    db
-      .select({ issueId: pullRequests.issueId })
-      .from(pullRequests)
-      .where(
-        and(
-          eq(pullRequests.userId, userId),
-          eq(pullRequests.status, "merged"),
-          isNotNull(pullRequests.issueId)
-        )
-      ),
-    db
-      .select({ issueId: pointTransactions.issueId })
-      .from(pointTransactions)
-      .where(
-        and(
-          eq(pointTransactions.userId, userId),
-          isNotNull(pointTransactions.issueId)
-        )
-      ),
-  ]);
+  const result = await db
+    .select({ count: countDistinct(pointTransactions.issueId) })
+    .from(pointTransactions)
+    .where(
+      and(
+        eq(pointTransactions.userId, userId),
+        isNotNull(pointTransactions.issueId)
+      )
+    );
 
-  const solvedSet = new Set<string>();
-  for (const r of solvedPrs) {
-    if (r.issueId) solvedSet.add(r.issueId);
-  }
-  for (const r of solvedPoints) {
-    if (r.issueId) solvedSet.add(r.issueId);
-  }
-  return solvedSet.size;
+  return Number(result[0]?.count ?? 0);
 };
 
 export const getRepositories = async (
@@ -53,19 +34,37 @@ export const getRepositories = async (
         owner: repositories.owner,
         name: repositories.name,
         githubRepoId: repositories.githubRepoId,
+        techStack: repositories.techStack,
         isActive: repositories.isActive,
         createdAt: repositories.createdAt,
+        issueCount: count(issues.id),
       })
       .from(repositories)
+      .leftJoin(issues, eq(issues.repositoryId, repositories.id))
       .where(eq(repositories.isActive, true))
+      .groupBy(
+        repositories.id,
+        repositories.owner,
+        repositories.name,
+        repositories.githubRepoId,
+        repositories.techStack,
+        repositories.isActive,
+        repositories.createdAt,
+      )
       .orderBy(desc(repositories.createdAt));
 
-    responseOk(res, rows);
+    const typed: RepositoryRow[] = rows.map((r) => ({
+      ...r,
+      issueCount: Number(r.issueCount),
+    }));
+
+    responseOk(res, typed);
   } catch (error) {
     logger.error({ err: error }, "Failed to get repositories");
     next(error);
   }
 };
+
 
 export const getIssuesByRepository = async (
   req: AuthRequest,

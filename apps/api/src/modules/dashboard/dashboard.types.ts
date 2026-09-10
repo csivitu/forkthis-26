@@ -1,6 +1,6 @@
 import type { Repository, Issue, PointTransaction } from "@repo/db";
 
-export type RepositoryRow = Pick<Repository, "id" | "owner" | "name" | "githubRepoId" | "isActive" | "createdAt">;
+export type RepositoryRow = Pick<Repository, "id" | "owner" | "name" | "githubRepoId" | "techStack" | "isActive" | "createdAt"> & { issueCount: number };
 
 export type IssueRow = Pick<Issue, "id" | "repositoryId" | "githubIssueNumber" | "title" | "difficulty" | "points" | "status" | "createdAt">;
 

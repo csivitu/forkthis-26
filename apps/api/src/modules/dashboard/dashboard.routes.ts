@@ -5,7 +5,7 @@ import { getRepositories, getIssuesByRepository, getPointTransactions } from "./
 const router = Router();
 
 router.get("/repositories", requireSession, getRepositories);
-router.get(["/repository/:id/issues", "/repositories/:id/issues"], requireSession, getIssuesByRepository);
+router.get("/repositories/:id/issues", requireSession, getIssuesByRepository);
 router.get("/point-transactions", requireSession, getPointTransactions);
 
 export default router;

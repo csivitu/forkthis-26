@@ -29,6 +29,13 @@
       "when": 1788878132158,
       "tag": "0003_many_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789041722592,
+      "tag": "0004_next_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }

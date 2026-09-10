@@ -254,19 +254,19 @@ export function FooterSection() {
   return (
     <footer
       ref={containerRef}
-      className="relative w-full text-white overflow-hidden pt-16 sm:pt-24 select-none"
+      className="relative w-full text-white overflow-hidden pt-8 sm:pt-12 select-none"
       style={{
         background:
           "linear-gradient(180deg, #000000 0%, #060e02 4%, #142803 16%, #294e06 38%, #417209 64%, #50850c 84%, #5A930D 100%)",
       }}
     >
       {/* ── 1. GET IN TOUCH SECTION WITH ANIMATED STARS & TAILS ─────────── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-16 sm:mb-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-8 sm:mb-12">
         
         {/* Outer Frame Container */}
         <div
           ref={cardFrameRef}
-          className="relative pt-6 sm:pt-8 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-8 sm:pb-10 min-h-[380px]"
+          className="relative pt-10 sm:pt-12 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-6 sm:pb-8 min-h-[300px] sm:min-h-[340px] md:min-h-[360px]"
         >
           
           {/* ── SVG Wireframe Overlay (Locked Tail-to-Star Animation) ── */}
@@ -444,7 +444,7 @@ export function FooterSection() {
       </div>
 
       {/* ── 2. "GIT. SET. FORK." CONTINUOUS MARQUEE (IN WHITE) ────────── */}
-      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden">
+      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden mt-6">
         <div className="flex w-max animate-marquee-left">
           {/* Loop Strip 1 */}
           <div className="flex shrink-0 items-center space-x-8 sm:space-x-12 pr-8 sm:pr-12">
@@ -473,7 +473,7 @@ export function FooterSection() {
       </div>
 
       {/* ── 3. ELEGANT UNCLIPPED "FORKTHIS" BANNER & CREDITS ─────────── */}
-      <div className="relative w-full pt-16 sm:pt-24 md:pt-28 pb-12 sm:pb-20 md:pb-24 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative w-full pt-8 sm:pt-12 md:pt-14 pb-6 sm:pb-8 md:pb-10 flex flex-col items-center justify-center overflow-hidden">
 
         {/* Geodesic Photo Background — prominent and clearly visible behind FORKTHIS */}
         {/* eslint-disable-next-line @next/next/no-img-element */}

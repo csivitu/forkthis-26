@@ -131,6 +131,7 @@ export async function getOverviewStats(
             db.select({
                 total: sql<number>`count(*)`,
                 open: sql<number>`count(*) filter (where ${issues.status} = 'open')`,
+                solved: sql<number>`count(*) filter (where ${issues.status} = 'solved')`,
                 closed: sql<number>`count(*) filter (where ${issues.status} = 'closed')`,
             }).from(issues),
 
@@ -163,6 +164,7 @@ export async function getOverviewStats(
             activeRepositories: Number(repoCounts[0]!.active),
             totalIssues: Number(issueCounts[0]!.total),
             openIssues: Number(issueCounts[0]!.open),
+            solvedIssues: Number(issueCounts[0]!.solved),
             closedIssues: Number(issueCounts[0]!.closed),
             issuesByDifficulty: byDifficulty,
             totalPullRequests: Number(prCounts[0]!.total),

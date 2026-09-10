@@ -23,6 +23,7 @@ export interface AdminOverviewStats {
     activeRepositories: number;
     totalIssues: number;
     openIssues: number;
+    solvedIssues: number;
     closedIssues: number;
     issuesByDifficulty: { easy: number; medium: number; hard: number };
     totalPullRequests: number;

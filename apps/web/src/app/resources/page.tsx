@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/resources/section-header";
+import { SiteHeader } from "@/components/landing/navigation/SiteHeader";
 import { ResourceGrid } from "@/components/resources/resource-card";
 import { SectionSidebar } from "@/components/resources/section-sidebar";
 import { RESOURCE_SECTIONS } from "@/components/resources/resource-data";
@@ -16,6 +17,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="relative min-h-screen w-full bg-black text-white selection:bg-[#8FFE09] selection:text-black overflow-x-hidden">
+      <SiteHeader forceTimeline />
       {/* Fixed right-side section navigator */}
       <SectionSidebar />
 

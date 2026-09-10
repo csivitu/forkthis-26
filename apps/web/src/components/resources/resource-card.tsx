@@ -22,7 +22,6 @@ const CARD_CLIP_PATH = `polygon(
 //  • youtube  → full-bleed cover thumbnail
 //  • article  → centered art.png on a dark tinted bg
 //  • github   → centered, brightened github logo on dark bg
-//  • fallback → grey placeholder with SVG icon
 function CardMedia({ item }: { item: ResourceItem }) {
   if (item.imageUrl && item.imageType === "youtube") {
     return (
@@ -165,13 +164,14 @@ export function ResourceCard({
             ? "drop-shadow(0 0 10px rgba(143, 254, 9, 0.85)) drop-shadow(0 0 24px rgba(143, 254, 9, 0.55)) drop-shadow(0 0 45px rgba(143, 254, 9, 0.28))"
             : "drop-shadow(0 0 1px rgba(0, 0, 0, 0.5))",
           transform: activeHover
-            ? "scale(1.05) translateY(-16px)"
+            ? "scale(1.06) translateY(-18px)"
             : "scale(1) translateY(0)",
           transformOrigin: "50% 50%",
           transition:
-            "transform 260ms cubic-bezier(0.16, 1, 0.3, 1), background-color 220ms ease, filter 220ms ease",
+            "transform 160ms cubic-bezier(0.22, 1, 0.36, 1), background-color 140ms ease, filter 140ms ease",
           position: "relative",
           zIndex: activeHover ? 30 : 10,
+          willChange: "transform, filter",
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -207,14 +207,14 @@ export function ResourceCard({
             className="inline-flex items-center gap-2 self-start cursor-pointer mt-auto select-none group/btn"
           >
             {/* Main button box */}
-            <span className="bg-[#8FFE09] text-black font-bold font-mono uppercase tracking-wider px-4 h-8.5 sm:h-9 flex items-center justify-center text-[0.74rem] sm:text-[0.8rem] leading-none transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
+            <span className="bg-[#8FFE09] text-black font-bold font-mono uppercase tracking-wider px-4 h-8.5 sm:h-9 flex items-center justify-center text-[0.74rem] sm:text-[0.8rem] leading-none transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
               {item.buttonText}
             </span>
 
             {/* Separate arrow box with EXACT matching height and width */}
-            <span className="bg-[#8FFE09] text-black w-8.5 h-8.5 sm:w-9 sm:h-9 flex items-center justify-center shrink-0 transition-all duration-200 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
+            <span className="bg-[#8FFE09] text-black w-8.5 h-8.5 sm:w-9 sm:h-9 flex items-center justify-center shrink-0 transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
               <svg
-                className="w-4 h-4 stroke-[2.5] transition-transform duration-200 group-hover/btn:translate-x-0.5"
+                className="w-4 h-4 stroke-[2.5] transition-transform duration-140 group-hover/btn:translate-x-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

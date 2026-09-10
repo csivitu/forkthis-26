@@ -362,10 +362,10 @@ export function FooterSection() {
 
             {/* Right Column: Discord Box Offset Completely to the Right */}
             <div className="lg:col-span-7 flex justify-end items-center w-full">
-              <div ref={discordBoxRef} className="relative w-full max-w-[400px] lg:max-w-[430px] ml-auto">
+              <div ref={discordBoxRef} className="relative w-full max-w-[420px] lg:max-w-[450px] ml-auto">
                 
                 {/* Symmetrical Container with 45° Incline Border & #294A03 Background */}
-                <div className="relative w-full min-h-[220px] sm:min-h-[240px] px-4 sm:px-6 py-6 sm:py-8 flex flex-col justify-center items-center text-center">
+                <div className="relative flex w-full min-h-[220px] flex-col items-start justify-center px-4 py-6 text-left sm:min-h-[240px] sm:px-6 sm:py-8">
                   
                   {/* Symmetrical SVG Background Frame (Closed path for 100% complete seamless border) */}
                   <svg
@@ -384,8 +384,8 @@ export function FooterSection() {
                   </svg>
 
                   {/* Text Content in IBM Plex Mono (Fills the entire box width boldly) */}
-                  <div className="w-full text-center mb-6 relative z-10">
-                    <p className="font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm sm:text-base md:text-[17px] text-zinc-100 font-medium leading-relaxed tracking-wide text-center w-full">
+                  <div className="relative z-10 mb-6 w-full text-left">
+                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm font-medium leading-relaxed tracking-wide text-zinc-100 sm:text-base md:text-[17px]">
                       Join The Discord Channel For Competition Discussion And All Further Communication
                     </p>
                   </div>
@@ -409,9 +409,9 @@ export function FooterSection() {
                       </span>
 
                       <span className="relative z-10 flex items-center gap-0 transition-transform duration-300 group-hover:translate-x-1.5">
-                        <span className="h-5 w-5 bg-current text-white animate-arrow-1 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,48%_0,100%_50%,48%_100%,0_100%,48%_50%)]" />
-                        <span className="-ml-1.5 h-5 w-5 bg-current text-white animate-arrow-2 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,48%_0,100%_50%,48%_100%,0_100%,48%_50%)]" />
-                        <span className="-ml-1.5 h-5 w-5 bg-current text-white animate-arrow-3 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,48%_0,100%_50%,48%_100%,0_100%,48%_50%)]" />
+                        <span className="h-5 w-5 bg-current text-white animate-arrow-1 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
+                        <span className="-ml-1 h-5 w-5 bg-current text-white animate-arrow-2 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
+                        <span className="-ml-1 h-5 w-5 bg-current text-white animate-arrow-3 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
                       </span>
                     </a>
                   </div>

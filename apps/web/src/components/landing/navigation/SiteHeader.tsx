@@ -6,6 +6,22 @@ import { useCallback, useEffect, useState } from "react";
 import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
 
+const NAV_PANEL_PATH =
+  "M 14 0 H 251 Q 265 0 265 14 L 246 58 Q 240 74.5 223 74.5 H 42 Q 25 74.5 19 58 L 0 14 Q 0 0 14 0 Z";
+
+function NavPanelShape({ className }: { className?: string }) {
+  return (
+    <svg
+      className={`nav-panel-shape${className ? ` ${className}` : ""}`}
+      viewBox="0 0 265 74.5"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d={NAV_PANEL_PATH} />
+    </svg>
+  );
+}
+
 function openLockedSection() {
   window.dispatchEvent(new Event("launch-locked"));
 }
@@ -93,6 +109,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           href={`${anchorPrefix}#home`}
           aria-label="Fork This home"
         >
+          <NavPanelShape />
           <Image
             src="/assets/nav-logo.png"
             alt=""
@@ -106,11 +123,13 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
 
       {landingOnly ? (
         <button type="button" className="site-login" onClick={openLockedSection}>
-          Log in
+          <NavPanelShape className="site-login__shape" />
+          <span className="site-login__label">Log in</span>
         </button>
       ) : (
         <a className="site-login" href="/login">
-          Log in
+          <NavPanelShape className="site-login__shape" />
+          <span className="site-login__label">Log in</span>
         </a>
       )}
 

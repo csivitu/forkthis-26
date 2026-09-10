@@ -1104,7 +1104,7 @@ button {
 .animate-marquee-left {
   display: flex;
   width: max-content;
-  animation: marqueeLeft 18s linear infinite;
+  animation: marqueeLeft 32s linear infinite;
   will-change: transform;
 }
 

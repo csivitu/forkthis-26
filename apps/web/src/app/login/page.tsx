@@ -6,7 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
 type ParticipantStatus = {
   authenticated: boolean;
-  email?: string;
+  regNo?: string;
   participantFound?: boolean;
 };
 
@@ -117,7 +117,7 @@ export default function LoginPage() {
         {status?.authenticated ? (
           <div className="mt-6 space-y-3 rounded-lg bg-zinc-50 p-4 text-sm">
             <p>
-              Signed in as <strong>{status.email}</strong>
+              Registration number: <strong>{status.regNo ?? "unknown"}</strong>
             </p>
             <p className={status.participantFound ? "text-green-700" : "text-red-700"}>
               SQLite participant: <strong>{status.participantFound ? "FOUND" : "NOT FOUND"}</strong>

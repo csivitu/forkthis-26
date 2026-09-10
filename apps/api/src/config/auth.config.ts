@@ -3,11 +3,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db, users, userRole } from "@repo/db";
 import * as schema from "@repo/db";
 import { env } from "./env.config";
-import logger from "../utils/logger.util"
+import logger from "../utils/logger.util";
 import { eq } from "drizzle-orm";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { participantsDb } from "../../../../packages/db/sqlite/client";
 import { participants } from "../../../../packages/db/sqlite/schema";
+import { extractRegNo } from "../utils/regno.util";
 
 export const auth = betterAuth({
     baseURL: env.BETTER_AUTH_URL,
@@ -36,17 +37,17 @@ export const auth = betterAuth({
             role: {
                 type: "string",
                 defaultValue: userRole.Student,
-                input: false
+                input: false,
             },
             githubUsername: {
                 type: "string",
                 required: false,
-                input: false
+                input: false,
             },
             githubId: {
                 type: "string",
                 required: false,
-                input: false
+                input: false,
             },
         },
     },
@@ -69,25 +70,33 @@ export const auth = betterAuth({
             }
 
             if (ctx.path === "/link-social" && ctx.body?.provider === "github") {
-                const email = ctx.context.session?.user?.email;
+                const name = ctx.context.session?.user?.name;
 
-                if (!email) {
+                if (!name) {
                     throw new APIError("UNAUTHORIZED", {
                         code: "no_active_session",
                         message: "You must be signed in with Google before linking GitHub.",
                     });
                 }
 
+                const regNo = extractRegNo(name);
+                if (!regNo) {
+                    throw new APIError("FORBIDDEN", {
+                        code: "invalid_username_format",
+                        message: "Google account name does not match the expected registration number format.",
+                    });
+                }
+
                 const match = await participantsDb
                     .select()
                     .from(participants)
-                    .where(eq(participants.email, email.toLowerCase()))
+                    .where(eq(participants.regno, regNo))
                     .get();
 
                 if (!match) {
                     throw new APIError("FORBIDDEN", {
                         code: "not_a_participant",
-                        message: "This email is not registered as a participant.",
+                        message: "This registration number is not registered as a participant.",
                     });
                 }
             }
@@ -97,47 +106,55 @@ export const auth = betterAuth({
         user: {
             create: {
                 before: async (user) => {
+                    const regNo = extractRegNo(user.name);
+
+                    if (!regNo) {
+                        throw new APIError("BAD_REQUEST", {
+                            code: "invalid_username_format",
+                            message: "Google account name does not match the expected registration number format.",
+                        });
+                    }
+
                     const participant = await participantsDb
-                        .select({ email: participants.email })
+                        .select({ regno: participants.regno })
                         .from(participants)
-                        .where(eq(participants.email, user.email.toLowerCase()))
+                        .where(eq(participants.regno, regNo))
                         .get();
 
                     if (!participant) {
                         throw new APIError("BAD_REQUEST", {
                             code: "signup_disabled",
-                            message: "Signup is disabled for this email address.",
+                            message: "Signup is disabled for this account.",
                         });
                     }
                 },
             },
         },
-account: {
-create: {
-after: async (account) => {
-if (account.providerId !== "github") return;
-const res = await fetch("https://api.github.com/user", {
-headers: { Authorization: `Bearer ${account.accessToken}` },
-                });
-if (!res.ok) {
-                    logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
-return;
-                }
-const profile = (await res.json()) as { id?: string | number; login?: string };
-await db.update(users).set({
-githubId: String(profile.id ?? ""),
-githubUsername: profile.login ?? "",
-                }).where(eq(users.id, account.userId));
+        account: {
+            create: {
+                after: async (account) => {
+                    if (account.providerId !== "github") return;
+                    const res = await fetch("https://api.github.com/user", {
+                        headers: { Authorization: `Bearer ${account.accessToken}` },
+                    });
+                    if (!res.ok) {
+                        logger.error({ status: res.status }, "Failed to fetch GitHub profile for account linking");
+                        return;
+                    }
+                    const profile = (await res.json()) as { id?: string | number; login?: string };
+                    await db.update(users).set({
+                        githubId: String(profile.id ?? ""),
+                        githubUsername: profile.login ?? "",
+                    }).where(eq(users.id, account.userId));
+                },
             },
         },
-    },
     },
     socialProviders: {
         google: {
             clientId: env.GOOGLE_CLIENT_ID as string,
             clientSecret: env.GOOGLE_CLIENT_SECRET as string,
         },
-
         github: {
             clientId: env.GITHUB_CLIENT_ID as string,
             clientSecret: env.GITHUB_CLIENT_SECRET as string,
@@ -146,7 +163,6 @@ githubUsername: profile.login ?? "",
         },
     },
     emailAndPassword: { enabled: false },
-
     trustedOrigins: [
         env.WEB_URL as string,
     ],

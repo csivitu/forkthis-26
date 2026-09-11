@@ -69,8 +69,11 @@ export const auth = betterAuth({
                 });
             }
 
+            
+
             if (ctx.path === "/link-social" && ctx.body?.provider === "github") {
-                const name = ctx.context.session?.user?.name;
+                const session = await auth.api.getSession({ headers: ctx.headers });
+                const name = session?.user?.name;
 
                 if (!name) {
                     throw new APIError("UNAUTHORIZED", {

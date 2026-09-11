@@ -3,12 +3,12 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db, users, userRole } from "@repo/db";
 import * as schema from "@repo/db";
 import { env } from "./env.config";
-import logger from "../utils/logger.util"
+import logger from "../utils/logger.util";
 import { eq } from "drizzle-orm";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { participantsDb } from "../../../../packages/db/sqlite/client";
 import { participants } from "../../../../packages/db/sqlite/schema";
-import {extractRegNo} from "../utils/regno.util";
+import { extractRegNo } from "../utils/regno.util";
 
 export const auth = betterAuth({
     baseURL: env.BETTER_AUTH_URL,
@@ -37,17 +37,17 @@ export const auth = betterAuth({
             role: {
                 type: "string",
                 defaultValue: userRole.Student,
-                input: false
+                input: false,
             },
             githubUsername: {
                 type: "string",
                 required: false,
-                input: false
+                input: false,
             },
             githubId: {
                 type: "string",
                 required: false,
-                input: false
+                input: false,
             },
         },
     },
@@ -78,6 +78,7 @@ export const auth = betterAuth({
                         message: "You must be signed in with Google before linking GitHub.",
                     });
                 }
+
                 const regNo = extractRegNo(name);
                 if (!regNo) {
                     throw new APIError("FORBIDDEN", {
@@ -105,14 +106,14 @@ export const auth = betterAuth({
         user: {
             create: {
                 before: async (user) => {
-                    const regNo = extractRegNo(user.name)
+                    const regNo = extractRegNo(user.name);
 
-                   if (!regNo) {
+                    if (!regNo) {
                         throw new APIError("BAD_REQUEST", {
                             code: "invalid_username_format",
                             message: "Google account name does not match the expected registration number format.",
                         });
-            }
+                    }
 
                     const participant = await participantsDb
                         .select({ regno: participants.regno })
@@ -154,7 +155,6 @@ export const auth = betterAuth({
             clientId: env.GOOGLE_CLIENT_ID as string,
             clientSecret: env.GOOGLE_CLIENT_SECRET as string,
         },
-
         github: {
             clientId: env.GITHUB_CLIENT_ID as string,
             clientSecret: env.GITHUB_CLIENT_SECRET as string,
@@ -163,7 +163,6 @@ export const auth = betterAuth({
         },
     },
     emailAndPassword: { enabled: false },
-
     trustedOrigins: [
         env.WEB_URL as string,
     ],

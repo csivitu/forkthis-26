@@ -1,35 +1,74 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback } from "react";
+import { ThemedDialog } from "@/components/ui/ThemedDialog";
+
+const PARTICIPANT_ERROR_CODES = new Set(["signup_disabled", "not_a_participant"]);
+
+function getAuthErrorContent(error: string, providerMessage: string) {
+  if (PARTICIPANT_ERROR_CODES.has(error)) {
+    return {
+      title: "Not on Participant List",
+      description:
+        "You're not on the ForkThis'26 participant list. Please contact CSI-VIT if you believe this is a mistake.",
+    };
+  }
+
+  return {
+    title: "Sign-in Failed",
+    description: providerMessage,
+  };
+}
 
 function AuthErrorContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const error = searchParams.get("error") ?? "AUTH_ERROR";
-  const message = searchParams.get("message") ?? "Authentication could not be completed.";
+  const providerMessage =
+    searchParams.get("error_description") ??
+    searchParams.get("message") ??
+    "Authentication could not be completed.";
+  const content = getAuthErrorContent(error, providerMessage);
+  const goBack = useCallback(() => router.push("/"), [router]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-100 p-6 font-sans text-zinc-950">
-      <section className="w-full max-w-md rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
-        <p className="text-sm font-medium text-red-700">Authentication error</p>
-        <h1 className="mt-2 text-2xl font-semibold">We could not complete sign-in</h1>
-        <p className="mt-3 text-sm text-zinc-600">{message}</p>
-        <p className="mt-2 text-xs text-zinc-500">Code: {error}</p>
-        <Link
-          className="mt-6 inline-block rounded-lg bg-zinc-950 px-4 py-3 text-sm font-medium text-white hover:bg-zinc-700"
-          href="/login"
-        >
-          Return to login
-        </Link>
-      </section>
+    <main className="launch-soon">
+      <ThemedDialog
+        eyebrow={`Authentication error // ${error}`}
+        title={content.title}
+        description={content.description}
+        onClose={goBack}
+      >
+        <button type="button" className="launch-soon__button" onClick={goBack}>
+          Go Back
+        </button>
+      </ThemedDialog>
+    </main>
+  );
+}
+
+function AuthErrorFallback() {
+  const router = useRouter();
+  const goBack = useCallback(() => router.push("/"), [router]);
+
+  return (
+    <main className="launch-soon">
+      <ThemedDialog
+        eyebrow="Authentication sequence"
+        title="Reading Signal"
+        description="Recovering the authentication status."
+        onClose={goBack}
+      >
+        {null}
+      </ThemedDialog>
     </main>
   );
 }
 
 export default function AuthErrorPage() {
   return (
-    <Suspense fallback={<main className="flex min-h-screen items-center justify-center bg-zinc-100 p-6" />}> 
+    <Suspense fallback={<AuthErrorFallback />}>
       <AuthErrorContent />
     </Suspense>
   );

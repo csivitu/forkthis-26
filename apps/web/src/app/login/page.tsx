@@ -1,55 +1,50 @@
 "use client";
 
-import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ThemedDialog } from "@/components/ui/ThemedDialog";
+import { signInWithGoogle } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
-  const [signingIn, setSigningIn] = useState(false);
+  const startedSignIn = useRef(false);
 
-  async function signInWithGoogle() {
+  const startSignIn = useCallback(async () => {
     setError(null);
-    setSigningIn(true);
 
     try {
-      const { error: signInError } = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: `${window.location.origin}/auth/link-github`,
-      });
-
-      if (signInError) {
-        setError(signInError.message ?? "Google sign-in failed.");
-        setSigningIn(false);
-      }
-      // on success, the browser navigates away to Google — nothing else runs
+      await signInWithGoogle();
     } catch (requestError) {
       setError(
         requestError instanceof Error
           ? `Cannot reach the API: ${requestError.message}`
           : "Cannot reach the API.",
       );
-      setSigningIn(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    if (startedSignIn.current) return;
+    startedSignIn.current = true;
+    void startSignIn();
+  }, [startSignIn]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-100 p-6 font-sans text-zinc-950">
-      <section className="w-full max-w-md rounded-xl border border-zinc-200 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold">Participant access</h1>
-        <p className="mt-2 text-sm text-zinc-600">
-          Sign in with Google to continue.
-        </p>
-
-        <button
-          className="mt-6 w-full rounded-lg bg-zinc-950 px-4 py-3 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
-          onClick={() => void signInWithGoogle()}
-          disabled={signingIn}
-        >
-          {signingIn ? "Connecting..." : "Continue with Google"}
-        </button>
-
-        {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
-      </section>
+    <main className="launch-soon">
+      <ThemedDialog
+        eyebrow="Authentication sequence"
+        title={error ? "Connection Failed" : "Opening Google"}
+        description={error ?? "Preparing Google sign-in. GitHub linking follows next."}
+        onClose={() => window.history.back()}
+      >
+        {error ? (
+          <button
+            className="launch-soon__button"
+            onClick={() => void startSignIn()}
+          >
+            Retry
+          </button>
+        ) : null}
+      </ThemedDialog>
     </main>
   );
 }

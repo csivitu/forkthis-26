@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { ThemedDialog } from "@/components/ui/ThemedDialog";
 
 const LANDING_ONLY_MODE = "landing-only";
 const LAUNCH_LOCKED_EVENT = "launch-locked";
@@ -37,24 +38,6 @@ function ComingSoonMessage({ onBack }: { onBack: () => void }) {
         </button>
       </div>
     </section>
-  );
-}
-
-function ComingSoonModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="launch-modal" role="dialog" aria-modal="true" aria-labelledby="launch-modal-title">
-      <button type="button" className="launch-modal__backdrop" aria-label="Close" onClick={onClose} />
-      <div className="launch-soon__panel launch-modal__panel">
-        <p className="launch-soon__eyebrow">Access locked</p>
-        <h2 id="launch-modal-title">Coming Soon</h2>
-        <p className="launch-soon__copy">
-          This section is still preparing for launch. Check back soon.
-        </p>
-        <button type="button" className="launch-soon__button" onClick={onClose}>
-          Go Back
-        </button>
-      </div>
-    </div>
   );
 }
 
@@ -99,9 +82,9 @@ export function LaunchGate({ children }: { children: ReactNode }) {
     router.push("/");
   }
 
-  function closeModal() {
+  const closeModal = useCallback(() => {
     setModalOpen(false);
-  }
+  }, []);
 
   if (landingOnly && pathname !== "/") {
     return <ComingSoonMessage onBack={goBack} />;
@@ -110,7 +93,18 @@ export function LaunchGate({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
-      {modalOpen ? <ComingSoonModal onClose={closeModal} /> : null}
+      {modalOpen ? (
+        <ThemedDialog
+          eyebrow="Access locked"
+          title="Coming Soon"
+          description="This section is still preparing for launch. Check back soon."
+          onClose={closeModal}
+        >
+          <button type="button" className="launch-soon__button" onClick={closeModal}>
+            Go Back
+          </button>
+        </ThemedDialog>
+      ) : null}
     </>
   );
 }

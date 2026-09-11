@@ -8,15 +8,17 @@ const LOCKED_LINKS = [
   { href: "#dashboard", label: "Dashboard" },
   { href: "#leaderboard", label: "Leaderboard" },
   { href: "/resources", label: "Resources" },
+  { href: "/login", label: "Log in" },
 ] as const;
 
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
+  onLogin: () => Promise<void>;
   landingOnly: boolean;
 }
 
-export function MobileMenu({ open, onClose, landingOnly }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, onLogin, landingOnly }: MobileMenuProps) {
   function openLockedSection() {
     onClose();
     window.dispatchEvent(new Event("launch-locked"));
@@ -51,6 +53,10 @@ export function MobileMenu({ open, onClose, landingOnly }: MobileMenuProps) {
         {LOCKED_LINKS.map((link) => (
           landingOnly && link.href !== "#home" ? (
             <button key={link.href} type="button" onClick={openLockedSection} tabIndex={open ? 0 : -1}>
+              <span>{link.label}</span>
+            </button>
+          ) : link.href === "/login" ? (
+            <button key={link.href} type="button" onClick={() => void onLogin()} tabIndex={open ? 0 : -1}>
               <span>{link.label}</span>
             </button>
           ) : link.href.startsWith("/") ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { Globe } from "lucide-react";
 
 // ─── Social Media Icons ───────────────────────────────────────────────────────
 function InstagramIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -41,18 +42,6 @@ function XIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function WebIcon({ className = "w-5 h-5" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polygon points="2 3 22 3 20 21 4 21 2 3" />
-      <line x1="2" y1="9" x2="22" y2="9" />
-      <line x1="2" y1="15" x2="22" y2="15" />
-      <line x1="8" y1="3" x2="10" y2="21" />
-      <line x1="16" y1="3" x2="14" y2="21" />
-    </svg>
-  );
-}
-
 // ─── Social Links List ────────────────────────────────────────────────────────
 const SOCIAL_LINKS = [
   {
@@ -83,7 +72,7 @@ const SOCIAL_LINKS = [
     name: "Website",
     handle: "www.csivit.com",
     url: "https://csivit.com",
-    Icon: WebIcon,
+    Icon: Globe,
   },
 ];
 
@@ -254,19 +243,22 @@ export function FooterSection() {
   return (
     <footer
       ref={containerRef}
-      className="relative w-full text-white overflow-hidden pt-16 sm:pt-24 select-none"
+      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden pt-16 text-white select-none sm:pt-24"
       style={{
         background:
           "linear-gradient(180deg, #000000 0%, #060e02 4%, #142803 16%, #294e06 38%, #417209 64%, #50850c 84%, #5A930D 100%)",
       }}
     >
       {/* ── 1. GET IN TOUCH SECTION WITH ANIMATED STARS & TAILS ─────────── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-16 sm:mb-24">
+      <div
+        id="contact"
+        className="relative z-10 mx-auto mb-16 max-w-6xl shrink-0 px-4 sm:mb-24 sm:px-6 lg:px-8"
+      >
         
         {/* Outer Frame Container */}
         <div
           ref={cardFrameRef}
-          className="relative pt-6 sm:pt-8 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-8 sm:pb-10 min-h-[380px]"
+          className="relative pt-10 sm:pt-12 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-6 sm:pb-8 min-h-[300px] sm:min-h-[340px] md:min-h-[360px]"
         >
           
           {/* ── SVG Wireframe Overlay (Locked Tail-to-Star Animation) ── */}
@@ -373,10 +365,10 @@ export function FooterSection() {
 
             {/* Right Column: Discord Box Offset Completely to the Right */}
             <div className="lg:col-span-7 flex justify-end items-center w-full">
-              <div ref={discordBoxRef} className="relative w-full max-w-[460px] lg:max-w-[490px] ml-auto">
+              <div ref={discordBoxRef} className="relative w-full max-w-[420px] lg:max-w-[450px] ml-auto">
                 
                 {/* Symmetrical Container with 45° Incline Border & #294A03 Background */}
-                <div className="relative w-full min-h-[220px] sm:min-h-[240px] px-4 sm:px-6 py-6 sm:py-8 flex flex-col justify-center items-center text-center">
+                <div className="relative flex w-full min-h-[220px] flex-col items-start justify-center px-4 py-6 text-left sm:min-h-[240px] sm:px-6 sm:py-8">
                   
                   {/* Symmetrical SVG Background Frame (Closed path for 100% complete seamless border) */}
                   <svg
@@ -395,42 +387,34 @@ export function FooterSection() {
                   </svg>
 
                   {/* Text Content in IBM Plex Mono (Fills the entire box width boldly) */}
-                  <div className="w-full text-center mb-6 relative z-10 px-1 sm:px-2">
-                    <p className="font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm sm:text-base md:text-[17px] text-zinc-100 font-medium leading-relaxed tracking-wide text-center w-full">
+                  <div className="relative z-10 mb-6 w-full text-left">
+                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm font-medium leading-relaxed tracking-wide text-zinc-100 sm:text-base md:text-[17px]">
                       Join The Discord Channel For Competition Discussion And All Further Communication
                     </p>
                   </div>
 
-                  {/* ── Discord Button: Rounded Rectangle, Right-Aligned, Rocket Arrow Animation ── */}
+                  {/* ── Discord Button: Three staggered chevrons ── */}
                   <div className="w-full flex justify-end relative z-10">
                     <a
                       href="https://discord.gg"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group relative inline-flex items-center gap-2.5 overflow-hidden px-6 py-2.5 rounded-lg bg-black border-2 border-[#8FFE09] uppercase tracking-wider transition-all duration-300 shadow-[0_0_16px_rgba(143,254,9,0.35)] hover:shadow-[0_0_28px_rgba(143,254,9,0.6)] cursor-pointer"
+                      aria-label="Join Discord"
+                      className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg border-2 border-[#8FFE09] bg-black px-6 py-2.5 uppercase tracking-wider transition-all duration-300 shadow-[0_0_16px_rgba(143,254,9,0.35)] hover:shadow-[0_0_28px_rgba(143,254,9,0.6)] cursor-pointer"
                     >
-                      {/* Background Sweep: Complete edge-to-edge fill on hover without corner gaps */}
                       <span
                         className="absolute -inset-1 bg-[#8FFE09] -translate-x-[105%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] pointer-events-none"
                         aria-hidden="true"
                       />
 
-                      {/* Label */}
-                      <span className="relative z-10 font-[family-name:var(--font-sixsound)] tracking-widest font-extrabold text-xs sm:text-sm text-[#8FFE09] group-hover:text-black transition-colors duration-300 whitespace-nowrap">
+                      <span className="relative z-10 font-[family-name:var(--font-sixsound)] text-xs font-extrabold tracking-widest text-[#8FFE09] transition-colors duration-300 group-hover:text-black sm:text-sm">
                         JOIN DISCORD
                       </span>
 
-                      {/* Rocket arrows: looping wave from white to green, turns solid black on hover */}
-                      <span className="relative z-10 flex items-center gap-1 transition-transform duration-300 group-hover:translate-x-1.5">
-                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-1 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
-                          ▶
-                        </span>
-                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-2 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
-                          ▶
-                        </span>
-                        <span className="text-[11px] font-black transition-colors duration-200 animate-arrow-3 group-hover:!text-black group-hover:!animation-none group-hover:!opacity-100 group-hover:!drop-shadow-none">
-                          ▶
-                        </span>
+                      <span className="relative z-10 flex items-center gap-0 transition-transform duration-300 group-hover:translate-x-1.5">
+                        <span className="h-5 w-5 bg-current text-white animate-arrow-1 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
+                        <span className="-ml-1 h-5 w-5 bg-current text-white animate-arrow-2 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
+                        <span className="-ml-1 h-5 w-5 bg-current text-white animate-arrow-3 group-hover:!text-black group-hover:!animate-none [clip-path:polygon(0_0,54%_0,100%_50%,54%_100%,0_100%,38%_50%)]" />
                       </span>
                     </a>
                   </div>
@@ -444,7 +428,10 @@ export function FooterSection() {
       </div>
 
       {/* ── 2. "GIT. SET. FORK." CONTINUOUS MARQUEE (IN WHITE) ────────── */}
-      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden">
+      <div
+        data-nav-logo-exit
+        className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden mt-6"
+      >
         <div className="flex w-max animate-marquee-left">
           {/* Loop Strip 1 */}
           <div className="flex shrink-0 items-center space-x-8 sm:space-x-12 pr-8 sm:pr-12">
@@ -473,7 +460,7 @@ export function FooterSection() {
       </div>
 
       {/* ── 3. ELEGANT UNCLIPPED "FORKTHIS" BANNER & CREDITS ─────────── */}
-      <div className="relative w-full pt-16 sm:pt-24 md:pt-28 pb-12 sm:pb-20 md:pb-24 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex min-h-0 flex-1 w-full flex-col items-center justify-center overflow-hidden pt-16 pb-0 sm:pt-24 md:pt-28">
 
         {/* Geodesic Photo Background — prominent and clearly visible behind FORKTHIS */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -486,16 +473,16 @@ export function FooterSection() {
         />
 
         {/* FORKTHIS in Hail Mary font (#264501, dynamically responsive across mobile, tablet, and 1024px+ screens) */}
-        <div className="relative z-10 w-full text-center px-4 sm:px-6 md:px-8 select-none py-6 sm:py-10 md:py-12 flex justify-center">
-          <div className="inline-flex flex-row flex-nowrap items-center justify-center text-[#264501] font-[family-name:var(--font-title)] font-extrabold tracking-[0.04em] sm:tracking-[0.08em] md:tracking-[0.12em] lg:tracking-[0.14em] leading-none text-[clamp(2.4rem,8.2vw,7.8rem)] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] gap-3 sm:gap-5 md:gap-7 lg:gap-9 whitespace-nowrap">
+        <div className="relative z-10 flex w-full -translate-y-4 justify-center px-6 text-center select-none py-6 sm:-translate-y-6 sm:px-10 sm:py-10 md:px-16 md:py-12 lg:px-20">
+          <div className="inline-flex max-w-full flex-row flex-nowrap items-center justify-center text-[#264501] font-[family-name:var(--font-title)] font-extrabold tracking-[0.04em] sm:tracking-[0.08em] md:tracking-[0.12em] lg:tracking-[0.14em] leading-none text-[clamp(2.1rem,7.8vw,7.8rem)] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] gap-3 sm:gap-5 md:gap-7 lg:gap-9 whitespace-nowrap">
             <span className="inline-block py-1">FORK</span>
             <span className="inline-block py-1">THIS</span>
           </div>
         </div>
 
         {/* Bottom Credits: Made with 🤍 by CSI-VIT */}
-        <div className="relative z-10 mt-6 sm:mt-8 md:mt-10 text-center">
-          <p className="font-[family-name:var(--font-ibm-plex-mono)] font-mono text-xs sm:text-sm font-semibold tracking-wider text-[#8FFE09]">
+        <div className="absolute bottom-0 left-0 right-0 z-10 pb-2 text-center sm:pb-3">
+          <p className="m-0 font-[family-name:var(--font-ibm-plex-mono)] font-mono text-xs sm:text-sm font-semibold tracking-wider text-[#8FFE09]">
             Made with <span className="text-white drop-shadow-sm">🤍</span> by CSI-VIT
           </p>
         </div>

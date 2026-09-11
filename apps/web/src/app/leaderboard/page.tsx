@@ -1,18 +1,3 @@
-import React from "react";
-import { Orbitron, JetBrains_Mono } from "next/font/google";
-
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  weight: ["500", "700", "800"],
-  variable: "--font-orbitron",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-mono",
-});
-
 export interface LeaderboardEntry {
   rank: number;
   username: string;
@@ -47,7 +32,7 @@ const PARTICLES = [
 export default function LeaderboardPage() {
   return (
     <div
-      className={`${orbitron.variable} ${jetbrainsMono.variable} flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-y-auto py-4 sm:py-8 px-4 sm:px-0`}
+      className="flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-y-auto py-4 sm:py-8 px-4 sm:px-0"
     >
       {/* Screen Container */}
       <div className="relative flex flex-col items-center justify-start w-full max-w-[1360px] pb-10 sm:pb-16 select-none">
@@ -64,8 +49,7 @@ export default function LeaderboardPage() {
 
         {/* LEΔDERBOΔRD Header Title */}
         <h1
-          className="z-10 text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.18em] text-white mt-2 mb-4 sm:mt-4 sm:mb-8"
-          style={{ fontFamily: "var(--font-orbitron)" }}
+          className="z-10 text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.18em] text-white mt-2 mb-4 sm:mt-4 sm:mb-8 font-[family-name:var(--font-title)]"
         >
           LE<span className="inline-block text-white">Δ</span>DERBO<span className="inline-block text-white">Δ</span>RD
         </h1>
@@ -89,8 +73,7 @@ export default function LeaderboardPage() {
 
           {/* Column Headers */}
           <div
-            className="relative z-10 shrink-0 mb-3 sm:mb-6 flex w-full max-w-[880px] items-center justify-between px-3 sm:px-10 md:px-12 text-[11px] sm:text-sm md:text-base font-bold tracking-[0.15em] sm:tracking-[0.2em] text-[#8FFE09]"
-            style={{ fontFamily: "var(--font-orbitron)" }}
+            className="relative z-10 shrink-0 mb-3 sm:mb-6 flex w-full max-w-[880px] items-center justify-between px-3 sm:px-10 md:px-12 text-[11px] sm:text-sm md:text-base font-bold tracking-[0.15em] sm:tracking-[0.2em] text-[#8FFE09] font-[family-name:var(--font-display)]"
           >
             <span className="w-[36px] sm:w-[60px] md:w-[100px] text-left">RANK</span>
             <span className="flex-1 text-center">USERNAME</span>
@@ -122,8 +105,7 @@ export default function LeaderboardPage() {
 
                 {/* Row Content (Ranks 1 to 10, Username, Points in pure white #FFFFFF) */}
                 <div
-                  className="relative z-10 flex w-full items-center justify-between px-3 sm:px-10 md:px-12 text-xs sm:text-sm md:text-base font-bold tracking-wider text-white"
-                  style={{ fontFamily: "var(--font-mono)" }}
+                  className="relative z-10 flex w-full items-center justify-between px-3 sm:px-10 md:px-12 text-xs sm:text-sm md:text-base font-bold tracking-wider text-white font-[family-name:var(--font-mono)]"
                 >
                   <span className="w-[36px] sm:w-[60px] md:w-[100px] text-left">{row.rank}</span>
                   <span className="flex-1 text-center truncate px-1">{row.username}</span>

@@ -49,9 +49,35 @@ const splineSans = localFont({
   weight: "300 700",
 });
 export const metadata: Metadata = {
-  title: "ForkThis'26 | GitHub Workshop",
+  title: {
+    default: "ForkThis'26 | GitHub Workshop",
+    template: "%s | ForkThis'26",
+  },
   description:
     "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  applicationName: "ForkThis'26",
+  keywords: ["Git", "GitHub", "workshop", "open source", "CSI-VIT"],
+  authors: [{ name: "CSI-VIT" }],
+  creator: "CSI-VIT",
+  publisher: "CSI-VIT",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "ForkThis'26",
+    title: "ForkThis'26 | GitHub Workshop",
+    description:
+      "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ForkThis'26 | GitHub Workshop",
+    description:
+      "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

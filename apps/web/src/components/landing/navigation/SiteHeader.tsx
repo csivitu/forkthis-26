@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { ThemedDialog } from "@/components/ui/ThemedDialog";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
 
@@ -44,7 +46,22 @@ function openLockedSection() {
 export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [timelineActive, setTimelineActive] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginOpen, setLoginOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const closeLogin = useCallback(() => setLoginOpen(false), []);
+
+  const startLogin = useCallback(async () => {
+    closeMenu();
+    setLoginError(null);
+    setLoginOpen(true);
+
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : "Cannot reach the API.");
+    }
+  }, [closeMenu]);
 
   useEffect(() => {
     let frame: number | null = null;
@@ -142,10 +159,10 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           <span className="site-login__label">Log in</span>
         </button>
       ) : (
-        <a className="site-login" href="/login">
+        <button type="button" className="site-login" onClick={() => void startLogin()}>
           <NavPanelShape className="site-login__shape" />
           <span className="site-login__label">Log in</span>
-        </a>
+        </button>
       )}
 
       <div className={`mobile-header${menuOpen ? " mobile-header--open" : ""}`}>
@@ -177,7 +194,27 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
         </button>
       </div>
 
-      <MobileMenu open={menuOpen} onClose={closeMenu} landingOnly={landingOnly} />
+      <MobileMenu
+        open={menuOpen}
+        onClose={closeMenu}
+        onLogin={startLogin}
+        landingOnly={landingOnly}
+      />
+
+      {loginOpen ? (
+        <ThemedDialog
+          eyebrow="Authentication sequence"
+          title={loginError ? "Connection Failed" : "Opening Google"}
+          description={loginError ?? "Preparing Google sign-in. GitHub linking follows next."}
+          onClose={closeLogin}
+        >
+          {loginError ? (
+            <button type="button" className="launch-soon__button" onClick={() => void startLogin()}>
+              Retry
+            </button>
+          ) : null}
+        </ThemedDialog>
+      ) : null}
 
       <SiteScrollbar />
     </header>

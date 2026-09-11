@@ -1,14 +1,4 @@
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "node:url";
 import { z } from "zod";
-
-const currentFileDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRootEnv = path.resolve(currentFileDir, "../../../../.env");
-const cwdEnv = path.resolve(process.cwd(), ".env");
-
-dotenv.config({ path: repoRootEnv });
-dotenv.config({ path: cwdEnv });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),

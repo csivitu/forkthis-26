@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --env-file=.env --watch src/index.ts",
+    "dev": "bun --env-file=../../.env --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target node",
     "start": "bun --env-file=../../.env dist/index.js",
     "sync:prs": "bun --env-file=../../.env src/scripts/sync-prs.ts",
@@ -25,7 +25,6 @@
     "@repo/db": "workspace:*",
     "better-auth": "^1.7.2",
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "graphql": "^17.0.2",

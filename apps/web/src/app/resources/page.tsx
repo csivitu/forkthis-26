@@ -33,7 +33,7 @@ export default function ResourcesPage() {
 
         <main className="w-full max-w-[1540px] mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">
           {/* YOUTUBE */}
-          <section id={youtubeSection.id} className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28">
+          <section id={youtubeSection.id} className="scroll-mt-20 mb-16 sm:mb-24 md:mb-28">
             <SectionHeader title={youtubeSection.title} />
 
             <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">
@@ -46,7 +46,7 @@ export default function ResourcesPage() {
           </section>
 
           {/* ARTICLES */}
-          <section id={articlesSection.id} className="scroll-mt-12 mb-16 sm:mb-24 md:mb-28">
+          <section id={articlesSection.id} className="scroll-mt-20 mb-16 sm:mb-24 md:mb-28">
             <SectionHeader title={articlesSection.title} />
 
             <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">
@@ -59,7 +59,7 @@ export default function ResourcesPage() {
           </section>
 
           {/* GITHUB */}
-          <section id={githubSection.id} className="scroll-mt-12 pb-8">
+          <section id={githubSection.id} className="scroll-mt-20 pb-8">
             <SectionHeader title={githubSection.title} />
 
             <div className="md:pl-2 lg:pl-6 md:pr-[110px] lg:pr-[130px]">

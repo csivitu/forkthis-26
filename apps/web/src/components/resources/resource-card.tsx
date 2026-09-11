@@ -144,12 +144,7 @@ export function ResourceCard({
       {/* ── Number heading (001, 002...) ──
           Aligned with the beginning of the top horizontal edge (28px from left edge) */}
       <div
-        className="font-sixsound text-[#464343] font-bold tracking-widest pl-[28px] mb-1.5 select-none pointer-events-none"
-        style={{
-          fontSize: "clamp(0.92rem, 1.15vw, 1.1rem)",
-          position: "relative",
-          zIndex: 0,
-        }}
+        className="relative z-0 mb-1.5 pl-[28px] font-sixsound text-[clamp(0.92rem,1.15vw,1.1rem)] font-bold tracking-widest text-[#464343] select-none pointer-events-none"
       >
         {item.number}
       </div>
@@ -187,8 +182,7 @@ export function ResourceCard({
 
             {/* Card title — neon green, Sixsound font */}
             <h3
-              className="font-sixsound text-[#8FFE09] font-bold tracking-wide mt-4 mb-2.5 leading-snug sm:leading-tight break-words"
-              style={{ fontSize: "clamp(1.1rem, 2.8vw, 1.32rem)" }}
+              className="mt-4 mb-2.5 break-words font-sixsound text-[clamp(1.1rem,2.8vw,1.32rem)] font-bold leading-snug tracking-wide text-[#8FFE09] sm:leading-tight"
             >
               {item.title}
             </h3>
@@ -204,15 +198,15 @@ export function ResourceCard({
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 self-start cursor-pointer mt-auto select-none group/btn"
+            className="group/btn mt-auto inline-flex cursor-pointer select-none items-center gap-2 self-start"
           >
             {/* Main button box */}
-            <span className="bg-[#8FFE09] text-black font-bold font-mono uppercase tracking-wider px-4 h-8.5 sm:h-9 flex items-center justify-center text-[0.74rem] sm:text-[0.8rem] leading-none transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
+            <span className="flex h-[2.125rem] items-center justify-center bg-[#8FFE09] px-4 font-mono text-[0.74rem] font-bold uppercase leading-none tracking-wider text-black transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)] sm:h-9 sm:text-[0.8rem]">
               {item.buttonText}
             </span>
 
             {/* Separate arrow box with EXACT matching height and width */}
-            <span className="bg-[#8FFE09] text-black w-8.5 h-8.5 sm:w-9 sm:h-9 flex items-center justify-center shrink-0 transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)]">
+            <span className="flex h-[2.125rem] w-[2.125rem] shrink-0 items-center justify-center bg-[#8FFE09] text-black transition-all duration-140 group-hover/btn:brightness-110 group-hover/btn:shadow-[0_0_14px_rgba(143,254,9,0.6)] sm:h-9 sm:w-9">
               <svg
                 className="w-4 h-4 stroke-[2.5] transition-transform duration-140 group-hover/btn:translate-x-1"
                 fill="none"

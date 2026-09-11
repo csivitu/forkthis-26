@@ -192,7 +192,6 @@ button {
   z-index: 999;
   inset: 0;
   border: var(--frame-inset) solid rgb(100 150 39 / 92%);
-  border-radius: clamp(10px, 1.2vw, 18px);
   box-shadow: inset 0 0 12px rgb(100 150 39 / 30%);
   pointer-events: none;
   transition: opacity 240ms ease-out;
@@ -481,38 +480,38 @@ button {
 
   .mobile-header {
     --mobile-header-color: #649627;
+    --mobile-panel-width: clamp(112px, 32vw, 148px);
 
     position: fixed;
     z-index: 2;
-    inset: 0 0 auto;
+    inset: 0;
     display: block;
-    height: 100vh;
     border-inline: 3px solid var(--mobile-header-color);
     pointer-events: none;
   }
 
-  .mobile-header::before {
+  .mobile-header__panel {
     position: absolute;
     z-index: 0;
     top: 0;
-    right: 0;
-    left: 0;
+    width: var(--mobile-panel-width);
     height: 54px;
-    background: var(--mobile-header-color);
-    content: "";
-    transition: background-color 260ms ease;
+    overflow: visible;
+    pointer-events: none;
   }
 
-  .mobile-header::after {
-    position: absolute;
-    z-index: 0;
-    top: 4px;
-    right: 0;
+  .mobile-header__panel path {
+    fill: var(--mobile-header-color);
+    transition: fill 260ms ease;
+  }
+
+  .mobile-header__panel--left {
     left: 0;
-    height: 50px;
-    background: #000;
-    clip-path: polygon(32% 0, 68% 0, 75% 100%, 25% 100%);
-    content: "";
+  }
+
+  .mobile-header__panel--right {
+    right: 0;
+    transform: scaleX(-1);
   }
 
   .mobile-header__brand,
@@ -529,7 +528,7 @@ button {
 
   .mobile-header__brand {
     left: 0;
-    width: 25%;
+    width: var(--mobile-panel-width);
   }
 
   .mobile-header__logo {
@@ -544,7 +543,7 @@ button {
 
   .mobile-header__toggle {
     right: 0;
-    width: 25%;
+    width: var(--mobile-panel-width);
     justify-content: center;
     padding: 4px 0 0;
     border: 0;

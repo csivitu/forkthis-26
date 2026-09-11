@@ -22,6 +22,21 @@ function NavPanelShape({ className }: { className?: string }) {
   );
 }
 
+const MOBILE_HEADER_PANEL_PATH = "M 0 0 H 113 Q 125 0 121 11 L 111 44 Q 107 54 97 54 H 0 Z";
+
+function MobileHeaderPanel({ side }: { side: "left" | "right" }) {
+  return (
+    <svg
+      className={`mobile-header__panel mobile-header__panel--${side}`}
+      viewBox="0 0 125 54"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d={MOBILE_HEADER_PANEL_PATH} />
+    </svg>
+  );
+}
+
 function openLockedSection() {
   window.dispatchEvent(new Event("launch-locked"));
 }
@@ -134,6 +149,8 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       )}
 
       <div className={`mobile-header${menuOpen ? " mobile-header--open" : ""}`}>
+        <MobileHeaderPanel side="left" />
+        <MobileHeaderPanel side="right" />
         <a
           className="mobile-header__brand"
           href={`${anchorPrefix}#home`}

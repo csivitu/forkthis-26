@@ -486,7 +486,8 @@ button {
     z-index: 2;
     inset: 0;
     display: block;
-    border-inline: 3px solid var(--mobile-header-color);
+    border-inline: 2px solid var(--mobile-header-color);
+    box-shadow: inset 0 2px 0 var(--mobile-header-color);
     pointer-events: none;
   }
 

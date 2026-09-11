@@ -135,7 +135,7 @@ export function ResourceCard({
      * Sibling displacement: translates smoothly left or right when another card in the grid is hovered.
      */
     <div
-      className={`relative flex flex-col w-full ${cardMaxWidthClass}`}
+      className={`relative mx-auto flex w-full flex-col ${cardMaxWidthClass}`}
       style={{
         transform: `translateX(${displacementX}px)`,
         transition: "transform 260ms cubic-bezier(0.16, 1, 0.3, 1)",

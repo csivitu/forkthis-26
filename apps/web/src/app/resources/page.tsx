@@ -40,7 +40,7 @@ export default function ResourcesPage() {
               <ResourceGrid
                 items={youtubeSection.items}
                 gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8 lg:gap-10 xl:gap-12 justify-items-center"
-                cardMaxWidthClass="max-w-[320px] sm:max-w-[430px] md:max-w-[460px]"
+                cardMaxWidthClass="max-w-[280px] sm:max-w-[430px] md:max-w-[460px]"
               />
             </div>
           </section>
@@ -53,7 +53,7 @@ export default function ResourcesPage() {
               <ResourceGrid
                 items={articlesSection.items}
                 gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 sm:gap-7 xl:gap-8 justify-items-center"
-                cardMaxWidthClass="max-w-[320px] sm:max-w-[430px] md:max-w-[460px]"
+                cardMaxWidthClass="max-w-[280px] sm:max-w-[430px] md:max-w-[460px]"
               />
             </div>
           </section>
@@ -66,7 +66,7 @@ export default function ResourcesPage() {
               <ResourceGrid
                 items={githubSection.items}
                 gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8 lg:gap-10 xl:gap-12 justify-items-center"
-                cardMaxWidthClass="max-w-[320px] sm:max-w-[430px] md:max-w-[460px]"
+                cardMaxWidthClass="max-w-[280px] sm:max-w-[430px] md:max-w-[460px]"
               />
             </div>
           </section>

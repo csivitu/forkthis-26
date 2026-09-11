@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
+import { LaunchGate } from "@/components/launch/LaunchGate";
 import "./globals.css";
 
 
@@ -72,7 +73,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-black text-white"
       >
-        {children}
+        <LaunchGate>{children}</LaunchGate>
       </body>
     </html>
   );

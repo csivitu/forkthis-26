@@ -6,6 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
 
+function openLockedSection() {
+  window.dispatchEvent(new Event("launch-locked"));
+}
 
 export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,6 +44,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
 
   const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
   const anchorPrefix = Boolean(forceTimeline) && !timelineActive ? "/" : "";
+  const landingOnly = process.env.NEXT_PUBLIC_LAUNCH_MODE === "landing-only";
 
   return (
     <header
@@ -49,15 +53,29 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       }`}
     >
       <nav className="site-nav" aria-label="Primary navigation">
-        <Link href="/resources">Resources</Link>
-        <a href="#dashboard">Dashboard</a>
-        <a href="#leaderboard">Leaderboard</a>
+        {landingOnly ? (
+          <>
+            <button type="button" onClick={openLockedSection}>Resources</button>
+            <button type="button" onClick={openLockedSection}>Dashboard</button>
+            <button type="button" onClick={openLockedSection}>Leaderboard</button>
+          </>
+        ) : (
+          <>
+            <Link href="/resources">Resources</Link>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#leaderboard">Leaderboard</a>
+          </>
+        )}
       </nav>
 
       <nav className="timeline-nav" aria-label="Timeline navigation">
         <div className="timeline-nav__links timeline-nav__links--left">
           <a href={`${anchorPrefix}#home`}>Home</a>
-          <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
+          {landingOnly ? (
+            <button type="button" onClick={openLockedSection}>Dashboard</button>
+          ) : (
+            <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
+          )}
         </div>
         <a className="timeline-nav__brand" href={`${anchorPrefix}#home`} aria-label="Fork This home">
           <Image
@@ -70,14 +88,29 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           />
         </a>
         <div className="timeline-nav__links timeline-nav__links--right">
-          <a href={`${anchorPrefix}#leaderboard`}>Leaderboard</a>
-          <Link href="/resources">Resources</Link>
+          {landingOnly ? (
+            <>
+              <button type="button" onClick={openLockedSection}>Leaderboard</button>
+              <button type="button" onClick={openLockedSection}>Resources</button>
+            </>
+          ) : (
+            <>
+              <a href={`${anchorPrefix}#leaderboard`}>Leaderboard</a>
+              <Link href="/resources">Resources</Link>
+            </>
+          )}
         </div>
       </nav>
 
-      <a className="site-login" href="/login">
-        Log in
-      </a>
+      {landingOnly ? (
+        <button type="button" className="site-login" onClick={openLockedSection}>
+          Log in
+        </button>
+      ) : (
+        <a className="site-login" href="/login">
+          Log in
+        </a>
+      )}
 
       <div className={`mobile-header${menuOpen ? " mobile-header--open" : ""}`}>
         <a
@@ -106,7 +139,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
         </button>
       </div>
 
-      <MobileMenu open={menuOpen} onClose={closeMenu} />
+      <MobileMenu open={menuOpen} onClose={closeMenu} landingOnly={landingOnly} />
 
       <SiteScrollbar />
     </header>

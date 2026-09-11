@@ -7,7 +7,7 @@ import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
 
 
-export function SiteHeader() {
+export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [timelineActive, setTimelineActive] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
@@ -39,9 +39,12 @@ export function SiteHeader() {
   }, []);
 
 
+  const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
+  const anchorPrefix = Boolean(forceTimeline) && !timelineActive ? "/" : "";
+
   return (
     <header
-      className={`site-header${timelineActive ? " site-header--timeline" : ""}${
+      className={`site-header${effectiveTimeline ? " site-header--timeline" : ""}${
         menuOpen ? " site-header--menu-open" : ""
       }`}
     >
@@ -53,10 +56,10 @@ export function SiteHeader() {
 
       <nav className="timeline-nav" aria-label="Timeline navigation">
         <div className="timeline-nav__links timeline-nav__links--left">
-          <a href="#home">Home</a>
-          <a href="#dashboard">Dashboard</a>
+          <a href={`${anchorPrefix}#home`}>Home</a>
+          <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
         </div>
-        <a className="timeline-nav__brand" href="#home" aria-label="Fork This home">
+        <a className="timeline-nav__brand" href={`${anchorPrefix}#home`} aria-label="Fork This home">
           <Image
             src="/assets/nav-logo.png"
             alt=""
@@ -67,7 +70,7 @@ export function SiteHeader() {
           />
         </a>
         <div className="timeline-nav__links timeline-nav__links--right">
-          <a href="#leaderboard">Leaderboard</a>
+          <a href={`${anchorPrefix}#leaderboard`}>Leaderboard</a>
           <Link href="/resources">Resources</Link>
         </div>
       </nav>
@@ -79,7 +82,7 @@ export function SiteHeader() {
       <div className={`mobile-header${menuOpen ? " mobile-header--open" : ""}`}>
         <a
           className="mobile-header__brand"
-          href="#home"
+          href={`${anchorPrefix}#home`}
           onClick={closeMenu}
           aria-label="Fork This home"
         >

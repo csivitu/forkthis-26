@@ -255,7 +255,7 @@ export function FooterSection() {
         {/* Outer Frame Container */}
         <div
           ref={cardFrameRef}
-          className="relative pt-6 sm:pt-8 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-8 sm:pb-10 min-h-[380px]"
+          className="relative pt-10 sm:pt-12 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-6 sm:pb-8 min-h-[300px] sm:min-h-[340px] md:min-h-[360px]"
         >
           
           {/* ── SVG Wireframe Overlay (Locked Tail-to-Star Animation) ── */}
@@ -425,7 +425,7 @@ export function FooterSection() {
       </div>
 
       {/* ── 2. "GIT. SET. FORK." CONTINUOUS MARQUEE (IN WHITE) ────────── */}
-      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden">
+      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden mt-6">
         <div className="flex w-max animate-marquee-left">
           {/* Loop Strip 1 */}
           <div className="flex shrink-0 items-center space-x-8 sm:space-x-12 pr-8 sm:pr-12">

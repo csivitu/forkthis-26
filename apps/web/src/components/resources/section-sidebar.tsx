@@ -30,7 +30,7 @@ export function SectionSidebar() {
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      const y = el.getBoundingClientRect().top + window.pageYOffset - 30;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
       window.scrollTo({ top: y, behavior: "smooth" });
       setActiveSection(id);
     }

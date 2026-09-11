@@ -5,6 +5,7 @@ export const repositories = pgTable("repositories", {
   owner: text("owner").notNull(),
   name: text("name").notNull(),
   githubRepoId: text("github_repo_id").notNull().unique(),
+  techStack: text("tech_stack"),
   isActive: boolean("is_active").notNull().default(true),
   lastPolledAt: timestamp("last_polled_at", { withTimezone: true }),
   // Storing per-resource ETags directly on the repo row was the source of the

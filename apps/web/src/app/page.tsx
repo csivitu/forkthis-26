@@ -1,4 +1,3 @@
-import { HeroAudioProvider } from "@/components/landing/hero/HeroAudio";
 import { HeroExperience } from "@/components/landing/hero/HeroExperience";
 import { TimelineSection } from "@/components/landing/timeline/TimelineSection";
 import { FAQHeader } from "@/components/faq/faq-header";
@@ -8,9 +7,7 @@ import { FooterSection } from "@/components/footer/FooterSection";
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#030305] text-white">
-      <HeroAudioProvider>
-        <HeroExperience />
-      </HeroAudioProvider>
+      <HeroExperience />
       <TimelineSection />
 
       {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}

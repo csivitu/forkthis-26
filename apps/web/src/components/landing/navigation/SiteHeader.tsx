@@ -126,7 +126,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
         >
           <NavPanelShape />
           <Image
-            src="/assets/nav-logo.png"
+            src="/assets/nav-logo.svg"
             alt=""
             width={146}
             height={21}
@@ -158,7 +158,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           aria-label="Fork This home"
         >
           <Image
-            src="/assets/nav-logo.png"
+            src="/assets/nav-logo.svg"
             alt=""
             width={146}
             height={21}

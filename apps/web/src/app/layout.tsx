@@ -53,8 +53,8 @@ export const metadata: Metadata = {
   description:
     "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
   icons: {
-    icon: "/forkthis-icon.svg",
-    shortcut: "/forkthis-icon.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
   },
 };
 

@@ -6,6 +6,37 @@ import { useCallback, useEffect, useState } from "react";
 import { MobileMenu } from "./MobileMenu";
 import { SiteScrollbar } from "./SiteScrollbar";
 
+const NAV_PANEL_PATH =
+  "M 14 0 H 251 Q 265 0 265 14 L 246 58 Q 240 74.5 223 74.5 H 42 Q 25 74.5 19 58 L 0 14 Q 0 0 14 0 Z";
+
+function NavPanelShape({ className }: { className?: string }) {
+  return (
+    <svg
+      className={`nav-panel-shape${className ? ` ${className}` : ""}`}
+      viewBox="0 0 265 74.5"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d={NAV_PANEL_PATH} />
+    </svg>
+  );
+}
+
+const MOBILE_HEADER_PANEL_PATH = "M 0 0 H 113 Q 125 0 121 11 L 111 44 Q 107 54 97 54 H 0 Z";
+
+function MobileHeaderPanel({ side }: { side: "left" | "right" }) {
+  return (
+    <svg
+      className={`mobile-header__panel mobile-header__panel--${side}`}
+      viewBox="0 0 125 54"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path d={MOBILE_HEADER_PANEL_PATH} />
+    </svg>
+  );
+}
+
 function openLockedSection() {
   window.dispatchEvent(new Event("launch-locked"));
 }
@@ -21,8 +52,15 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
     const update = () => {
       frame = null;
       const timeline = document.getElementById("timeline");
-      const bounds = timeline?.getBoundingClientRect();
-      const active = Boolean(bounds && bounds.top <= 1 && bounds.bottom > 1);
+      const footerStart = document.querySelector<HTMLElement>("[data-nav-logo-exit]");
+      const timelineBounds = timeline?.getBoundingClientRect();
+      const footerBounds = footerStart?.getBoundingClientRect();
+      const footerExitLine = window.innerHeight * 0.75;
+      const active = Boolean(
+        timelineBounds &&
+          timelineBounds.top <= 1 &&
+          (!footerBounds || footerBounds.top > footerExitLine),
+      );
       setTimelineActive((current) => (current === active ? current : active));
     };
 
@@ -53,23 +91,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       }`}
     >
       <nav className="site-nav" aria-label="Primary navigation">
-        {landingOnly ? (
-          <>
-            <button type="button" onClick={openLockedSection}>Resources</button>
-            <button type="button" onClick={openLockedSection}>Dashboard</button>
-            <button type="button" onClick={openLockedSection}>Leaderboard</button>
-          </>
-        ) : (
-          <>
-            <Link href="/resources">Resources</Link>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#leaderboard">Leaderboard</a>
-          </>
-        )}
-      </nav>
-
-      <nav className="timeline-nav" aria-label="Timeline navigation">
-        <div className="timeline-nav__links timeline-nav__links--left">
+        <div className="site-nav__links site-nav__links--left">
           <a href={`${anchorPrefix}#home`}>Home</a>
           {landingOnly ? (
             <button type="button" onClick={openLockedSection}>Dashboard</button>
@@ -77,21 +99,15 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
             <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
           )}
         </div>
-        <a className="timeline-nav__brand" href={`${anchorPrefix}#home`} aria-label="Fork This home">
-          <Image
-            src="/assets/nav-logo.png"
-            alt=""
-            width={146}
-            height={21}
-            priority
-            className="timeline-nav__logo"
-          />
-        </a>
-        <div className="timeline-nav__links timeline-nav__links--right">
+        <div className="site-nav__links site-nav__links--right">
           {landingOnly ? (
             <>
-              <button type="button" onClick={openLockedSection}>Leaderboard</button>
-              <button type="button" onClick={openLockedSection}>Resources</button>
+              <button type="button" onClick={openLockedSection}>
+                Leaderboard
+              </button>
+              <button type="button" onClick={openLockedSection}>
+                Resources
+              </button>
             </>
           ) : (
             <>
@@ -102,17 +118,39 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
         </div>
       </nav>
 
+      <div className="timeline-nav">
+        <a
+          className="timeline-nav__brand"
+          href={`${anchorPrefix}#home`}
+          aria-label="Fork This home"
+        >
+          <NavPanelShape />
+          <Image
+            src="/assets/nav-logo.png"
+            alt=""
+            width={146}
+            height={21}
+            priority
+            className="timeline-nav__logo"
+          />
+        </a>
+      </div>
+
       {landingOnly ? (
         <button type="button" className="site-login" onClick={openLockedSection}>
-          Log in
+          <NavPanelShape className="site-login__shape" />
+          <span className="site-login__label">Log in</span>
         </button>
       ) : (
         <a className="site-login" href="/login">
-          Log in
+          <NavPanelShape className="site-login__shape" />
+          <span className="site-login__label">Log in</span>
         </a>
       )}
 
       <div className={`mobile-header${menuOpen ? " mobile-header--open" : ""}`}>
+        <MobileHeaderPanel side="left" />
+        <MobileHeaderPanel side="right" />
         <a
           className="mobile-header__brand"
           href={`${anchorPrefix}#home`}

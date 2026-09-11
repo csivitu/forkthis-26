@@ -250,7 +250,10 @@ export function FooterSection() {
       }}
     >
       {/* ── 1. GET IN TOUCH SECTION WITH ANIMATED STARS & TAILS ─────────── */}
-      <div className="relative z-10 mx-auto mb-16 max-w-6xl shrink-0 px-4 sm:mb-24 sm:px-6 lg:px-8">
+      <div
+        id="contact"
+        className="relative z-10 mx-auto mb-16 max-w-6xl shrink-0 px-4 sm:mb-24 sm:px-6 lg:px-8"
+      >
         
         {/* Outer Frame Container */}
         <div
@@ -425,7 +428,10 @@ export function FooterSection() {
       </div>
 
       {/* ── 2. "GIT. SET. FORK." CONTINUOUS MARQUEE (IN WHITE) ────────── */}
-      <div className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden mt-6">
+      <div
+        data-nav-logo-exit
+        className="w-full relative z-10 border-y border-dashed border-[#8FFE09]/60 py-3 sm:py-3.5 bg-black/40 overflow-hidden mt-6"
+      >
         <div className="flex w-max animate-marquee-left">
           {/* Loop Strip 1 */}
           <div className="flex shrink-0 items-center space-x-8 sm:space-x-12 pr-8 sm:pr-12">

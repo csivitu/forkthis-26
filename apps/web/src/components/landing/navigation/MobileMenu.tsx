@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 const LOCKED_LINKS = [
-  { href: "/resources", label: "Resources" },
+  { href: "#home", label: "Home" },
   { href: "#dashboard", label: "Dashboard" },
   { href: "#leaderboard", label: "Leaderboard" },
-  { href: "/login", label: "Log in" },
+  { href: "/resources", label: "Resources" },
 ] as const;
 
 interface MobileMenuProps {
@@ -49,7 +49,7 @@ export function MobileMenu({ open, onClose, landingOnly }: MobileMenuProps) {
       <span className="mobile-menu__cross mobile-menu__cross--right" aria-hidden="true" />
       <nav className="mobile-menu__links" aria-label="Mobile navigation">
         {LOCKED_LINKS.map((link) => (
-          landingOnly ? (
+          landingOnly && link.href !== "#home" ? (
             <button key={link.href} type="button" onClick={openLockedSection} tabIndex={open ? 0 : -1}>
               <span>{link.label}</span>
             </button>

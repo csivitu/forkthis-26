@@ -11,7 +11,7 @@ export interface AuthRequest<
 
 > extends Request<P, ResBody,ReqBody,ReqQuery> {
   user?: NonNullable<Awaited<ReturnType<typeof
-  auth.api.getSession>>>["user"];
+    auth.api.getSession>>>["user"];
 }
 
 export const requireSession = async (
@@ -19,18 +19,24 @@ export const requireSession = async (
   res: Response,
   next: NextFunction
 ) => {
-  const session = await auth.api.getSession({ headers:
-    fromNodeHeaders(req.headers)  });
+  const session = await auth.api.getSession({
+    headers:
+      fromNodeHeaders(req.headers)
+  });
 
-    if (!session){
-      return res.status(401).json({ error:
-        "UNAUTHENTICATED"});
-    }
+  if (!session) {
+    return res.status(401).json({
+      error:
+        "UNAUTHENTICATED"
+    });
+  }
 
-    if(!session.user.githubId) {
-      return res.status(403).json({ error:
-        "GITHUB_LINK_REQUIRED"});
-    }
+  if (!session.user.githubId) {
+    return res.status(403).json({
+      error:
+        "GITHUB_LINK_REQUIRED"
+    });
+  }
 
     req.user = session.user;
     next();

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
+import { LaunchGate } from "@/components/launch/LaunchGate";
 import "./globals.css";
 
 
@@ -48,12 +49,38 @@ const splineSans = localFont({
   weight: "300 700",
 });
 export const metadata: Metadata = {
-  title: "ForkThis'26 | GitHub Workshop",
+  title: {
+    default: "ForkThis'26 | GitHub Workshop",
+    template: "%s | ForkThis'26",
+  },
   description:
     "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  applicationName: "ForkThis'26",
+  keywords: ["Git", "GitHub", "workshop", "open source", "CSI-VIT"],
+  authors: [{ name: "CSI-VIT" }],
+  creator: "CSI-VIT",
+  publisher: "CSI-VIT",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "ForkThis'26",
+    title: "ForkThis'26 | GitHub Workshop",
+    description:
+      "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ForkThis'26 | GitHub Workshop",
+    description:
+      "A hands-on Git and GitHub workshop for building, branching, collaborating, and shipping with confidence.",
+  },
   icons: {
-    icon: "/forkthis-icon.svg",
-    shortcut: "/forkthis-icon.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
   },
 };
 
@@ -72,7 +99,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-black text-white"
       >
-        {children}
+        <LaunchGate>{children}</LaunchGate>
       </body>
     </html>
   );

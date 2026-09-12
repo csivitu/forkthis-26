@@ -3,12 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { SiteHeader } from "../navigation/SiteHeader";
-import { useHeroAudio } from "./HeroAudio";
 import { ABOUT_FLIGHT_POSITION } from "./scene/spaceMath";
 import type { PointerPosition } from "./scene/types";
 
 const INITIAL_POINTER: PointerPosition = { x: 0, y: 0 };
-const ABOUT_STOP_START = 0.68;
+const ABOUT_STOP_START = 0.4;
 
 const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
   ssr: false,
@@ -18,12 +17,10 @@ const HeroCanvas = dynamic(() => import("./HeroCanvas"), {
 export function HeroExperience() {
   const container = useRef<HTMLDivElement>(null);
   const frameRequest = useRef<number | null>(null);
-  const lastStage = useRef(1);
   const [progress, setProgress] = useState(0);
   const [aboutPhase, setAboutPhase] = useState(0);
   const [flightPaused, setFlightPaused] = useState(false);
   const [pointer, setPointer] = useState(INITIAL_POINTER);
-  const { playAlert, playWave } = useHeroAudio();
 
   const updateScroll = useCallback(() => {
     frameRequest.current = null;
@@ -64,20 +61,13 @@ export function HeroExperience() {
     };
   }, [updateScroll]);
 
-  useEffect(() => {
-    const stage = progress < 0.35 ? 1 : progress < 0.75 ? 2 : 3;
-    if (stage === lastStage.current) return;
-    lastStage.current = stage;
-    if (stage === 2) playWave();
-    if (stage === 3) playAlert();
-  }, [playAlert, playWave, progress]);
 
   const borderOpacity = Math.max(0, Math.min(1, (aboutPhase - 0.96) / 0.04));
   return (
     <div
       id="home"
       ref={container}
-      className="relative h-[850vh] w-full bg-[#070103] sm:h-[1100vh]"
+      className="relative h-[500svh] w-full bg-[#070103] sm:h-[600vh]"
       onPointerMove={(event) => {
         setPointer({
           x: (event.clientX / window.innerWidth) * 2 - 1,

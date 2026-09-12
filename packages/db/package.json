@@ -10,10 +10,10 @@
     "./schema": "./src/schema/index.ts"
   },
   "scripts": {
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
+    "db:generate": "bun --env-file=../../.env x drizzle-kit generate",
+    "db:migrate": "bun --env-file=../../.env x drizzle-kit migrate",
+    "db:push": "bun --env-file=../../.env x drizzle-kit push",
+    "db:studio": "bun --env-file=../../.env x drizzle-kit studio",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@repo/typescript-config": "*",
     "@types/node": "^26.4.1",
     "drizzle-kit": "^0.31.0",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "@types/bun": "latest"
   }
 }

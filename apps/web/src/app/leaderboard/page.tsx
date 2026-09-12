@@ -51,8 +51,7 @@ export default function LeaderboardPage() {
         <h1
           className="z-10 text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.18em] text-white mt-2 mb-4 sm:mb-8 font-[family-name:var(--font-title)]"
         >
-          LEADERBOARD
-        </h1>
+          LEADERBOARD       </h1>
 
         {/* Sci-Fi Outer Green Frame Box: Reduced width (w-[90%]) ONLY on mobile (< sm) for black margin space */}
         <div className="relative flex flex-col items-center justify-start w-[90%] sm:w-full max-w-[1080px] min-h-[500px] sm:min-h-[640px] px-2 py-5 sm:px-8 sm:py-10 md:px-12 md:py-12 my-auto">

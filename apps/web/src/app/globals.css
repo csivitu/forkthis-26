@@ -883,7 +883,10 @@ button {
 
 @media (max-width: 767px) {
   .hero-about__callout {
-    --about-scale: calc((100vw - 56px) / 532px);
+    --about-scale: min(
+      calc((100vw - 56px) / 532px),
+      calc((50vw + 17svh - 16px) / 522px)
+    );
   }
 }
 

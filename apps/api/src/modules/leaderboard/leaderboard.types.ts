@@ -1,7 +1,10 @@
-export interface leaderboardQuery {
-  limit?: string;
-  page?: string;
-}
+import type { z } from "zod";
+import { paginationQuery } from "../../utils/schema.util";
+
+export const leaderboardQuerySchema = {
+  query: paginationQuery,
+};
+export type leaderboardQuery = z.infer<typeof leaderboardQuerySchema.query>;
 
 export interface leaderboardEntry {
   rank: number;

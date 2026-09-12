@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+participants.db
+packages/db/sqlite/participants.json
+
 # Dependencies
 node_modules
 .pnp

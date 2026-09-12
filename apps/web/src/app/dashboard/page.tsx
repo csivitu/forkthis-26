@@ -87,6 +87,7 @@ export default function DashboardPage() {
           {githubLinked ? "GitHub account linked." : "GitHub account is not linked."}
         </p>
       </section>
+
     </main>
   );
 }

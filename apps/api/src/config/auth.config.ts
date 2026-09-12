@@ -82,6 +82,15 @@ export const auth = betterAuth({
                     });
                 }
 
+                const existingUser = await db
+                    .select({ githubId: users.githubId })
+                    .from(users)
+                    .where(eq(users.id, session.user.id))
+                    .limit(1)
+                    .then((rows) => rows[0]);
+
+                if (existingUser?.githubId) return;
+
                 const regNo = extractRegNo(name);
                 if (!regNo) {
                     throw new APIError("FORBIDDEN", {
@@ -109,6 +118,15 @@ export const auth = betterAuth({
         user: {
             create: {
                 before: async (user) => {
+                    const existing = await db
+                        .select({ id: users.id })
+                        .from(users)
+                        .where(eq(users.email, user.email))
+                        .limit(1)
+                        .then((rows) => rows[0]);
+
+                    if (existing) return;
+
                     const regNo = extractRegNo(user.name);
 
                     if (!regNo) {

@@ -49,9 +49,9 @@ export default function LeaderboardPage() {
 
         {/* LEΔDERBOΔRD Header Title */}
         <h1
-          className="z-10 text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.18em] text-white mt-2 mb-4 sm:mt-4 sm:mb-8 font-[family-name:var(--font-title)]"
+          className="z-10 text-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.18em] text-white mt-2 mb-4 sm:mb-8 font-[family-name:var(--font-title)]"
         >
-          LE<span className="inline-block text-white">Δ</span>DERBO<span className="inline-block text-white">Δ</span>RD
+          LEADERBOARD
         </h1>
 
         {/* Sci-Fi Outer Green Frame Box: Reduced width (w-[90%]) ONLY on mobile (< sm) for black margin space */}

@@ -39,7 +39,7 @@ export function SectionSidebar() {
   return (
     <aside
       aria-label="Section navigation"
-      className="fixed right-3.5 md:right-5 lg:right-6 xl:right-8 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-6 select-none"
+      className="fixed right-[clamp(1rem,4vw,2rem)] md:right-[clamp(1.25rem,4vw,2rem)] top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-end gap-[clamp(1rem,3vw,1.5rem)] select-none"
     >
       {RESOURCE_SECTIONS.map((section) => {
         const isActive = activeSection === section.id;
@@ -51,7 +51,7 @@ export function SectionSidebar() {
           >
             {/* Label */}
             <span
-              className={`font-mono text-xs sm:text-sm md:text-[15px] tracking-wider transition-colors duration-200 ${
+                className={`font-mono text-[clamp(0.7rem,1.5vw,0.9375rem)] tracking-wider transition-colors duration-200 ${
                 isActive
                   ? "text-[#8FFE09] font-bold drop-shadow-[0_0_8px_rgba(143,254,9,0.5)]"
                   : "text-[#71717a] group-hover:text-[#d4d4d8]"
@@ -62,7 +62,7 @@ export function SectionSidebar() {
 
             {/* Pill indicator */}
             <span
-              className={`h-2 w-7 sm:w-8 rounded-full transition-all duration-300 ${
+                className={`h-[clamp(0.4rem,1vw,0.5rem)] w-[clamp(1.5rem,4vw,2rem)] rounded-full transition-all duration-300 ${
                 isActive
                   ? "bg-[#8FFE09] shadow-[0_0_12px_rgba(143,254,9,0.85)] scale-105"
                   : "bg-[#3f3f46] group-hover:bg-[#52525b]"

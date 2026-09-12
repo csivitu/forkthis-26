@@ -252,13 +252,13 @@ export function FooterSection() {
       {/* ── 1. GET IN TOUCH SECTION WITH ANIMATED STARS & TAILS ─────────── */}
       <div
         id="contact"
-        className="relative z-10 mx-auto mb-16 max-w-6xl shrink-0 px-4 sm:mb-24 sm:px-6 lg:px-8"
+        className="relative z-10 mx-auto mb-16 w-full max-w-6xl shrink-0 px-4 sm:mb-24 sm:px-6 lg:px-8"
       >
         
         {/* Outer Frame Container */}
         <div
           ref={cardFrameRef}
-          className="relative pt-10 sm:pt-12 pl-5 sm:pl-10 pr-5 sm:pr-10 pb-6 sm:pb-8 min-h-[300px] sm:min-h-[340px] md:min-h-[360px]"
+          className="relative mx-auto w-full pt-10 sm:pt-12 pl-[5.33%] sm:pl-10 pr-[5.33%] sm:pr-10 pb-6 sm:pb-8 min-h-[78vw] sm:min-h-[340px] md:min-h-[360px]"
         >
           
           {/* ── SVG Wireframe Overlay (Locked Tail-to-Star Animation) ── */}
@@ -329,7 +329,7 @@ export function FooterSection() {
 
           {/* ── Title: GET IN TOUCH (Dynamically Sized, Zero Vertical Clipping) ── */}
           <div className="mb-6 sm:mb-8 text-left w-full pt-1.5 sm:pt-2">
-            <h2 className="font-[family-name:var(--font-title)] text-[clamp(1.15rem,5.2vw,2.35rem)] font-bold tracking-[0.12em] uppercase flex items-center gap-2 sm:gap-2.5 whitespace-nowrap flex-nowrap leading-[1.2] select-none py-1">
+            <h2 className="font-[family-name:var(--font-title)] text-[clamp(1rem,4.4vw,1.5rem)] sm:text-[clamp(1.5rem,5.2vw,2.35rem)] font-bold tracking-[0.12em] uppercase flex items-center gap-2 sm:gap-2.5 whitespace-nowrap flex-nowrap leading-[1.2] select-none py-1">
               <span className="text-white drop-shadow-sm shrink-0 inline-block">GET IN</span>
               <span className="text-[#8FFE09] drop-shadow-[0_0_14px_rgba(143,254,9,0.7)] shrink-0 inline-block">
                 TOUCH

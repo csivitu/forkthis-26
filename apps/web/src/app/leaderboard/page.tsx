@@ -1,3 +1,5 @@
+import { SiteHeader } from "@/components/landing/navigation/SiteHeader";
+
 export interface LeaderboardEntry {
   rank: number;
   username: string;
@@ -32,8 +34,10 @@ const PARTICLES = [
 export default function LeaderboardPage() {
   return (
     <div
-      className="flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-y-auto py-4 sm:py-8 px-4 sm:px-0"
+      className="flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-y-auto pt-16 pb-8 sm:pt-20 sm:pb-8 px-4 sm:px-0"
     >
+      <SiteHeader forceTimeline />
+
       {/* Screen Container */}
       <div className="relative flex flex-col items-center justify-start w-full max-w-[1360px] pb-10 sm:pb-16 select-none">
         {/* Background glowing particles */}
@@ -57,7 +61,7 @@ export default function LeaderboardPage() {
         <div className="relative flex flex-col items-center justify-start w-[96%] sm:w-full max-w-[1080px] min-h-[500px] sm:min-h-[640px] px-1 py-4 sm:px-8 sm:py-10 md:px-12 md:py-12 my-auto">
           {/* Sci-Fi Border SVG Frame with depressed middle sections on all 4 sides */}
           <svg
-            className="pointer-events-none absolute inset-0 h-full w-full"
+            className="pointer-events-none absolute inset-0 hidden h-full w-full sm:block"
             viewBox="0 0 1140 760"
             preserveAspectRatio="none"
           >
@@ -104,7 +108,7 @@ export default function LeaderboardPage() {
 
                 {/* Row Content (Ranks 1 to 10, Username, Points in pure white #FFFFFF) */}
                 <div
-                  className="relative z-10 flex w-full items-center justify-between px-2 sm:px-10 md:px-12 text-[10px] sm:text-sm md:text-base font-bold tracking-normal sm:tracking-wider text-white font-[family-name:var(--font-mono)]"
+                  className="relative z-10 flex w-full items-center justify-between px-2 sm:px-10 md:px-12 text-xs sm:text-sm md:text-base font-bold tracking-normal sm:tracking-wider text-white font-[family-name:var(--font-mono)]"
                 >
                   <span className="w-[32px] sm:w-[60px] md:w-[100px] text-left">{row.rank}</span>
                   <span className="flex-1 text-center truncate px-1">{row.username}</span>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { SiteHeader } from "@/components/landing/navigation/SiteHeader";
 
 export interface RepoItem {
   id: number;
@@ -213,11 +214,13 @@ export default function DashboardPage() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-x-hidden overflow-y-auto select-none">
+      <SiteHeader forceTimeline />
+
       {/* Cockpit Bezel Outer Border Frame */}
       <div className="fixed inset-0 pointer-events-none z-50 border-[3px] border-[#649627]/90 shadow-[inset_0_0_12px_rgba(100,150,39,0.3)]" />
 
       {/* Screen Canvas Container - Exact 143px left padding (from D of DASHBOARD) & 123px right padding (from Timer) */}
-      <div className="relative flex flex-col items-start justify-start w-full min-h-screen py-6 pl-6 pr-6 lg:pl-[143px] lg:pr-[123px] pb-20">
+      <div className="relative flex flex-col items-start justify-start w-full min-h-screen pt-20 pb-20 pl-6 pr-6 lg:pt-24 lg:pl-[143px] lg:pr-[123px]">
         
         {/* Background Glowing Particles */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
@@ -231,7 +234,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Header Title DASHBOARD (Letter 'D' sits exactly at 143px from left border) */}
-        <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-4 sm:mb-6 lg:order-none">
+        <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-10 sm:mb-12 lg:order-none">
           <h1 className="text-[clamp(24px,7vw,42px)] sm:text-[42px] lg:text-[50px] font-extrabold tracking-[0.04em] lg:tracking-[0.1em] text-white font-[family-name:var(--font-title)] leading-none whitespace-nowrap">
             DASHBOARD
           </h1>
@@ -345,21 +348,6 @@ export default function DashboardPage() {
           {/* Right Panel: Stats Cards & Countdown Timer (curving outward from the table) */}
           <div className="order-2 relative flex w-full flex-row flex-wrap items-center justify-center gap-6 pt-2 lg:order-2 lg:w-[410px] lg:flex-col lg:items-start lg:justify-start lg:-ml-[80px]">
             
-            {/* Background Arc Curve SVG (mirrored to follow the outward layout) */}
-            <svg
-              className="pointer-events-none absolute -top-4 left-14 w-[280px] h-[640px] opacity-100 hidden lg:block"
-              viewBox="0 0 220 640"
-              preserveAspectRatio="none"
-              fill="none"
-            >
-              <path
-                d="M 40,0 C 110,213 110,427 40,640"
-                stroke="#649627"
-                strokeWidth="2.5"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-
             {/* 1. Your Points Card (Aligned to right edge) */}
             <div className="order-2 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 export interface RepoItem {
   id: number;
@@ -237,29 +238,30 @@ export default function DashboardPage() {
         </div>
 
         {/* Main Workspace Layout */}
-        <div className="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between w-full gap-6 lg:gap-8">
+        <div className="relative z-10 flex flex-col lg:flex-row items-center lg:items-start lg:justify-start w-full gap-6 lg:gap-8">
           
           {/* Left Panel: Repositories Table Container (Aligned at 143px from left border) */}
-          <div className="relative flex flex-col items-start w-full max-w-[650px] lg:w-[650px] min-h-[520px] pt-6 pl-6 pr-6 pb-6 shadow-[0_0_20px_rgba(0,0,0,0.8)] backdrop-blur-sm shrink-0">
+          <div className="relative flex flex-col items-start w-full max-w-[680px] lg:w-[680px] min-h-[560px] rounded-2xl pt-6 pl-6 pr-6 pb-6 shadow-[0_0_20px_rgba(0,0,0,0.8)] backdrop-blur-sm shrink-0">
             {/* Custom Sci-Fi Intersect Container SVG */}
             <svg
-              className="pointer-events-none absolute inset-0 w-full h-full"
+              className="pointer-events-none absolute inset-y-0 left-0 w-[calc(100%+110px)] h-full"
               viewBox="0 0 831 670"
               preserveAspectRatio="none"
               fill="none"
             >
               <path
                 d="M 15,0 L 670,0 C 810,130 810,470 690,590 L 610,670 L 15,670 A 15,15 0 0 1 0,655 L 0,15 A 15,15 0 0 1 15,0 Z"
-                fill="#040407"
-                fillOpacity="0.92"
-                stroke="#649627"
+                fill="#9C9C9C"
+                fillOpacity="0.2"
+                stroke="#9C9C9C"
+                strokeOpacity="0.2"
                 strokeWidth="1.5"
                 vectorEffect="non-scaling-stroke"
               />
             </svg>
 
             {/* Table Header Pill */}
-            <div className="relative z-10 flex w-full max-w-[505px] items-center justify-between bg-[rgba(140,255,2,0.2)] rounded-[8px] h-[36px] px-5 text-xs sm:text-sm font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-[8px] shrink-0">
+            <div className="relative z-10 flex w-full max-w-[505px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[36px] px-5 text-xs sm:text-sm font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-[8px] shrink-0">
               <span className="w-20 sm:w-24 shrink-0 text-left whitespace-nowrap">Sr No.</span>
               <span className="w-24 sm:w-32 shrink-0 text-left whitespace-nowrap">Repo Name</span>
               <span className="flex-1 text-center hidden sm:block whitespace-nowrap">TechStack</span>
@@ -275,10 +277,10 @@ export default function DashboardPage() {
                     {/* Main Row */}
                     <div
                       onClick={() => toggleRepoExpand(repo.id)}
-                      className={`group relative flex items-center justify-between h-[27px] w-full px-5 bg-[rgba(94,100,88,0.2)] border ${
+                      className={`group relative flex items-center justify-between h-[27px] w-full px-5 bg-[#5E6458]/20 border ${
                         isExpanded
-                          ? "border-[#8FFE09] bg-[#8FFE09]/15"
-                          : "border-transparent hover:border-[#8FFE09]/50 hover:bg-[rgba(94,100,88,0.35)]"
+                          ? "border-[#8FFE09]"
+                          : "border-transparent hover:border-[#8FFE09]/50"
                       } rounded-[8px] cursor-pointer transition-all duration-200`}
                     >
                       {/* Sr No. */}
@@ -340,18 +342,18 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Right Panel: Stats Cards & Countdown Timer (Curving INWARD towards table box with 40px ellipse indent) */}
-          <div className="relative flex flex-col items-center lg:items-end w-full lg:w-[410px] gap-6 pt-2">
+          {/* Right Panel: Stats Cards & Countdown Timer (curving outward from the table) */}
+          <div className="relative flex flex-col items-center lg:items-start w-full lg:w-[410px] gap-6 pt-2 lg:-ml-[80px]">
             
-            {/* Background Arc Curve SVG (Curving INWARD towards left table box with 40px arc) */}
+            {/* Background Arc Curve SVG (mirrored to follow the outward layout) */}
             <svg
-              className="pointer-events-none absolute -top-4 -right-6 w-[280px] h-[540px] opacity-70 hidden lg:block"
-              viewBox="0 0 220 540"
+              className="pointer-events-none absolute -top-4 left-14 w-[280px] h-[640px] opacity-100 hidden lg:block"
+              viewBox="0 0 220 640"
               preserveAspectRatio="none"
               fill="none"
             >
               <path
-                d="M 180,0 C 120,180 120,360 180,540"
+                d="M 40,0 C 110,213 110,427 40,640"
                 stroke="#649627"
                 strokeWidth="2.5"
                 vectorEffect="non-scaling-stroke"
@@ -359,12 +361,12 @@ export default function DashboardPage() {
             </svg>
 
             {/* 1. Your Points Card (Aligned to right edge) */}
-            <div className="relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] rounded-[8px] p-2 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:mr-0 shrink-0">
+            <div className="relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
-              <div className="absolute -top-1 -left-1 w-4 h-4 border-t-[3px] border-l-[3px] border-[#8FFE09]" />
-              <div className="absolute -top-1 -right-1 w-4 h-4 border-t-[3px] border-r-[3px] border-[#8FFE09]" />
-              <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-[3px] border-l-[3px] border-[#8FFE09]" />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-[3px] border-r-[3px] border-[#8FFE09]" />
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-[8px] border-l-[8px] border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-[8px] border-r-[8px] border-[#8FFE09]" />
 
               <span className="font-[family-name:var(--font-sixsound)] text-lg text-[#8FFE09] tracking-wider uppercase mb-0.5">
                 Your Points
@@ -374,8 +376,8 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            {/* 2. Central Sci-Fi Countdown Clock Timer (Curved INWARD by 40px towards left table box) */}
-            <div className="relative flex flex-col items-center justify-center w-[330px] sm:w-[370px] h-[145px] my-2 lg:mr-[40px] shrink-0">
+            {/* 2. Central Sci-Fi Countdown Clock Timer (indented to follow the mirrored curve) */}
+            <div className="relative flex flex-col items-center justify-center w-[350px] sm:w-[410px] h-[160px] my-2 lg:ml-[40px] shrink-0">
               {/* Sci-Fi Octagonal Outer Frame SVG with Top & Bottom Trapezoid Notches */}
               <svg
                 className="pointer-events-none absolute inset-0 w-full h-full"
@@ -383,21 +385,29 @@ export default function DashboardPage() {
                 preserveAspectRatio="none"
                 fill="none"
               >
+                <defs>
+                  <radialGradient id="timer-display-gradient" cx="50%" cy="50%" r="72%">
+                    <stop offset="0%" stopColor="#000000" />
+                    <stop offset="65%" stopColor="#000000" />
+                    <stop offset="100%" stopColor="#2E4612" />
+                  </radialGradient>
+                </defs>
+
                 {/* Outer Chamfered Shell Path with Top/Bottom Tabs */}
                 <path
                   d="M 40,12 L 180,12 L 192,0 L 267,0 L 279,12 L 419,12 L 447,40 L 447,136 L 419,164 L 279,164 L 267,176 L 192,176 L 180,164 L 40,164 L 12,136 L 12,40 Z"
-                  fill="#030305"
+                  fill="#000000"
                   stroke="#8FFE09"
-                  strokeWidth="2.5"
+                  strokeWidth="3.5"
                   vectorEffect="non-scaling-stroke"
                 />
 
                 {/* Inner Chamfered Bezel Ring */}
                 <path
                   d="M 48,20 L 184,20 L 194,10 L 265,10 L 275,20 L 411,20 L 439,48 L 439,128 L 411,156 L 275,156 L 265,166 L 194,166 L 184,156 L 48,156 L 20,128 L 20,48 Z"
-                  fill="#060904"
+                  fill="url(#timer-display-gradient)"
                   stroke="#649627"
-                  strokeWidth="1.5"
+                  strokeWidth="2"
                   vectorEffect="non-scaling-stroke"
                 />
 
@@ -429,18 +439,18 @@ export default function DashboardPage() {
               </svg>
 
               {/* Digital Stencil Readout */}
-              <div className="relative z-10 font-[family-name:var(--font-mono)] text-3xl sm:text-[42px] font-bold text-[#8FFE09] tracking-[2px] drop-shadow-[0_0_15px_rgba(143,254,9,0.8)]">
+              <div className="relative z-10 font-[family-name:var(--font-mono)] text-4xl sm:text-[54px] font-bold text-[#8FFE09] tracking-[2px]">
                 {formatTime(timeLeft)}
               </div>
             </div>
 
             {/* 3. Issues Solved Card (Aligned to right edge) */}
-            <div className="relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] rounded-[8px] p-2 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:mr-0 shrink-0">
+            <div className="relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
-              <div className="absolute -top-1 -left-1 w-4 h-4 border-t-[3px] border-l-[3px] border-[#8FFE09]" />
-              <div className="absolute -top-1 -right-1 w-4 h-4 border-t-[3px] border-r-[3px] border-[#8FFE09]" />
-              <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-[3px] border-l-[3px] border-[#8FFE09]" />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-[3px] border-r-[3px] border-[#8FFE09]" />
+              <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-[8px] border-l-[8px] border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-[8px] border-r-[8px] border-[#8FFE09]" />
 
               <span className="font-[family-name:var(--font-sixsound)] text-lg text-[#8FFE09] tracking-wider uppercase mb-0.5">
                 Issues Solved
@@ -460,8 +470,15 @@ export default function DashboardPage() {
               <span>Report</span>
               <span>issue</span>
             </div>
-            {/* Mascot Icon Indicator */}
-            <span className="absolute -right-2.5 -bottom-1 text-lg animate-bounce">
+            {/* Rocky mascot indicator */}
+            <Image
+              src="/images/rocky.png"
+              alt="Rocky the turtle mascot"
+              width={56}
+              height={56}
+              className="pointer-events-none absolute -right-5 -bottom-5 h-14 w-14 object-contain animate-bounce"
+            />
+            <span className="hidden">
               👾
             </span>
           </button>

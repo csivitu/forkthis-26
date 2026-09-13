@@ -261,7 +261,7 @@ export default function DashboardPage() {
             </svg>
 
             {/* Table Header Pill */}
-            <div className="relative z-10 flex w-full max-w-[505px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[36px] px-5 text-xs sm:text-sm font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-[8px] shrink-0">
+            <div className="relative z-10 flex w-full max-w-[505px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[36px] px-5 text-xs sm:text-sm font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-6 shrink-0">
               <span className="w-20 sm:w-24 shrink-0 text-left whitespace-nowrap">Sr No.</span>
               <span className="w-24 sm:w-32 shrink-0 text-left whitespace-nowrap">Repo Name</span>
               <span className="flex-1 text-center hidden sm:block whitespace-nowrap">TechStack</span>
@@ -381,7 +381,7 @@ export default function DashboardPage() {
               {/* Sci-Fi Octagonal Outer Frame SVG with Top & Bottom Trapezoid Notches */}
               <svg
                 className="pointer-events-none absolute inset-0 w-full h-full"
-                viewBox="0 0 459 176"
+                viewBox="-34 -34 527 244"
                 preserveAspectRatio="none"
                 fill="none"
               >
@@ -392,6 +392,12 @@ export default function DashboardPage() {
                     <stop offset="100%" stopColor="#2E4612" />
                   </radialGradient>
                 </defs>
+
+                {/* Oversized black octagonal backing, exposed as a 20px outer rim */}
+                <path
+                  d="M 16,-18 L 162,-18 L 174,-30 L 285,-30 L 297,-18 L 443,-18 L 477,16 L 477,160 L 443,194 L 297,194 L 285,206 L 174,206 L 162,194 L 16,194 L -18,160 L -18,16 Z"
+                  fill="#000000"
+                />
 
                 {/* Outer Chamfered Shell Path with Top/Bottom Tabs */}
                 <path
@@ -404,7 +410,7 @@ export default function DashboardPage() {
 
                 {/* Inner Chamfered Bezel Ring */}
                 <path
-                  d="M 48,20 L 184,20 L 194,10 L 265,10 L 275,20 L 411,20 L 439,48 L 439,128 L 411,156 L 275,156 L 265,166 L 194,166 L 184,156 L 48,156 L 20,128 L 20,48 Z"
+                  d="M 54,26 L 188,26 L 198,16 L 261,16 L 271,26 L 405,26 L 433,54 L 433,122 L 405,150 L 271,150 L 261,160 L 198,160 L 188,150 L 54,150 L 26,122 L 26,54 Z"
                   fill="url(#timer-display-gradient)"
                   stroke="#649627"
                   strokeWidth="2"
@@ -426,16 +432,16 @@ export default function DashboardPage() {
                 />
 
                 {/* Left Side Telemetry Block */}
-                <rect x="25" y="68" width="10" height="40" rx="2" fill="#2e4612" />
-                <rect x="26" y="74" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
-                <rect x="26" y="86" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
-                <rect x="26" y="98" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="14" y="68" width="10" height="40" rx="2" fill="#2e4612" />
+                <rect x="15" y="74" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="15" y="86" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="15" y="98" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
 
                 {/* Right Side Telemetry Block */}
-                <rect x="424" y="68" width="10" height="40" rx="2" fill="#2e4612" />
-                <rect x="425" y="74" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
-                <rect x="425" y="86" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
-                <rect x="425" y="98" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="435" y="68" width="10" height="40" rx="2" fill="#2e4612" />
+                <rect x="436" y="74" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="436" y="86" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
+                <rect x="436" y="98" width="8" height="3" rx="1.5" fill="#8FFE09" opacity="0.4" />
               </svg>
 
               {/* Digital Stencil Readout */}

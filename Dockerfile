@@ -20,7 +20,7 @@ FROM oven/bun:1.4.0-alpine AS runtime
 WORKDIR /app/apps/api
 
 ENV NODE_ENV=production
-ENV PARTICIPANTS_DB_PATH=/app/apps/api/participants.db
+ENV PARTICIPANTS_DB_PATH=/app/apps/api/data/participants.db
 
 COPY --from=build /repo/apps/api/dist ./dist
 

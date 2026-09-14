@@ -79,3 +79,9 @@ export interface AdminOverviewStats {
 export type AdminMemberEntry = Pick<User, "id" | "name" | "email" | "githubUsername" | "avatarUrl"> & {
     totalPoints: number;
 };
+
+export interface UploadCsvResult {
+  added: number;
+  alreadyExisted: number;
+  invalid: string[];
+}

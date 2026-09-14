@@ -5,6 +5,8 @@ import {ApiError} from "../../utils/api-error";
 import {eq,asc, desc, sql, isNotNull, ilike, count} from "drizzle-orm";
 import {responseOk, responseCreated} from "../../utils/api-response";
 import logger from "../../utils/logger.util";
+import { participantsDb } from "../../../../../packages/db/sqlite/client.ts";
+import { participants } from "../../../../../packages/db/sqlite/schema.ts";
 import type {
     AdminIssueEntry,
     AdminIssuesQuery,
@@ -325,4 +327,58 @@ export async function listMembers(
         logger.error({ err: error, page, limit, search }, "Failed to list members");
         next(error);
     }
+}
+
+export async function uploadParticipantsCsv(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const file = req.file;
+    if (!file) throw new ApiError(400, "NO_FILE", "No CSV file uploaded");
+
+    const text = file.buffer.toString("utf8").replace(/^\uFEFF/, ""); // strip BOM
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+    if (lines.length === 0) throw new ApiError(400, "EMPTY_FILE", "CSV is empty");
+
+    // Detect header row — if first cell looks like a header, skip it
+    const REGNO_PATTERN = /^\d{2}[A-Z]{3}\d{4}$/;
+    const firstCell = (lines[0]?.split(",")[0] ?? "").trim().toUpperCase();
+    const dataLines = REGNO_PATTERN.test(firstCell) ? lines : lines.slice(1);
+
+    // Find which column index has reg numbers
+    let colIndex = 0;
+    if (!REGNO_PATTERN.test(firstCell) && lines[0]) {
+      const headers = lines[0].split(",").map(h => h.toLowerCase().trim());
+      const REG_HEADERS = ["registration number", "registration no", "registration_number", "reg no", "reg_no", "regno"];
+      const found = headers.findIndex(h => REG_HEADERS.includes(h));
+      colIndex = found !== -1 ? found : 0;
+    }
+
+    const valid: string[] = [];
+    const invalid: string[] = [];
+
+    for (const line of dataLines) {
+      const cell = (line.split(",")[colIndex] ?? "").trim().toUpperCase();
+      if (!cell) continue;
+      (REGNO_PATTERN.test(cell) ? valid : invalid).push(cell);
+    }
+
+    let added = 0;
+    for (const regno of valid) {
+      const result = participantsDb
+        .insert(participants)
+        .values({ regno, createdAt: new Date() })
+        .onConflictDoNothing()
+        .run() as unknown as { changes: number };
+      added += result.changes;
+    }
+
+    logger.info({ added, skipped: valid.length - added, invalid: invalid.length }, "Participants CSV uploaded");
+    responseCreated(res, { added, alreadyExisted: valid.length - added, invalid });
+  } catch (error) {
+    next(error);
+  }
 }

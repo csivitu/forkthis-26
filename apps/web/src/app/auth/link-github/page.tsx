@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import { ThemedDialog } from "@/components/ui/ThemedDialog";
 import { authClient } from "@/lib/auth-client";
 
+type SessionWithRole = {
+  user: { role?: string | null };
+};
+
 export default function LinkGithubPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +22,11 @@ export default function LinkGithubPage() {
 
       if (!session) {
         router.replace("/login");
+        return;
+      }
+
+      if ((session as typeof session & SessionWithRole).user.role === "admin") {
+        router.replace("/admin");
         return;
       }
 

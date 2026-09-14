@@ -224,8 +224,21 @@ button {
   pointer-events: none;
 }
 
+.site-header::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 auto;
+  height: 72px;
+  backdrop-filter: blur(8px) saturate(108%);
+  content: "";
+  mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 60%, transparent 100%);
+}
+
 .site-nav {
   position: absolute;
+  z-index: 1;
   top: 21px;
   left: 0;
   width: 100%;
@@ -283,6 +296,7 @@ button {
 
 .timeline-nav {
   position: absolute;
+  z-index: 1;
   top: 0;
   left: 50%;
   width: 100%;
@@ -353,6 +367,7 @@ button {
 
 .site-login {
   position: fixed;
+  z-index: 1;
   top: 15px;
   right: 16px;
   display: flex;
@@ -423,18 +438,7 @@ button {
   width: 17px;
   height: 248.76px;
   background: #80ff00;
-  clip-path: polygon(
-    88% 0,
-    100% 0,
-    100% 100%,
-    88% 100%,
-    88% 92%,
-    12% 85%,
-    0 83%,
-    0 14%,
-    12% 12%,
-    88% 4%
-  );
+  border-radius: 10px 0 0 10px;
   transform: translateY(-50%);
   pointer-events: none;
   transition: opacity 180ms ease;
@@ -879,7 +883,10 @@ button {
 
 @media (max-width: 767px) {
   .hero-about__callout {
-    --about-scale: calc((100vw - 56px) / 532px);
+    --about-scale: min(
+      calc((100vw - 56px) / 532px),
+      calc((50vw + 17svh - 16px) / 522px)
+    );
   }
 }
 

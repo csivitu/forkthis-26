@@ -32,8 +32,10 @@
   ],
   "dependencies": {
     "@repo/db": "workspace:*",
+    "@types/multer": "^2.2.0",
     "dev": "^0.1.5",
     "express": "^5.2.1",
+    "multer": "^2.3.0",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0"
   }

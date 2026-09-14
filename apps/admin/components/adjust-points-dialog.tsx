@@ -184,8 +184,8 @@ export function MemberPointsDialog({
         <DialogHeader>
           <DialogTitle>Adjust points for {label}</DialogTitle>
           <DialogDescription>
-            Use positive points for an award or negative points for a
-            correction.
+            Use a positive award or negative correction. Every adjustment
+            requires an audit note.
           </DialogDescription>
         </DialogHeader>
         <form action={submit} className="flex flex-col gap-5">

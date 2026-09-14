@@ -1,5 +1,6 @@
 import type { NextFunction, Response } from "express";
 import type {
+  AddAdminRequest,
   AdjustPointsRequest,
   CreateParticipantRequest,
   CreateRepositoryRequest,
@@ -28,6 +29,7 @@ import {
   repositories,
   syncLogs,
   users,
+  userRole,
 } from "@repo/db";
 import {
   and,
@@ -410,14 +412,18 @@ export async function listMembers(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const { page, limit, search } = req.query;
-  const where = search
-    ? or(
-        ilike(users.name, `%${search}%`),
-        ilike(users.email, `%${search}%`),
-        ilike(users.githubUsername, `%${search}%`),
-      )
-    : undefined;
+  const { page, limit, search, role } = req.query;
+  const conditions: SQL[] = [];
+  if (search) {
+    const searchCondition = or(
+      ilike(users.name, `%${search}%`),
+      ilike(users.email, `%${search}%`),
+      ilike(users.githubUsername, `%${search}%`),
+    );
+    if (searchCondition) conditions.push(searchCondition);
+  }
+  if (role) conditions.push(eq(users.role, role));
+  const where = conditions.length > 0 ? and(...conditions) : undefined;
   try {
     const totalPoints = sql<number>`coalesce(sum(${pointTransactions.points}), 0)`;
     const [rows, totalRows] = await Promise.all([
@@ -428,6 +434,7 @@ export async function listMembers(
           email: users.email,
           githubUsername: users.githubUsername,
           avatarUrl: users.avatarUrl,
+          role: users.role,
           totalPoints: totalPoints.as("total_points"),
         })
         .from(users)
@@ -450,6 +457,53 @@ export async function listMembers(
     });
   } catch (error) {
     logger.error({ err: error, query: req.query }, "Failed to list members");
+    next(error);
+  }
+}
+
+export async function addAdmin(
+  req: AuthRequest<object, object, AddAdminRequest>,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const [member] = await db
+      .select({ id: users.id, email: users.email, role: users.role })
+      .from(users)
+      .where(sql`lower(${users.email}) = ${req.body.email}`);
+    if (!member)
+      throw new ApiError(
+        404,
+        "MEMBER_NOT_FOUND",
+        `No member exists with email '${req.body.email}'`,
+      );
+    if (member.role === userRole.Admin)
+      throw new ApiError(
+        409,
+        "MEMBER_ALREADY_ADMIN",
+        `Member '${member.email}' is already an administrator`,
+      );
+    const [promoted] = await db
+      .update(users)
+      .set({ role: userRole.Admin })
+      .where(eq(users.id, member.id))
+      .returning({ id: users.id, email: users.email, role: users.role });
+    if (!promoted)
+      throw new ApiError(
+        500,
+        "PROMOTION_FAILED",
+        `Failed to promote member '${member.email}'`,
+      );
+    logger.info(
+      { memberId: member.id, promotedBy: req.user?.id },
+      "Admin promoted member",
+    );
+    responseOk(res, promoted);
+  } catch (error) {
+    logger.error(
+      { err: error, email: req.body.email, promotedBy: req.user?.id },
+      "Failed to promote member",
+    );
     next(error);
   }
 }

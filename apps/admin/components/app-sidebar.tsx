@@ -7,6 +7,7 @@ import {
   DatabaseIcon,
   GaugeIcon,
   LogOutIcon,
+  ShieldCheckIcon,
   TrophyIcon,
   UsersIcon,
 } from "lucide-react"
@@ -30,6 +31,7 @@ const navigation = [
   { href: "/overview", label: "Overview", icon: GaugeIcon },
   { href: "/repositories", label: "Repositories", icon: DatabaseIcon },
   { href: "/members", label: "Members", icon: UsersIcon },
+  { href: "/admins", label: "Admins", icon: ShieldCheckIcon },
   { href: "/participants", label: "Whitelist", icon: BookOpenCheckIcon },
   { href: "/points", label: "Points log", icon: TrophyIcon },
 ] as const

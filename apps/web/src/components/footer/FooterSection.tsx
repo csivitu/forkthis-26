@@ -396,7 +396,7 @@ export function FooterSection() {
                   {/* ── Discord Button: Three staggered chevrons ── */}
                   <div className="w-full flex justify-end relative z-10">
                     <a
-                      href="https://discord.gg"
+                      href="https://discord.gg/2SJFup2FpT"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Join Discord"

@@ -14,7 +14,7 @@ COPY packages/admin-contracts packages/admin-contracts
 COPY apps/api apps/api
 
 WORKDIR /repo/apps/api
-RUN bun run build
+RUN NODE_ENV=production bun run build
 
 FROM oven/bun:1.4.0-alpine AS runtime
 WORKDIR /app/apps/api

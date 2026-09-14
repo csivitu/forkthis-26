@@ -40,7 +40,7 @@ jobs:
           script: |
             set -euo pipefail
             cd /home/ubuntu/forkthis
-            git fetch --prune origin main
+            git fetch --prune origin prod
             git checkout --detach "$DEPLOY_SHA"
             docker compose up -d --build --remove-orphans --wait --wait-timeout 120
             docker image prune -f

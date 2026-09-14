@@ -30,6 +30,11 @@ export const auth = betterAuth({
     },
     advanced: {
         database: { generateId: "uuid" },
+        defaultCookieAttributes: {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        },
     },
     user: {
         fields: { image: "avatarUrl" },

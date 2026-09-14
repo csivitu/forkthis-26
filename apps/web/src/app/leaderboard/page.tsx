@@ -53,7 +53,7 @@ export default function LeaderboardPage() {
 
         {/* LEΔDERBOΔRD Header Title */}
         <h1
-          className="z-10 text-center text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-[800] tracking-[0.08em] sm:tracking-[0.18em] text-white mt-2 mb-6 sm:mb-10 font-[family-name:var(--font-title)] whitespace-nowrap"
+          className="z-10 text-center text-[clamp(18px,6.5vw,44px)] sm:text-5xl md:text-6xl lg:text-7xl font-[800] tracking-[0] sm:tracking-[0.18em] text-white mt-2 mb-6 sm:mb-10 font-[family-name:var(--font-title)] whitespace-nowrap"
         >
           LEADERBOARD       </h1>
 

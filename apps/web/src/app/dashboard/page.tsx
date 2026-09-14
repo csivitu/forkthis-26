@@ -278,7 +278,8 @@ export default function DashboardPage() {
             {/* Table Header Pill */}
               <div className="relative z-10 flex w-full max-w-[568px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[72px] px-4 text-lg font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-6 shrink-0 lg:max-w-[505px] lg:h-[52px] lg:px-5 lg:text-xl">
               <span className="w-20 sm:w-24 shrink-0 text-left whitespace-nowrap">Sr No.</span>
-              <span className="w-24 sm:w-32 shrink-0 text-center sm:text-left whitespace-nowrap">Repo Name</span>
+              <span className="w-24 shrink-0 text-left whitespace-nowrap sm:hidden">Repo</span>
+              <span className="hidden w-32 shrink-0 text-left whitespace-nowrap sm:block">Repo Name</span>
               <span className="flex-1 text-center hidden sm:block whitespace-nowrap">TechStack</span>
               <span className="w-14 sm:w-16 shrink-0 text-right whitespace-nowrap">Issues</span>
             </div>

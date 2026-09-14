@@ -4,7 +4,7 @@ import { eq, and, desc, sum, count, countDistinct, isNotNull } from "drizzle-orm
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import type { PointTransactionsSummary, IssuesByRepositoryResponse, RepositoryRow } from "./dashboard.types";
+import type { PointTransactionsSummary, IssuesByRepositoryResponse, RepositoryRow, GetIssuesByRepoParams } from "./dashboard.types";
 import type { AuthRequest } from "../../middleware/auth.middleware";
 
 
@@ -67,17 +67,13 @@ export const getRepositories = async (
 
 
 export const getIssuesByRepository = async (
-  req: AuthRequest,
+  req: AuthRequest<GetIssuesByRepoParams>,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = (req.params as { id: string }).id;
+    const { id } = req.params;
     const userId = req.user!.id;
-
-    if (!id) {
-      throw new ApiError(400, "MISSING_PARAM", "Repository ID is required");
-    }
 
     const [repo] = await db
       .select({ id: repositories.id })
@@ -115,7 +111,7 @@ export const getIssuesByRepository = async (
 
     responseOk(res, payload);
   } catch (error) {
-    logger.error({ err: error, repositoryId: (req.params as { id: string }).id }, "Failed to get issues by repository");
+    logger.error({ err: error, repositoryId: req.params.id }, "Failed to get issues by repository");
     next(error);
   }
 };

@@ -15,6 +15,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.3.0",
     "bun-types": "^1.4.0"
   },
@@ -29,6 +30,7 @@
     "express": "^5.2.1",
     "graphql": "^17.0.2",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.3.0",
     "zod": "^4.4.3"
   }
 }

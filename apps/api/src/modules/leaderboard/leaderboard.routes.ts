@@ -1,9 +1,11 @@
-  import { Router } from "express";
-  import { getLeaderboard } from "./leaderboard.controller";
+import { Router } from "express";
+import { getLeaderboard } from "./leaderboard.controller";
+import { validate } from "../../middleware/validate.middleware";
+import { leaderboardQuerySchema } from "./leaderboard.types";
 
-  const router = Router();
+const router = Router();
 
-  router.get("/", getLeaderboard);
+router.get("/", validate(leaderboardQuerySchema), getLeaderboard);
 
 
-  export default router;
+export default router;

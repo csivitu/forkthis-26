@@ -15,6 +15,7 @@ import type {
     CreateRepoBody,
     UpdateRepoBody,
     UpdateRepoParams,
+    DeleteRepoParams,
     AdminOverviewStats,
     AdminMemberEntry,
     AdminMembersQuery
@@ -71,10 +72,6 @@ export async function listIssues(
     try{
         const { repositoryId }= req.query;
 
-        if(!repositoryId ){
-            throw new ApiError(400, "REPOSITORY_ID_REQUIRED", "repositoryId query param is required");
-        }
-
         const issueRows: AdminIssueEntry[] = await db 
         .select({
             id:issues.id,
@@ -103,12 +100,6 @@ export async function awardPoints(
 ): Promise<void> {
     try{
         const {userId, issueId, points} = req.body;
-
-        if(!userId || !issueId || !Number.isInteger(points) || points <=0){
-            throw new ApiError(
-                400,"INVALID_AWARD_POINTS_INPUT","userId, issueId, and a  positive integer points are required"
-            );
-        }
         const awardedBy = req.user!.id;
 
         const [transaction] = await db
@@ -133,17 +124,13 @@ export async function createRepo(
     try {
         const { owner, name, githubRepoId, techStack } = req.body;
 
-        if (!owner?.trim() || !name?.trim() || !githubRepoId?.trim()) {
-            throw new ApiError(400, "INVALID_REPO_INPUT", "owner, name, and githubRepoId are required");
-        }
-
         const [repo] = await db
             .insert(repositories)
             .values({
-                owner: owner.trim(),
-                name: name.trim(),
-                githubRepoId: githubRepoId.trim(),
-                ...(techStack !== undefined ? { techStack: techStack?.trim() || null } : {}),
+                owner,
+                name,
+                githubRepoId,
+                ...(techStack !== undefined ? { techStack } : {}),
             })
             .returning();
 
@@ -166,10 +153,6 @@ export async function updateRepo(
         const { id } = req.params;
         const { owner, name, techStack, isActive } = req.body;
 
-        if (!owner && !name && techStack === undefined && isActive === undefined) {
-            throw new ApiError(400, "NO_FIELDS_TO_UPDATE", "Provide at least one of: owner, name, techStack, isActive");
-        }
-
         const [existing] = await db
             .select({ id: repositories.id })
             .from(repositories)
@@ -181,9 +164,9 @@ export async function updateRepo(
         }
 
         const patch: Partial<{ owner: string; name: string; techStack: string | null; isActive: boolean }> = {};
-        if (owner !== undefined) patch.owner = owner.trim();
-        if (name !== undefined) patch.name = name.trim();
-        if (techStack !== undefined) patch.techStack = techStack?.trim() || null;
+        if (owner !== undefined) patch.owner = owner;
+        if (name !== undefined) patch.name = name;
+        if (techStack !== undefined) patch.techStack = techStack;
         if (isActive !== undefined) patch.isActive = isActive;
 
         const [updated] = await db
@@ -201,7 +184,7 @@ export async function updateRepo(
 }
 
 export async function deleteRepo(
-    req: AuthRequest<UpdateRepoParams>,
+    req: AuthRequest<DeleteRepoParams>,
     res: Response,
     next: NextFunction
 ): Promise<void> {
@@ -228,10 +211,6 @@ export async function deleteRepo(
     }
 }
 
-
-
-const MEMBERS_DEFAULT_LIMIT = 50;
-const MEMBERS_MAX_LIMIT = 100;
 
 export async function getOverviewStats(
     req: AuthRequest,
@@ -313,10 +292,8 @@ export async function listMembers(
     res: Response,
     next: NextFunction
 ): Promise<void> {
-    const limit = Math.min(Math.max(Number(req.query.limit) || MEMBERS_DEFAULT_LIMIT, 1), MEMBERS_MAX_LIMIT);
-    const page = Math.max(Number(req.query.page) || 1, 1);
+    const { limit, page, search } = req.query;
     const offset = (page - 1) * limit;
-    const { search } = req.query;
 
     try {
         const totalPoints = sql<number>`coalesce(sum(${pointTransactions.points}), 0)`;
@@ -390,14 +367,14 @@ export async function uploadParticipantsCsv(
     }
 
     let added = 0;
-        for (const regno of valid) {
-            const result = await participantsDb
-                .insert(participants)
-                .values({ regno, createdAt: new Date() })
-                .onConflictDoNothing()
-                .run();
-            added += result.changes;
-        }
+    for (const regno of valid) {
+      const result = participantsDb
+        .insert(participants)
+        .values({ regno, createdAt: new Date() })
+        .onConflictDoNothing()
+        .run() as unknown as { changes: number };
+      added += result.changes;
+    }
 
     logger.info({ added, skipped: valid.length - added, invalid: invalid.length }, "Participants CSV uploaded");
     responseCreated(res, { added, alreadyExisted: valid.length - added, invalid });

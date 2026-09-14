@@ -1,8 +1,10 @@
-console.log("AUTH BASE URL:", process.env.NEXT_PUBLIC_API_URL);
 import { createAuthClient } from "better-auth/react";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+if (!apiUrl) throw new Error("NEXT_PUBLIC_API_URL is required");
+
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: `${apiUrl}/api/auth`,
 });
 
 export async function signInWithGoogle() {

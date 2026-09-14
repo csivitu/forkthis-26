@@ -186,5 +186,6 @@ export const auth = betterAuth({
     emailAndPassword: { enabled: false },
     trustedOrigins: [
         env.WEB_URL as string,
+        env.ADMIN_URL as string,
     ],
 })

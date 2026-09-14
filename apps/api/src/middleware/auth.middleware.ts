@@ -26,25 +26,30 @@ export const requireSession = async (
 
   if (!session) {
     return res.status(401).json({
-      error:
-        "UNAUTHENTICATED"
+      success: false,
+      error: { code: "UNAUTHENTICATED", message: "A valid session is required" },
     });
   }
+  req.user = session.user;
+  next();
+};
 
-  if (!session.user.githubId) {
+export const requireGithubLinked = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user?.githubId) {
     return res.status(403).json({
-      error:
-        "GITHUB_LINK_REQUIRED"
+      success: false,
+      error: { code: "GITHUB_LINK_REQUIRED", message: "A linked GitHub account is required" },
     });
   }
-
-    req.user = session.user;
-    next();
+  next();
 };
 
 export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
   if (req.user?.role !== userRole.Admin) {
-    return res.status(403).json({error: "ADMIN_REQUIRED"});
+    return res.status(403).json({
+      success: false,
+      error: { code: "ADMIN_REQUIRED", message: "Administrator access is required" },
+    });
   }
   next();
 };

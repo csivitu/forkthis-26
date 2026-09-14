@@ -1,21 +1,29 @@
-#Stage 1 build
-FROM oven/bun:1.4.0-alpine AS deps
+FROM oven/bun:1.4.0-alpine AS build
 WORKDIR /repo
 
-COPY package.json bun.lock bunfig.toml ./
+COPY bun.lock package.json ./
 COPY apps/api/package.json apps/api/package.json
-COPY packages packages
-RUN bun install --frozen-lockfile --production
-RUN rm -rf node_modules/next node_modules/@next node_modules/three node_modules/three-stdlib node_modules/stats-gl node_modules/@react-three node_modules/@mediapipe node_modules/hls.js node_modules/gsap node_modules/react-dom node_modules/react
-#Stage 2 Run
-FROM oven/bun:1.4.0-alpine AS runtime
-WORKDIR /repo
+COPY packages/db/package.json packages/db/package.json
+COPY packages/admin-contracts/package.json packages/admin-contracts/package.json
+COPY packages/typescript-config/package.json packages/typescript-config/package.json
 
-COPY --from=deps /repo/node_modules ./node_modules
-COPY --from=deps /repo/packages ./packages
+RUN bun install --frozen-lockfile --linker isolated --filter api
+
+COPY packages/db packages/db
+COPY packages/admin-contracts packages/admin-contracts
 COPY apps/api apps/api
 
-EXPOSE 3000
 WORKDIR /repo/apps/api
+RUN NODE_ENV=production bun run build
 
-CMD ["bun", "run", "src/index.ts"]
+FROM oven/bun:1.4.0-alpine AS runtime
+WORKDIR /app/apps/api
+
+ENV NODE_ENV=production
+ENV PARTICIPANTS_DB_PATH=/app/apps/api/data/participants.db
+
+COPY --from=build /repo/apps/api/dist ./dist
+
+EXPOSE 3000
+
+CMD ["bun", "dist/index.js"]

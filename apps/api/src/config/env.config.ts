@@ -12,11 +12,13 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().optional(),
   BETTER_AUTH_URL: z.string(),
   BETTER_AUTH_SECRET: z.string().min(16),
+  AUTH_COOKIE_DOMAIN: z.string().trim().min(1).optional(),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
   WEB_URL: z.string().default("http://localhost:3000"),
+  ADMIN_URL: z.string().default("http://localhost:3001"),
 });
 
 export const env = envSchema.parse(process.env);

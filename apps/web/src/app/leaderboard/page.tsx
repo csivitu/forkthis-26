@@ -53,12 +53,12 @@ export default function LeaderboardPage() {
 
         {/* LEΔDERBOΔRD Header Title */}
         <h1
-          className="z-10 text-center text-lg sm:text-4xl md:text-5xl lg:text-6xl font-[800] tracking-[0.08em] sm:tracking-[0.18em] text-white mt-2 mb-4 sm:mb-8 font-[family-name:var(--font-title)] whitespace-nowrap"
+          className="z-10 text-center text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-[800] tracking-[0.08em] sm:tracking-[0.18em] text-white mt-2 mb-6 sm:mb-10 font-[family-name:var(--font-title)] whitespace-nowrap"
         >
           LEADERBOARD       </h1>
 
         {/* Sci-Fi Outer Green Frame Box: Reduced width (w-[90%]) ONLY on mobile (< sm) for black margin space */}
-        <div className="relative flex flex-col items-center justify-start w-[96%] sm:w-full max-w-[1080px] min-h-[500px] sm:min-h-[640px] px-1 py-4 sm:px-8 sm:py-10 md:px-12 md:py-12 my-auto">
+        <div className="relative flex flex-col items-center justify-start w-[96%] sm:w-full max-w-[1160px] min-h-[560px] sm:min-h-[720px] px-2 py-5 sm:px-8 sm:py-12 md:px-12 md:py-14 my-auto">
           {/* Sci-Fi Border SVG Frame with depressed middle sections on all 4 sides */}
           <svg
             className="pointer-events-none absolute inset-0 hidden h-full w-full sm:block"
@@ -76,19 +76,19 @@ export default function LeaderboardPage() {
 
           {/* Column Headers */}
           <div
-            className="relative z-10 shrink-0 mb-2 sm:mb-6 flex w-full max-w-[880px] items-center justify-between px-2 sm:px-10 md:px-12 text-[9px] sm:text-sm md:text-base font-bold tracking-[0.08em] sm:tracking-[0.2em] text-[#8FFE09] font-[family-name:var(--font-display)]"
+            className="relative z-10 shrink-0 mb-4 sm:mb-7 flex w-full max-w-[960px] items-center justify-between px-2 sm:px-10 md:px-12 text-sm sm:text-lg md:text-xl lg:text-2xl font-bold tracking-[0.08em] sm:tracking-[0.2em] text-[#8FFE09] font-[family-name:var(--font-display)]"
           >
-            <span className="w-[32px] sm:w-[60px] md:w-[100px] text-left">RANK</span>
+            <span className="w-[42px] sm:w-[70px] md:w-[110px] text-left">RANK</span>
             <span className="flex-1 text-center">USERNAME</span>
-            <span className="w-[40px] sm:w-[60px] md:w-[100px] text-right">POINTS</span>
+            <span className="w-[52px] sm:w-[70px] md:w-[110px] text-right">POINTS</span>
           </div>
 
           {/* Leaderboard Rows */}
-          <div className="relative z-10 flex flex-col w-full max-w-[880px] gap-1 sm:gap-3">
+          <div className="relative z-10 flex flex-col w-full max-w-[960px] gap-2 sm:gap-4">
             {leaderboardData.map((row, idx) => (
               <div
                 key={idx}
-                className="group relative flex h-[30px] sm:h-[42px] md:h-[48px] w-full items-center justify-between shrink-0 cursor-pointer"
+                className="group relative flex h-[46px] sm:h-[58px] md:h-[64px] lg:h-[72px] w-full items-center justify-between shrink-0 cursor-pointer"
               >
                 {/* Row Octagonal Shape SVG Container */}
                 <svg
@@ -108,11 +108,11 @@ export default function LeaderboardPage() {
 
                 {/* Row Content (Ranks 1 to 10, Username, Points in pure white #FFFFFF) */}
                 <div
-                  className="relative z-10 flex w-full items-center justify-between px-2 sm:px-10 md:px-12 text-xs sm:text-sm md:text-base font-bold tracking-normal sm:tracking-wider text-white font-[family-name:var(--font-mono)]"
+                  className="relative z-10 flex w-full items-center justify-between px-2 sm:px-10 md:px-12 text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-normal sm:tracking-wider text-white font-[family-name:var(--font-mono)]"
                 >
-                  <span className="w-[32px] sm:w-[60px] md:w-[100px] text-left">{row.rank}</span>
+                  <span className="w-[42px] sm:w-[70px] md:w-[110px] text-left">{row.rank}</span>
                   <span className="flex-1 text-center truncate px-1">{row.username}</span>
-                  <span className="w-[40px] sm:w-[60px] md:w-[100px] text-right">{row.points}</span>
+                  <span className="w-[52px] sm:w-[70px] md:w-[110px] text-right">{row.points}</span>
                 </div>
               </div>
             ))}

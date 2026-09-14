@@ -188,6 +188,7 @@ const PARTICLES = [
 
 export default function DashboardPage() {
   const [expandedRepoId, setExpandedRepoId] = useState<number | null>(null);
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
   // Live timer countdown state: 11h 59m 50s = 43190s
   const [timeLeft, setTimeLeft] = useState<number>(43190);
@@ -198,6 +199,17 @@ export default function DashboardPage() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isReportDialogOpen) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsReportDialogOpen(false);
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isReportDialogOpen]);
 
   const formatTime = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600);
@@ -234,8 +246,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Header Title DASHBOARD (Letter 'D' sits exactly at 143px from left border) */}
-        <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-10 sm:mb-12 lg:order-none">
-          <h1 className="text-[clamp(24px,7vw,42px)] sm:text-[42px] lg:text-[50px] font-extrabold tracking-[0.04em] lg:tracking-[0.1em] text-white font-[family-name:var(--font-title)] leading-none whitespace-nowrap">
+        <div className="order-1 relative z-10 -ml-5 w-[calc(100vw-8px)] max-w-none flex flex-col items-center mt-2 sm:mt-4 mb-10 sm:mb-12 lg:order-none lg:ml-0 lg:w-full lg:items-start">
+          <h1 className="w-full max-w-full overflow-visible text-center text-[clamp(19px,7.5vw,48px)] sm:text-[48px] lg:text-left lg:text-[56px] font-extrabold tracking-[0] sm:tracking-[0.04em] lg:tracking-[0.1em] text-white font-[family-name:var(--font-title)] leading-none whitespace-nowrap">
             DASHBOARD
           </h1>
         </div>
@@ -244,7 +256,7 @@ export default function DashboardPage() {
         <div className="relative z-10 contents w-full lg:flex lg:flex-row lg:items-start lg:justify-start lg:gap-8">
           
           {/* Left Panel: Repositories Table Container (Aligned at 143px from left border) */}
-          <div className="order-3 relative flex flex-col items-start w-full max-w-[568px] lg:order-1 lg:max-w-[680px] lg:w-[680px] min-h-[560px] rounded-2xl pt-6 pl-4 pr-4 pb-6 shrink-0 lg:pl-6 lg:pr-6 lg:shadow-[0_0_20px_rgba(0,0,0,0.8)] lg:backdrop-blur-sm">
+          <div className="order-3 relative flex flex-col items-start w-full max-w-[568px] lg:order-1 lg:max-w-[680px] lg:w-[680px] min-h-[620px] rounded-2xl pt-7 pl-4 pr-4 pb-7 shrink-0 lg:pl-7 lg:pr-7 lg:min-h-[700px] lg:shadow-[0_0_20px_rgba(0,0,0,0.8)] lg:backdrop-blur-sm">
             {/* Custom Sci-Fi Intersect Container SVG */}
             <svg
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-[calc(100%+110px)] h-full lg:block"
@@ -264,15 +276,15 @@ export default function DashboardPage() {
             </svg>
 
             {/* Table Header Pill */}
-              <div className="relative z-10 flex w-full max-w-[568px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[60px] px-4 text-sm font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-5 shrink-0 lg:max-w-[505px] lg:h-[36px] lg:px-5 lg:text-sm">
+              <div className="relative z-10 flex w-full max-w-[568px] items-center justify-between bg-[#8CFF02]/20 rounded-[8px] h-[72px] px-4 text-lg font-normal tracking-[0.05em] text-white font-[family-name:var(--font-sixsound)] mb-6 shrink-0 lg:max-w-[505px] lg:h-[52px] lg:px-5 lg:text-xl">
               <span className="w-20 sm:w-24 shrink-0 text-left whitespace-nowrap">Sr No.</span>
-              <span className="w-24 sm:w-32 shrink-0 text-left whitespace-nowrap">Repo Name</span>
+              <span className="w-24 sm:w-32 shrink-0 text-center sm:text-left whitespace-nowrap">Repo Name</span>
               <span className="flex-1 text-center hidden sm:block whitespace-nowrap">TechStack</span>
               <span className="w-14 sm:w-16 shrink-0 text-right whitespace-nowrap">Issues</span>
             </div>
 
             {/* Repositories Rows List */}
-            <div className="relative z-10 flex flex-col gap-5 w-full max-w-[568px] overflow-y-auto pr-1 flex-1 scrollbar-thin scrollbar-thumb-[#649627]/40 lg:max-w-[505px] lg:gap-[6px]">
+            <div className="relative z-10 flex flex-col gap-5 w-full max-w-[568px] overflow-y-auto pr-1 flex-1 scrollbar-thin scrollbar-thumb-[#649627]/40 lg:max-w-[505px] lg:gap-2">
               {REPOSITORIES.map((repo, idx) => {
                 const isExpanded = expandedRepoId === repo.id;
                 return (
@@ -280,29 +292,29 @@ export default function DashboardPage() {
                     {/* Main Row */}
                     <div
                       onClick={() => toggleRepoExpand(repo.id)}
-                      className={`group relative flex items-center justify-between h-[60px] w-full px-4 bg-[#5E6458]/20 border ${
+                      className={`group relative flex items-center justify-between h-[72px] w-full px-4 bg-[#5E6458]/20 border ${
                         isExpanded
                           ? "border-[#8FFE09]"
                           : "border-transparent hover:border-[#8FFE09]/50"
-                      } rounded-[14px] cursor-pointer transition-all duration-200 lg:h-[27px] lg:px-5 lg:rounded-[8px]`}
+                      } rounded-[14px] cursor-pointer transition-all duration-200 lg:h-[46px] lg:px-5 lg:rounded-[8px]`}
                     >
                       {/* Sr No. */}
-                      <span className="w-20 sm:w-24 shrink-0 text-[10px] sm:text-xs font-medium text-white font-[family-name:var(--font-mono)] whitespace-nowrap">
+                      <span className="w-20 sm:w-24 shrink-0 text-sm sm:text-base font-medium text-white font-[family-name:var(--font-mono)] whitespace-nowrap">
                         {idx + 1}.
                       </span>
 
                       {/* Repo Name */}
-                      <span className="w-24 sm:w-32 shrink-0 text-[10px] sm:text-xs font-medium text-white font-[family-name:var(--font-mono)] truncate group-hover:text-[#8FFE09] transition-colors whitespace-nowrap">
+                      <span className="w-24 sm:w-32 shrink-0 text-sm sm:text-base font-medium text-white font-[family-name:var(--font-mono)] truncate group-hover:text-[#8FFE09] transition-colors whitespace-nowrap">
                         {repo.name}
                       </span>
 
                       {/* TechStack */}
-                      <span className="flex-1 text-center text-xs font-medium text-white font-[family-name:var(--font-mono)] hidden sm:block truncate px-2 whitespace-nowrap">
+                      <span className="flex-1 text-center text-base font-medium text-white font-[family-name:var(--font-mono)] hidden sm:block truncate px-2 whitespace-nowrap">
                         {repo.techStack}
                       </span>
 
                       {/* Issues Count & Dropdown Arrow */}
-                      <div className="w-14 sm:w-16 shrink-0 flex items-center justify-end gap-1.5 text-[10px] sm:text-xs font-medium text-white font-[family-name:var(--font-mono)] whitespace-nowrap">
+                      <div className="w-14 sm:w-16 shrink-0 flex items-center justify-end gap-1.5 text-sm sm:text-base font-medium text-white font-[family-name:var(--font-mono)] whitespace-nowrap">
                         <span>{repo.issuesCount}</span>
                         <span
                           className={`inline-block transform transition-transform duration-200 text-white font-bold text-[10px] ${
@@ -316,23 +328,23 @@ export default function DashboardPage() {
 
                     {/* Accordion Issues Drawer */}
                     {isExpanded && (
-                      <div className="flex flex-col w-full mt-1 p-2.5 bg-black/90 border border-[#8FFE09]/40 rounded-[8px] gap-1.5 text-[11px] font-[family-name:var(--font-mono)]">
+                      <div className="flex flex-col w-full mt-1 p-3 bg-black/90 border border-[#8FFE09]/40 rounded-[8px] gap-2 text-xs font-[family-name:var(--font-mono)]">
                         <div className="text-[#8FFE09] font-semibold tracking-wider flex items-center justify-between border-b border-[#649627]/40 pb-1">
                           <span>AVAILABLE ISSUES ({repo.name}):</span>
-                          <span className="text-[9px] text-white/70">
+                          <span className="text-[10px] text-white/70">
                             Stack: {repo.techStack}
                           </span>
                         </div>
                         {repo.issuesList.map((issue, iIndex) => (
                           <div
                             key={iIndex}
-                            className="flex items-center justify-between py-0.5 px-1.5 rounded hover:bg-[#8FFE09]/10 text-white/90 transition-colors"
+                            className="flex items-center justify-between py-1 px-1.5 rounded hover:bg-[#8FFE09]/10 text-white/90 transition-colors"
                           >
                             <span className="flex items-center gap-1.5 truncate mr-2">
                               <span className="text-[#8FFE09]">•</span>
                               <span className="truncate">{issue}</span>
                             </span>
-                            <button className="px-2 py-0.5 text-[9px] uppercase font-bold text-black bg-[#8FFE09] rounded hover:bg-[#a5ff45] transition-colors shrink-0">
+                            <button className="px-2 py-1 text-[10px] uppercase font-bold text-black bg-[#8FFE09] rounded hover:bg-[#a5ff45] transition-colors shrink-0">
                               Claim
                             </button>
                           </div>
@@ -349,7 +361,7 @@ export default function DashboardPage() {
           <div className="order-2 relative flex w-full flex-row flex-wrap items-center justify-center gap-6 pt-2 lg:order-2 lg:w-[410px] lg:flex-col lg:items-start lg:justify-start lg:-ml-[80px]">
             
             {/* 1. Your Points Card (Aligned to right edge) */}
-            <div className="order-2 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
+            <div className="order-2 relative flex flex-col items-center justify-center w-[250px] h-[108px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />
@@ -359,13 +371,13 @@ export default function DashboardPage() {
               <span className="font-[family-name:var(--font-sixsound)] text-lg text-[#8FFE09] tracking-wider uppercase mb-0.5">
                 Your Points
               </span>
-              <span className="font-[family-name:var(--font-mono)] text-2xl font-medium text-[#8FFE09] tracking-wider">
+              <span className="font-[family-name:var(--font-mono)] text-3xl font-medium text-[#8FFE09] tracking-wider">
                 280/300
               </span>
             </div>
 
             {/* 2. Central Sci-Fi Countdown Clock Timer (indented to follow the mirrored curve) */}
-            <div className="order-1 relative flex basis-full flex-col items-center justify-center w-[350px] sm:w-[410px] h-[160px] my-2 lg:order-none lg:ml-[40px] lg:basis-auto shrink-0">
+            <div className="order-1 relative flex basis-full flex-col items-center justify-center w-[min(100%,430px)] sm:w-[430px] h-[180px] my-2 lg:order-none lg:ml-[40px] lg:basis-auto shrink-0">
               {/* Sci-Fi Octagonal Outer Frame SVG with Top & Bottom Trapezoid Notches */}
               <svg
                 className="pointer-events-none absolute inset-0 w-full h-full"
@@ -433,13 +445,13 @@ export default function DashboardPage() {
               </svg>
 
               {/* Digital Stencil Readout */}
-              <div className="relative z-10 font-[family-name:var(--font-mono)] text-4xl sm:text-[54px] font-bold text-[#8FFE09] tracking-[2px]">
+              <div className="relative z-10 font-[family-name:var(--font-mono)] text-[clamp(2.5rem,9vw,4rem)] sm:text-[62px] font-bold text-[#8FFE09] tracking-[2px]">
                 {formatTime(timeLeft)}
               </div>
             </div>
 
             {/* 3. Issues Solved Card (Aligned to right edge) */}
-            <div className="order-3 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
+            <div className="order-3 relative flex flex-col items-center justify-center w-[250px] h-[108px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />
@@ -449,7 +461,7 @@ export default function DashboardPage() {
               <span className="font-[family-name:var(--font-sixsound)] text-lg text-[#8FFE09] tracking-wider uppercase mb-0.5">
                 Issues Solved
               </span>
-              <span className="font-[family-name:var(--font-mono)] text-xl sm:text-2xl font-medium text-[#8FFE09] tracking-wider">
+              <span className="font-[family-name:var(--font-mono)] text-2xl sm:text-3xl font-medium text-[#8FFE09] tracking-wider">
                 7/15
               </span>
             </div>
@@ -459,7 +471,11 @@ export default function DashboardPage() {
 
         {/* Floating Bottom Right "Report issue" Button */}
         <div className="fixed bottom-5 right-5 z-40 flex items-center">
-          <button className="relative flex items-center justify-center w-[88px] h-[48px] bg-[rgba(143,254,9,0.2)] border border-[rgba(143,254,9,0.4)] rounded-[8px] hover:bg-[rgba(143,254,9,0.35)] transition-all duration-200 shadow-[0_0_15px_rgba(143,254,9,0.25)]">
+          <button
+            type="button"
+            onClick={() => setIsReportDialogOpen(true)}
+            className="relative flex items-center justify-center w-[88px] h-[48px] bg-[rgba(143,254,9,0.2)] border border-[rgba(143,254,9,0.4)] rounded-[8px] hover:bg-[rgba(143,254,9,0.35)] transition-all duration-200 shadow-[0_0_15px_rgba(143,254,9,0.25)]"
+          >
             <div className="flex flex-col text-left font-[family-name:var(--font-mono)] font-bold text-white text-[11px] leading-tight">
               <span>Report</span>
               <span>issue</span>
@@ -477,6 +493,66 @@ export default function DashboardPage() {
             </span>
           </button>
         </div>
+
+        {isReportDialogOpen && (
+          <div
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="report-issue-title"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                setIsReportDialogOpen(false);
+              }
+            }}
+          >
+            <div className="relative flex aspect-square w-full max-w-[460px] flex-col justify-center border border-[#8FFE09] bg-[#050805] p-4 font-[family-name:var(--font-misc)] shadow-[0_0_30px_rgba(143,254,9,0.2)] sm:p-6">
+              <div className="absolute -left-1 -top-1 h-6 w-6 border-l-4 border-t-4 border-[#8FFE09]" />
+              <div className="absolute -right-1 -top-1 h-6 w-6 border-r-4 border-t-4 border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -left-1 h-6 w-6 border-b-4 border-l-4 border-[#8FFE09]" />
+              <div className="absolute -bottom-1 -right-1 h-6 w-6 border-b-4 border-r-4 border-[#8FFE09]" />
+
+              <div className="mb-4 flex flex-col items-center justify-center border-b border-[#649627]/50 pb-3 text-center">
+                <div>
+                  <p className="mb-1 text-sm uppercase tracking-[0.2em] text-[#8FFE09]">CONTACT US</p>
+                  <h2 id="report-issue-title" className="text-4xl font-bold uppercase tracking-wider text-white sm:text-5xl">
+                    REPORT YOUR ISSUE
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsReportDialogOpen(false)}
+                  aria-label="Close report issue dialog"
+                  className="absolute right-2 top-2 flex h-8 w-8 shrink-0 items-center justify-center border border-[#649627] text-xl text-[#8FFE09] transition-colors hover:bg-[#8FFE09] hover:text-black"
+                >
+                  x
+                </button>
+              </div>
+
+              <form
+                className="flex flex-col gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setIsReportDialogOpen(false);
+                }}
+              >
+                <p className="mx-auto max-w-[420px] text-center text-lg leading-relaxed text-white/80">
+                  Reach out to our core members for any doubt clarifications on the link below
+                </p>
+
+                <div className="mt-1 flex justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsReportDialogOpen(false)}
+                    className="border border-[#8FFE09]/40 bg-[#8FFE09]/20 px-6 py-3 text-lg uppercase tracking-wider text-white transition-colors hover:bg-[#8FFE09]/35 hover:text-[#8FFE09]"
+                  >
+                    JOIN DISCORD
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

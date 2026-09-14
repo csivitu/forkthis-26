@@ -5,16 +5,13 @@ import type { leaderboardQuery, leaderboardEntry } from "./leaderboard.types.ts"
 import { responseOk } from "../../utils/api-response.ts";
 import logger from "../../utils/logger.util.ts";
 
-const LEADERBOARD_DEFAULT_LIMIT = 50;
-const LEADERBOARD_MAX_LIMIT = 100;
 export async function getLeaderboard(
   req: Request<unknown,unknown,unknown,leaderboardQuery>,
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const limit = Math.min(Math.max(Number(req.query.limit) || LEADERBOARD_DEFAULT_LIMIT,1), LEADERBOARD_MAX_LIMIT);
-  const page = Math.max(Number(req.query.page) || 1 , 1);
-  const offset = (page - 1 ) * limit;
+  const { limit, page } = req.query;
+  const offset = (page - 1) * limit;
   try {
     const totalPoints = sql<number>`coalesce(sum(${pointTransactions.points}), 0)`;
     const rows = await db.select({

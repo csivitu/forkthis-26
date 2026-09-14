@@ -356,13 +356,9 @@ button {
   transform: translateX(147.5px);
 }
 
-.site-header--timeline .timeline-nav {
-  pointer-events: auto;
-}
-
-
 .site-header--timeline .timeline-nav__brand {
   transform: translateX(-50%) scale(1);
+  pointer-events: auto;
 }
 
 .site-login {

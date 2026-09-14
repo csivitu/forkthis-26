@@ -11,15 +11,12 @@ import { eq } from "drizzle-orm";
 import { participantsDb } from "../../../packages/db/sqlite/client";
 import { participants } from "../../../packages/db/sqlite/schema";
 import { extractRegNo } from "./utils/regno.util";
+import { buildCorsOptions } from "./config/cors.config";
 
 
 const app = express();
 
-const corsOptions = {
-  origin: [env.WEB_URL],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-};
+const corsOptions = buildCorsOptions(env.WEB_URL, env.ADMIN_URL);
 
 app.use(
   pinoHttp({

@@ -1,4 +1,9 @@
+import type { z } from "zod";
 import type { Repository, Issue, PointTransaction } from "@repo/db";
+import { uuidParamsSchema } from "../../utils/schema.util";
+
+export const getIssuesByRepoSchema = uuidParamsSchema;
+export type GetIssuesByRepoParams = z.infer<typeof getIssuesByRepoSchema.params>;
 
 export type RepositoryRow = Pick<Repository, "id" | "owner" | "name" | "githubRepoId" | "techStack" | "isActive" | "createdAt"> & { issueCount: number };
 

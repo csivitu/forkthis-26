@@ -8,7 +8,9 @@
     "build": "bun build src/index.ts --outdir dist --target node",
     "start": "bun --env-file=../../.env dist/index.js",
     "sync:prs": "bun --env-file=../../.env src/scripts/sync-prs.ts",
-    "seed:test": "bun --env-file=../../.env src/scripts/seed-test-data.ts"
+    "seed:test": "bun --env-file=../../.env src/scripts/seed-test-data.ts",
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -23,6 +25,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@repo/admin-contracts": "workspace:*",
     "@repo/db": "workspace:*",
     "better-auth": "^1.7.2",
     "cors": "^2.8.6",

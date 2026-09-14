@@ -17,6 +17,7 @@ const envSchema = z.object({
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
   WEB_URL: z.string().default("http://localhost:3000"),
+  ADMIN_URL: z.string().default("http://localhost:3001"),
 });
 
 export const env = envSchema.parse(process.env);

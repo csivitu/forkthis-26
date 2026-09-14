@@ -14,7 +14,6 @@ import {
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -71,18 +70,11 @@ export default async function MembersPage({
             </TableHeader>
             <TableBody>
               {response.data.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell>
-                    <MemberPointsDialog member={member} issues={issues.data} />
-                  </TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {member.githubUsername ?? "Not linked"}
-                  </TableCell>
-                  <TableCell className="text-right font-mono">
-                    {member.totalPoints}
-                  </TableCell>
-                </TableRow>
+                <MemberPointsDialog
+                  key={member.id}
+                  member={member}
+                  issues={issues.data}
+                />
               ))}
             </TableBody>
           </Table>

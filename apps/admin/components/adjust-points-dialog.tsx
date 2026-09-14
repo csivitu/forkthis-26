@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { TableCell, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 
 function AdjustmentFields({ issues }: { issues: IssueDto[] }) {
@@ -150,13 +151,34 @@ export function MemberPointsDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="h-auto justify-start px-0">
-          <Avatar>
-            <AvatarImage src={member.avatarUrl ?? undefined} alt="" />
-            <AvatarFallback>{label.slice(0, 2).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <span>{member.name ?? "Unnamed member"}</span>
-        </Button>
+        <TableRow
+          className="cursor-pointer"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key !== "Enter" && event.key !== " ") return
+            event.preventDefault()
+            setOpen(true)
+          }}
+        >
+          <TableCell>
+            <div className="flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src={member.avatarUrl ?? undefined} alt="" />
+                <AvatarFallback>
+                  {label.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span>{member.name ?? "Unnamed member"}</span>
+            </div>
+          </TableCell>
+          <TableCell>{member.email}</TableCell>
+          <TableCell className="font-mono text-xs">
+            {member.githubUsername ?? "Not linked"}
+          </TableCell>
+          <TableCell className="text-right font-mono">
+            {member.totalPoints}
+          </TableCell>
+        </TableRow>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

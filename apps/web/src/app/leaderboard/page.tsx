@@ -1,19 +1,8 @@
-import { SiteHeader } from "@/components/landing/navigation/SiteHeader";
+"use client";
 
-export interface LeaderboardEntry {
-  rank: number;
-  username: string;
-  points: number;
-}
-
-const leaderboardData: LeaderboardEntry[] = Array.from(
-  { length: 10 },
-  (_, i): LeaderboardEntry => ({
-    rank: i + 1,
-    username: "username1",
-    points: 2450,
-  })
-);
+import { useState } from "react";
+import { useLeaderboard } from "@/hooks/use-leaderboard";
+import { apiErrorMessage } from "@/lib/api-client";
 
 // Faint background particles matching design screenshot
 const PARTICLES = [
@@ -32,11 +21,12 @@ const PARTICLES = [
 ];
 
 export default function LeaderboardPage() {
+  const [page, setPage] = useState(1);
+  const leaderboard = useLeaderboard(page);
   return (
     <div
       className="flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-y-auto pt-16 pb-8 sm:pt-20 sm:pb-8 px-4 sm:px-0"
     >
-      <SiteHeader forceTimeline />
 
       {/* Screen Container */}
       <div className="relative flex flex-col items-center justify-start w-full max-w-[1360px] pb-10 sm:pb-16 select-none">
@@ -85,10 +75,13 @@ export default function LeaderboardPage() {
 
           {/* Leaderboard Rows */}
           <div className="relative z-10 flex flex-col w-full max-w-[960px] gap-2 sm:gap-4">
-            {leaderboardData.map((row, idx) => (
+            {leaderboard.isPending ? <p role="status">Loading rankings…</p> : null}
+            {leaderboard.error ? <p role="alert">{apiErrorMessage(leaderboard.error)}</p> : null}
+            {leaderboard.data?.length === 0 ? <p>No participants on this page yet.</p> : null}
+            {leaderboard.data?.map((row) => (
               <div
-                key={idx}
-                className="group relative flex h-[46px] sm:h-[58px] md:h-[64px] lg:h-[72px] w-full items-center justify-between shrink-0 cursor-pointer"
+                key={row.userId}
+                className="group relative flex h-[46px] sm:h-[58px] md:h-[64px] lg:h-[72px] w-full items-center justify-between shrink-0"
               >
                 {/* Row Octagonal Shape SVG Container */}
                 <svg
@@ -98,7 +91,7 @@ export default function LeaderboardPage() {
                 >
                   <path
                     d="M 14,0 L 886,0 L 900,14 L 900,30 L 886,44 L 14,44 L 0,30 L 0,14 Z"
-                    fill={idx === 0 ? "#16260a" : "#000000"}
+                    fill={row.rank === 1 ? "#16260a" : "#000000"}
                     stroke="#8FFE09"
                     strokeWidth="1.5"
                     vectorEffect="non-scaling-stroke"
@@ -111,11 +104,16 @@ export default function LeaderboardPage() {
                   className="relative z-10 flex w-full items-center justify-between px-2 sm:px-10 md:px-12 text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-normal sm:tracking-wider text-white font-[family-name:var(--font-mono)]"
                 >
                   <span className="w-[42px] sm:w-[70px] md:w-[110px] text-left">{row.rank}</span>
-                  <span className="flex-1 text-center truncate px-1">{row.username}</span>
-                  <span className="w-[52px] sm:w-[70px] md:w-[110px] text-right">{row.points}</span>
+                  <span className="flex-1 text-center truncate px-1">{row.githubUsername ?? row.name ?? "Participant"}</span>
+                  <span className="w-[52px] sm:w-[70px] md:w-[110px] text-right">{row.totalPoints}</span>
                 </div>
               </div>
             ))}
+          </div>
+          <div className="relative z-10 mt-8 flex w-full max-w-[960px] items-center justify-between text-sm">
+            <button type="button" className="cursor-pointer disabled:opacity-40" disabled={page === 1 || leaderboard.isFetching} onClick={() => setPage(page - 1)}>← Previous</button>
+            <span>Page {page}</span>
+            <button type="button" className="cursor-pointer disabled:opacity-40" disabled={leaderboard.isFetching || !leaderboard.data || leaderboard.data.length < 25} onClick={() => setPage(page + 1)}>Next →</button>
           </div>
         </div>
       </div>

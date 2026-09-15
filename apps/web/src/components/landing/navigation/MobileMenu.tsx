@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 const LOCKED_LINKS = [
-  { href: "#home", label: "Home" },
-  { href: "#dashboard", label: "Dashboard" },
-  { href: "#leaderboard", label: "Leaderboard" },
+  { href: "/#home", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/leaderboard", label: "Leaderboard" },
   { href: "/resources", label: "Resources" },
   { href: "/login", label: "Log in" },
 ] as const;
@@ -14,11 +14,13 @@ const LOCKED_LINKS = [
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
-  onLogin: () => Promise<void>;
+  onAuthAction: () => void;
+  authLabel: string;
+  authPending: boolean;
   landingOnly: boolean;
 }
 
-export function MobileMenu({ open, onClose, onLogin, landingOnly }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, onAuthAction, authLabel, authPending, landingOnly }: MobileMenuProps) {
   function openLockedSection() {
     onClose();
     window.dispatchEvent(new Event("launch-locked"));
@@ -51,13 +53,13 @@ export function MobileMenu({ open, onClose, onLogin, landingOnly }: MobileMenuPr
       <span className="mobile-menu__cross mobile-menu__cross--right" aria-hidden="true" />
       <nav className="mobile-menu__links" aria-label="Mobile navigation">
         {LOCKED_LINKS.map((link) => (
-          landingOnly && link.href !== "#home" ? (
+          landingOnly && link.href !== "/#home" ? (
             <button key={link.href} type="button" onClick={openLockedSection} tabIndex={open ? 0 : -1}>
               <span>{link.label}</span>
             </button>
           ) : link.href === "/login" ? (
-            <button key={link.href} type="button" onClick={() => void onLogin()} tabIndex={open ? 0 : -1}>
-              <span>{link.label}</span>
+            <button key={link.href} type="button" onClick={onAuthAction} disabled={authPending} tabIndex={open ? 0 : -1}>
+              <span>{authPending ? "Logging out…" : authLabel}</span>
             </button>
           ) : link.href.startsWith("/") ? (
             <Link key={link.href} href={link.href} onClick={onClose} tabIndex={open ? 0 : -1}>

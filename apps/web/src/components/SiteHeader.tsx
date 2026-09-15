@@ -2,11 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useSessionQuery } from "@/hooks/use-session";
 import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ThemedDialog } from "@/components/ui/ThemedDialog";
-import { signInWithGoogle } from "@/lib/auth-client";
-import { MobileMenu } from "./MobileMenu";
-import { SiteScrollbar } from "./SiteScrollbar";
+import { authClient, signInWithGoogle } from "@/lib/auth-client";
+import { MobileMenu } from "./landing/navigation/MobileMenu";
+import { SiteScrollbar } from "./landing/navigation/SiteScrollbar";
 
 const NAV_PANEL_PATH =
   "M 14 0 H 251 Q 265 0 265 14 L 246 58 Q 240 74.5 223 74.5 H 42 Q 25 74.5 19 58 L 0 14 Q 0 0 14 0 Z";
@@ -43,7 +46,24 @@ function openLockedSection() {
   window.dispatchEvent(new Event("launch-locked"));
 }
 
-export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) {
+export function SiteHeader() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const forceTimeline = pathname !== "/";
+  const session = useSessionQuery();
+  const queryClient = useQueryClient();
+  const logout = useMutation({
+    mutationFn: async () => {
+      const { error } = await authClient.signOut();
+      if (error) throw new Error(error.message ?? "Sign-out failed");
+    },
+    onSuccess: async () => {
+      await queryClient.cancelQueries();
+      queryClient.clear();
+      queryClient.setQueryData(["session"], null);
+      router.replace("/");
+    },
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [timelineActive, setTimelineActive] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -94,7 +114,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       window.removeEventListener("resize", scheduleUpdate);
       if (frame !== null) window.cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [pathname]);
 
 
   const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
@@ -113,7 +133,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
           {landingOnly ? (
             <button type="button" onClick={openLockedSection}>Dashboard</button>
           ) : (
-            <a href={`${anchorPrefix}#dashboard`}>Dashboard</a>
+            <Link href="/dashboard">Dashboard</Link>
           )}
         </div>
         <div className="site-nav__links site-nav__links--right">
@@ -128,7 +148,7 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
             </>
           ) : (
             <>
-              <a href={`${anchorPrefix}#leaderboard`}>Leaderboard</a>
+              <Link href="/leaderboard">Leaderboard</Link>
               <Link href="/resources">Resources</Link>
             </>
           )}
@@ -157,6 +177,11 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
         <button type="button" className="site-login" onClick={openLockedSection}>
           <NavPanelShape className="site-login__shape" />
           <span className="site-login__label">Log in</span>
+        </button>
+      ) : session.data ? (
+        <button type="button" className="site-login" disabled={logout.isPending} onClick={() => logout.mutate()}>
+          <NavPanelShape className="site-login__shape" />
+          <span className="site-login__label">{logout.isPending ? "Logging out…" : "Logout"}</span>
         </button>
       ) : (
         <button type="button" className="site-login" onClick={() => void startLogin()}>
@@ -197,9 +222,17 @@ export function SiteHeader({ forceTimeline }: { forceTimeline?: boolean } = {}) 
       <MobileMenu
         open={menuOpen}
         onClose={closeMenu}
-        onLogin={startLogin}
+        onAuthAction={session.data ? () => { closeMenu(); logout.mutate(); } : () => void startLogin()}
+        authLabel={session.data ? "Logout" : "Log in"}
+        authPending={logout.isPending}
         landingOnly={landingOnly}
       />
+
+      {logout.error ? (
+        <ThemedDialog eyebrow="Authentication" title="Logout failed" description={logout.error.message} onClose={() => logout.reset()}>
+          <button type="button" className="launch-soon__button" disabled={logout.isPending} onClick={() => logout.mutate()}>Retry</button>
+        </ThemedDialog>
+      ) : null}
 
       {loginOpen ? (
         <ThemedDialog

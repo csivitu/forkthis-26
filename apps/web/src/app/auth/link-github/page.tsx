@@ -4,10 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ThemedDialog } from "@/components/ui/ThemedDialog";
 import { authClient } from "@/lib/auth-client";
-
-type SessionWithRole = {
-  user: { role?: string | null };
-};
+import { apiClient } from "@/lib/api-client";
+import type { Session } from "@/lib/api-types";
 
 export default function LinkGithubPage() {
   const router = useRouter();
@@ -18,15 +16,15 @@ export default function LinkGithubPage() {
     setError(null);
 
     try {
-      const { data: session } = await authClient.getSession();
+      const { data: session } = await apiClient.get<Session | null>("/api/auth/get-session");
 
       if (!session) {
         router.replace("/login");
         return;
       }
 
-      if ((session as typeof session & SessionWithRole).user.role === "admin") {
-        router.replace("/admin");
+      if (session.user.githubId) {
+        router.replace("/dashboard");
         return;
       }
 

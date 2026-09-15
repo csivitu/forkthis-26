@@ -2,6 +2,10 @@ import { Router } from "express";
 import multer from "multer";
 import { requireAdmin, requireSession } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validate.middleware";
+import { isSyncRunning, runSync } from "../../scripts/sync-prs";
+import { ApiError } from "../../utils/api-error";
+import { responseOk } from "../../utils/api-response";
+import logger from "../../utils/logger.util";
 import {
   addAdmin,
   awardPoints,
@@ -45,6 +49,14 @@ const upload = multer({
 });
 
 router.use(requireSession, requireAdmin);
+router.post("/sync", (_req, res, next) => {
+  if (isSyncRunning()) {
+    next(new ApiError(409, "SYNC_ALREADY_RUNNING", "A repository sync is already running"));
+    return;
+  }
+  void runSync().catch(err => logger.error({ err }, "Manual sync failed"));
+  responseOk(res, { message: "Sync started. Check repository sync history for results." }, 202);
+});
 router.get("/repos", listRepositories);
 router.post("/repos", validate(createRepoSchema), createRepo);
 router.patch("/repos/:id", validate(updateRepoSchema), updateRepo);

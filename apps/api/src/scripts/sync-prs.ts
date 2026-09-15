@@ -250,7 +250,22 @@ async function tryAutoAward(issueId: string, prId: string, userId: string) {
 // below still lets this run standalone via `bun run sync:prs` for manual
 // or debug runs — it just no longer calls process.exit() itself, since that
 // would kill the API server if imported and awaited from there.
-export async function runSync() {
+// Shared by scheduled and admin-triggered runs in the single API process.
+let syncRunning = false;
+
+export const isSyncRunning = (): boolean => syncRunning;
+
+export async function runSync(): Promise<void> {
+  if (syncRunning) throw new Error("A repository sync is already running");
+  syncRunning = true;
+  try {
+    await syncRepositories();
+  } finally {
+    syncRunning = false;
+  }
+}
+
+async function syncRepositories(): Promise<void> {
   const repos = await db.select({ id: repositories.id, owner: repositories.owner, name: repositories.name, lastPolledAt: repositories.lastPolledAt })
     .from(repositories).where(eq(repositories.isActive, true));
 

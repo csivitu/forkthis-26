@@ -388,8 +388,8 @@ export function FooterSection() {
 
                   {/* Text Content in IBM Plex Mono (Fills the entire box width boldly) */}
                   <div className="relative z-10 mb-6 w-full text-left">
-                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm font-medium leading-relaxed tracking-wide text-zinc-100 sm:text-base md:text-[17px]">
-                      Join The Discord Channel For Competition Discussion And All Further Communication
+                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-base font-semibold leading-relaxed tracking-wide text-zinc-100 sm:text-lg md:text-[1.125rem]">
+                      Join the Discord channel for all mission-related communication
                     </p>
                   </div>
 

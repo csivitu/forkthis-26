@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import {
+  addAdminSchema,
   adjustPointsSchema,
   createParticipantSchema,
   createRepositorySchema,
@@ -178,6 +179,31 @@ export async function adjustPointsAction(
   } catch (error) {
     return failure(
       error instanceof Error ? error : new Error("Point adjustment failed")
+    )
+  }
+}
+
+export async function addAdminAction(
+  formData: FormData
+): Promise<ActionResult> {
+  const parsed = addAdminSchema.safeParse({ email: value(formData, "email") })
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid email address",
+    }
+  try {
+    await apiRequest("/api/admin/admins", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/admins")
+    revalidatePath("/members")
+    return { success: true, message: "Member promoted to administrator" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Member promotion failed")
     )
   }
 }

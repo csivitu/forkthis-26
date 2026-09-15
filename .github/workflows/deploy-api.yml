@@ -1,0 +1,46 @@
+name: Deploy API
+
+on:
+  push:
+    branches:
+      - prod
+    paths:
+      - "apps/api/**"
+      - "packages/db/**"
+      - "packages/admin-contracts/**"
+      - "packages/typescript-config/package.json"
+      - "Dockerfile"
+      - "docker-compose.yaml"
+      - "bun.lock"
+      - "package.json"
+      - ".github/workflows/deploy-api.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: deploy-api-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: DEPLOY_SHA
+          script: |
+            set -euo pipefail
+            cd /home/ubuntu/forkthis
+            git fetch --prune origin prod
+            git checkout --detach "$DEPLOY_SHA"
+            docker compose up -d --build --remove-orphans --wait --wait-timeout 120
+            docker image prune -f

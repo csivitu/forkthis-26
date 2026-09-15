@@ -30,6 +30,14 @@ export const auth = betterAuth({
     },
     advanced: {
         database: { generateId: "uuid" },
+        crossSubDomainCookies: env.AUTH_COOKIE_DOMAIN
+            ? { enabled: true, domain: env.AUTH_COOKIE_DOMAIN }
+            : undefined,
+        defaultCookieAttributes: {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        },
     },
     user: {
         fields: { image: "avatarUrl" },

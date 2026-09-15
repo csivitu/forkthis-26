@@ -73,6 +73,10 @@ export function LaunchGate({ children }: { children: ReactNode }) {
     };
   }, [landingOnly, pathname]);
 
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+  }, []);
+
   function goBack() {
     if (window.history.length > 1) {
       router.back();
@@ -81,10 +85,6 @@ export function LaunchGate({ children }: { children: ReactNode }) {
 
     router.push("/");
   }
-
-  const closeModal = useCallback(() => {
-    setModalOpen(false);
-  }, []);
 
   if (landingOnly && pathname !== "/") {
     return <ComingSoonMessage onBack={goBack} />;

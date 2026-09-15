@@ -10,12 +10,14 @@ export const pullRequestStatuses = [
 ] as const;
 export const pointReasons = ["auto_merge", "admin_manual"] as const;
 export const syncLogStatuses = ["success", "failed"] as const;
+export const memberRoles = ["student", "admin"] as const;
 
 export type IssueDifficulty = (typeof issueDifficulties)[number];
 export type IssueStatus = (typeof issueStatuses)[number];
 export type PullRequestStatus = (typeof pullRequestStatuses)[number];
 export type PointReason = (typeof pointReasons)[number];
 export type SyncLogStatus = (typeof syncLogStatuses)[number];
+export type MemberRole = (typeof memberRoles)[number];
 
 export interface PaginationMeta {
   page: number;
@@ -102,6 +104,11 @@ export const syncLogsQuerySchema = paginationQuerySchema.extend({
 
 export const membersQuerySchema = paginationQuerySchema.extend({
   search: optionalSearch,
+  role: z.enum(memberRoles).optional(),
+});
+
+export const addAdminSchema = z.object({
+  email: z.string().trim().toLowerCase().email(),
 });
 
 export const transactionsQuerySchema = paginationQuerySchema.extend({
@@ -141,6 +148,7 @@ export type UpdateIssueRequest = z.infer<typeof updateIssueSchema>;
 export type PullRequestsQuery = z.infer<typeof pullRequestsQuerySchema>;
 export type SyncLogsQuery = z.infer<typeof syncLogsQuerySchema>;
 export type MembersQuery = z.infer<typeof membersQuerySchema>;
+export type AddAdminRequest = z.infer<typeof addAdminSchema>;
 export type TransactionsQuery = z.infer<typeof transactionsQuerySchema>;
 export type AdjustPointsRequest = z.infer<typeof adjustPointsSchema>;
 export type ParticipantsQuery = z.infer<typeof participantsQuerySchema>;
@@ -206,6 +214,7 @@ export interface MemberDto {
   email: string;
   githubUsername: string | null;
   avatarUrl: string | null;
+  role: MemberRole;
   totalPoints: number;
 }
 

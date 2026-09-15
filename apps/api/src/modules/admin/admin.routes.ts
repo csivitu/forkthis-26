@@ -3,6 +3,7 @@ import multer from "multer";
 import { requireAdmin, requireSession } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validate.middleware";
 import {
+  addAdmin,
   awardPoints,
   createParticipant,
   createRepo,
@@ -20,6 +21,7 @@ import {
   uploadParticipantsCsv,
 } from "./admin.controller";
 import {
+  addAdminRouteSchema,
   awardPointsRouteSchema,
   createParticipantRouteSchema,
   createRepoSchema,
@@ -56,6 +58,7 @@ router.get(
 );
 router.get("/sync-logs", validate(listSyncLogsSchema), listSyncLogs);
 router.get("/members", validate(listMembersSchema), listMembers);
+router.post("/admins", validate(addAdminRouteSchema), addAdmin);
 router.get(
   "/point-transactions",
   validate(listTransactionsSchema),

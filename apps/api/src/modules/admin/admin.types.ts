@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  addAdminSchema,
   adjustPointsSchema,
   createParticipantSchema,
   createRepositorySchema,
@@ -27,6 +28,7 @@ export const updateIssueRouteSchema = {
 };
 export const awardPointsRouteSchema = { body: adjustPointsSchema };
 export const listMembersSchema = { query: membersQuerySchema };
+export const addAdminRouteSchema = { body: addAdminSchema };
 export const listPullRequestsSchema = { query: pullRequestsQuerySchema };
 export const listSyncLogsSchema = { query: syncLogsQuerySchema };
 export const listTransactionsSchema = { query: transactionsQuerySchema };

@@ -20,6 +20,15 @@ const failure = (error: Error): ActionResult => ({
   success: false,
   message: error.message,
 })
+
+export async function syncRepositoriesAction(): Promise<ActionResult> {
+  try {
+    const response = await apiRequest<{ message: string }>("/api/admin/sync", { method: "POST" })
+    return { success: true, message: response.data.message }
+  } catch (error) {
+    return failure(error instanceof Error ? error : new Error("Repository sync request failed"))
+  }
+}
 const value = (formData: FormData, key: string): string =>
   String(formData.get(key) ?? "").trim()
 const nullableValue = (formData: FormData, key: string): string | null =>

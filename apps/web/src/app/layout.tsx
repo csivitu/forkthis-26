@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
 import { LaunchGate } from "@/components/launch/LaunchGate";
+import { SiteHeader } from "@/components/SiteHeader";
+import { QueryProvider } from "@/lib/query-provider";
 import "./globals.css";
 
 
@@ -99,7 +101,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-black text-white"
       >
-        <LaunchGate>{children}</LaunchGate>
+        <QueryProvider>
+          <LaunchGate>
+            <SiteHeader />
+            {children}
+          </LaunchGate>
+        </QueryProvider>
       </body>
     </html>
   );

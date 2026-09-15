@@ -7,6 +7,8 @@ const router = Router();
 router.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+
 router.use("/dashboard", dashboardRoutes);
 router.use("/leaderboard", moduleRoutes);
 router.use("/admin",adminRoutes);

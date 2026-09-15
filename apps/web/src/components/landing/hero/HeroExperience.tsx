@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { SiteHeader } from "../navigation/SiteHeader";
 import { ABOUT_FLIGHT_POSITION } from "./scene/spaceMath";
 import type { PointerPosition } from "./scene/types";
 
@@ -75,11 +74,7 @@ export function HeroExperience() {
         });
       }}
     >
-      <SiteHeader />
       <div className="cockpit-bezel" style={{ opacity: borderOpacity }} aria-hidden="true" />
-      <span id="dashboard" className="absolute top-[28%]" aria-hidden="true" />
-      <span id="leaderboard" className="absolute top-[58%]" aria-hidden="true" />
-      <span id="resources" className="absolute top-[86%]" aria-hidden="true" />
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0 z-0">
           <HeroCanvas

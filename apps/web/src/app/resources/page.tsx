@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { SectionHeader } from "@/components/resources/section-header";
-import { SiteHeader } from "@/components/landing/navigation/SiteHeader";
 import { ResourceGrid } from "@/components/resources/resource-card";
 import { SectionSidebar } from "@/components/resources/section-sidebar";
 import { RESOURCE_SECTIONS } from "@/components/resources/resource-data";
@@ -28,7 +27,6 @@ export default function ResourcesPage() {
       <div aria-hidden style={overlayStyle} />
 
       <div>
-        <SiteHeader forceTimeline />
         <SectionSidebar />
 
         <main className="w-full max-w-[1540px] mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">

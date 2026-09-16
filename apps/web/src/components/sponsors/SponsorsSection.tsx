@@ -27,10 +27,18 @@ export function SponsorsSection() {
         Powered By
       </h2>
 
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-8 sm:gap-10 md:grid-cols-2">
+      <div
+  className={`mx-auto grid w-full max-w-5xl gap-8 sm:gap-10 ${
+    SPONSORS.length === 1 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"
+  }`}
+>
         {SPONSORS.map((sponsor) => (
+          <div
+    key={sponsor.name}
+    className="rounded-[28px] border border-white/10 bg-[#151a10] p-4 sm:p-6"
+  >
           <GlareHover
-            key={sponsor.name}
+            
             background="#0b0f0c"
             borderColor="#1f2a1a"
             borderRadius="16px"
@@ -42,7 +50,7 @@ export function SponsorsSection() {
             style={{ width: "100%", height: "100%" }}
             className="!cursor-default !flex !flex-col !items-stretch !justify-start p-6 sm:p-8"
           >
-            <span className="font-mono text-center text-xs sm:text-sm tracking-[0.25em] uppercase text-zinc-400 mb-6">
+            <span className="font-mono text-center text-xs sm:text-sm tracking-[0.25em] uppercase text-white font-semibold mb-6">
               Event Sponsor
             </span>
 
@@ -55,7 +63,7 @@ export function SponsorsSection() {
               />
             </div>
 
-            <p className="font-mono text-center text-sm sm:text-[15px] leading-relaxed text-zinc-300 mb-8">
+            <p className="mx-auto max-w-xl text-center font-mono text-sm sm:text-[15px] leading-relaxed text-zinc-300 mb-8">
               {sponsor.description}
             </p>
 
@@ -79,9 +87,10 @@ export function SponsorsSection() {
                 Visit Them Here →
               </a>
             </div>
-          </GlareHover>
+                    </GlareHover>
+          </div>
         ))}
       </div>
-    </section>
+    </section >
   );
 }

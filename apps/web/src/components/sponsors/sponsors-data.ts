@@ -15,12 +15,12 @@ export const SPONSORS: Sponsor[] = [
     linkedinUrl: "https://linkedin.com/company/damacloid-technologies-pvt-ltd",
     websiteUrl: "https://damacloid.com",
   },
-  {
-    name: "Protiviti",
-    logo: "/images/protiviti.png",
-    description:
-      "Protiviti is a global consulting firm delivering solutions to complex business challenges across technology, digital transformation, finance and risk, and operations. With a strong emphasis on innovation and strategic thinking, Protiviti enables organisations to navigate change, strengthen performance, and build long-term resilience.",
-    linkedinUrl: "https://linkedin.com/company/protiviti",
-    websiteUrl: "https://protiviti.com",
-  },
+  //{
+   // name: "Protiviti",
+    //logo: "/images/protiviti.png",
+    //description:
+     // "Protiviti is a global consulting firm delivering solutions to complex business challenges across technology, digital transformation, finance and risk, and operations. With a strong emphasis on innovation and strategic thinking, Protiviti enables organisations to navigate change, strengthen performance, and build long-term resilience.",
+    //linkedinUrl: "https://linkedin.com/company/protiviti",
+    //websiteUrl: "https://protiviti.com",
+  //},
 ];

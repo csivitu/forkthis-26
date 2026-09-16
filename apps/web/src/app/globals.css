@@ -901,7 +901,7 @@ button {
   position: relative;
   height: 300vh;
   min-height: 3072px;
-  background: #000;
+  background: transparent;
   isolation: isolate;
 }
 
@@ -911,20 +911,7 @@ button {
   height: 100vh;
   min-height: 560px;
   overflow: hidden;
-  background: #000;
-}
-
-.timeline-stars {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.55;
-  background-image:
-    radial-gradient(circle, #777 0 1.2px, transparent 1.5px),
-    radial-gradient(circle, #454545 0 1px, transparent 1.35px),
-    radial-gradient(circle, #696969 0 0.8px, transparent 1.2px);
-  background-position: 11px 17px, 43px 71px, 83px 31px;
-  background-size: 131px 137px, 173px 181px, 211px 197px;
+  background: transparent;
 }
 
 .timeline-canvas {
@@ -1073,7 +1060,7 @@ button {
 .speaker-section {
   position: relative;
   overflow: hidden;
-  background: #000;
+  background: transparent;
   color: #fff;
 }
 

@@ -1,24 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Galaxy from "@/components/Galaxy";
 import { useLeaderboard } from "@/hooks/use-leaderboard";
 import { apiErrorMessage } from "@/lib/api-client";
 
 const LEADERBOARD_PAGE_SIZE = 10;
-const PARTICLES = [
-  { id: "a", top: "4%", left: "18%" },
-  { id: "b", top: "3%", left: "79%" },
-  { id: "c", top: "19%", left: "66%" },
-  { id: "d", top: "24%", left: "97%" },
-  { id: "e", top: "23%", left: "11%" },
-  { id: "f", top: "20%", left: "44%" },
-  { id: "g", top: "51%", left: "86%" },
-  { id: "h", top: "61%", left: "73%" },
-  { id: "i", top: "73%", left: "84%" },
-  { id: "j", top: "83%", left: "68%" },
-  { id: "k", top: "94%", left: "16%" },
-  { id: "l", top: "98%", left: "81%" },
-];
 
 export default function LeaderboardPage() {
   const [page, setPage] = useState(1);
@@ -27,17 +14,19 @@ export default function LeaderboardPage() {
 
   return (
     <main className="relative flex h-dvh w-full flex-col items-center overflow-hidden bg-black px-[3vw] pb-[2dvh] pt-[clamp(4.5rem,10dvh,6rem)] text-white">
-      <div className="relative flex h-full min-h-0 w-full max-w-[85rem] flex-col items-center select-none">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          {PARTICLES.map((particle) => (
-            <span
-              key={particle.id}
-              className="absolute size-[0.1875rem] rounded-full bg-[#8FFE09]/70 shadow-[0_0_0.375rem_#8FFE09]"
-              style={{ top: particle.top, left: particle.left }}
+      <Galaxy
+              className="pointer-events-none absolute inset-0 z-0 opacity-45"
+              density={0.7}
+              glowIntensity={0.3}
+              hueShift={95}
+              mouseInteraction={false}
+              rotationSpeed={0.01}
+              saturation={0.7}
+              speed={0.16}
+              transparent
+              twinkleIntensity={0.25}
             />
-          ))}
-        </div>
-
+      <div className="relative z-10 flex h-full min-h-0 w-full max-w-[85rem] flex-col items-center select-none">
         <h1 className="page-heading relative z-10 mb-[clamp(0.75rem,2.5dvh,2rem)] mt-[1dvh] w-full whitespace-nowrap px-[2vw] text-center text-[clamp(1.75rem,8vw,3rem)] font-extrabold tracking-[clamp(0,0.4vw,0.18em)]">
           Leaderboard
         </h1>

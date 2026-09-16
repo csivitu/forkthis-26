@@ -5,22 +5,7 @@ import Link from "next/link";
 import { useSessionQuery } from "@/hooks/use-session";
 import { useRepositories, useRepositoryIssues, usePointTransactions } from "@/hooks/use-dashboard";
 import { apiErrorMessage } from "@/lib/api-client";
-import Image from "next/image";
-
-const PARTICLES = [
-  { top: "4%", left: "18%" },
-  { top: "3%", left: "79%" },
-  { top: "19%", left: "66%" },
-  { top: "24%", left: "97%" },
-  { top: "23%", left: "11%" },
-  { top: "20%", left: "44%" },
-  { top: "51%", left: "86%" },
-  { top: "61%", left: "73%" },
-  { top: "73%", left: "84%" },
-  { top: "83%", left: "68%" },
-  { top: "94%", left: "16%" },
-  { top: "98%", left: "81%" },
-];
+import Galaxy from "@/components/Galaxy";
 
 export default function DashboardPage() {
   const session = useSessionQuery();
@@ -36,22 +21,23 @@ export default function DashboardPage() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-start bg-black font-sans text-white overflow-x-hidden overflow-y-auto select-none">
+      <Galaxy
+        className="pointer-events-none absolute inset-0 z-0 opacity-45"
+        density={0.7}
+        glowIntensity={0.3}
+        hueShift={95}
+        mouseInteraction={false}
+        rotationSpeed={0.01}
+        saturation={0.7}
+        speed={0.16}
+        transparent
+        twinkleIntensity={0.25}
+      />
       {/* Cockpit Bezel Outer Border Frame */}
       <div className="fixed inset-0 pointer-events-none z-50 border-[3px] border-[#649627]/90 shadow-[inset_0_0_12px_rgba(100,150,39,0.3)]" />
 
       {/* Screen Canvas Container - Exact 143px left padding (from D of DASHBOARD) & 123px right padding (from Timer) */}
-      <div className="relative flex flex-col items-start justify-start w-full min-h-screen pt-24 pl-6 pr-6 lg:pl-[143px] lg:pr-[123px] pb-20">
-
-        {/* Background Glowing Particles */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
-          {PARTICLES.map((p, i) => (
-            <span
-              key={i}
-              className="absolute h-[3px] w-[3px] rounded-full bg-[#464343] opacity-80 shadow-[0_0_4px_#464343]"
-              style={{ top: p.top, left: p.left }}
-            />
-          ))}
-        </div>
+      <div className="relative z-10 flex flex-col items-start justify-start w-full min-h-screen pt-24 pl-6 pr-6 lg:pl-[143px] lg:pr-[123px] pb-20">
 
         {/* Header Title DASHBOARD (Letter 'D' sits exactly at 143px from left border) */}
         <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-4 sm:mb-6 lg:order-none">
@@ -181,23 +167,6 @@ export default function DashboardPage() {
           {/* Right Panel: Stats Cards & Countdown Timer (curving outward from the table) */}
           <div className="order-2 relative flex w-full flex-row flex-wrap items-center justify-center gap-6 pt-2 lg:order-2 lg:w-[410px] lg:flex-col lg:items-start lg:justify-start lg:-ml-[80px]">
 
-            {/* Background Arc Curve SVG (mirrored to follow the outward layout) */}
-            <svg
-              className="pointer-events-none absolute -top-4 left-14 w-[280px] h-[640px] opacity-100 hidden lg:block"
-              viewBox="0 0 220 640"
-              preserveAspectRatio="none"
-              fill="none"
-            >
-              <path
-                d="M 40,0 C 110,213 110,427 40,640"
-                stroke="#649627"
-                strokeWidth="2.5"
-                vectorEffect="non-scaling-stroke"
-              />
-            </svg>
-
-            {points.error ? <p role="alert">{apiErrorMessage(points.error)}</p> : null}
-            {enabled && points.isPending ? <p role="status">Loading points…</p> : null}
             {/* 1. Your Points Card (Aligned to right edge) */}
             <div className="order-2 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
@@ -209,9 +178,17 @@ export default function DashboardPage() {
               <span className="font-[family-name:var(--font-sixsound)] text-lg text-[#8FFE09] tracking-wider uppercase mb-0.5">
                 Your Points
               </span>
-              <span className="font-[family-name:var(--font-mono)] text-2xl font-medium text-[#8FFE09] tracking-wider">
-                {points.data ? `${points.data.totalPoints}` : "—"}
-              </span>
+              {points.error ? (
+                <span className="max-w-full truncate text-center font-[family-name:var(--font-mono)] text-[10px] text-red-300" role="alert">
+                  {apiErrorMessage(points.error)}
+                </span>
+              ) : points.isPending ? (
+                <span className="font-[family-name:var(--font-mono)] text-sm text-[#8FFE09]" role="status">Loading…</span>
+              ) : (
+                <span className="font-[family-name:var(--font-mono)] text-2xl font-medium text-[#8FFE09] tracking-wider">
+                  {points.data ? `${points.data.totalPoints}` : "—"}
+                </span>
+              )}
             </div>
 
             {/* 2. Central Sci-Fi Countdown Clock Timer (indented to follow the mirrored curve) */}
@@ -300,32 +277,11 @@ export default function DashboardPage() {
                 Issues Solved
               </span>
               <span className="font-[family-name:var(--font-mono)] text-xl sm:text-2xl font-medium text-[#8FFE09] tracking-wider">
-                {points.data ? `${points.data.issuesSolved}/${points.data.totalIssues}` : "—"}
+                {points.data ? `${points.data.issuesSolved}/${points.data.totalIssues}` : points.isPending ? "…" : "—"}
               </span>
             </div>
 
           </div>
-        </div>
-
-        {/* Floating Bottom Right "Report issue" Button */}
-        <div className="fixed bottom-5 right-5 z-40 flex items-center">
-          <a href="mailto:csi@vit.ac.in" className="relative flex items-center justify-center w-[88px] h-[48px] bg-[rgba(143,254,9,0.2)] border border-[rgba(143,254,9,0.4)] rounded-[8px] hover:bg-[rgba(143,254,9,0.35)] transition-all duration-200 shadow-[0_0_15px_rgba(143,254,9,0.25)]">
-            <div className="flex flex-col text-left font-[family-name:var(--font-mono)] font-bold text-white text-[11px] leading-tight">
-              <span>Report</span>
-              <span>issue</span>
-            </div>
-            {/* Rocky mascot indicator */}
-            <Image
-              src="/images/rocky.png"
-              alt="Rocky the turtle mascot"
-              width={56}
-              height={56}
-              className="pointer-events-none absolute -right-5 -bottom-5 h-14 w-14 object-contain animate-bounce"
-            />
-            <span className="hidden">
-              👾
-            </span>
-          </a>
         </div>
 
       </div>

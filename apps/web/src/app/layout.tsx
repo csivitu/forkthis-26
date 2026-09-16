@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
-import { LaunchGate } from "@/components/launch/LaunchGate";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { QueryProvider } from "@/lib/query-provider";
 import "./globals.css";
@@ -102,10 +102,10 @@ export default function RootLayout({
         className="min-h-full flex flex-col bg-black text-white"
       >
         <QueryProvider>
-          <LaunchGate>
+          <AuthGate>
             <SiteHeader />
             {children}
-          </LaunchGate>
+          </AuthGate>
         </QueryProvider>
       </body>
     </html>

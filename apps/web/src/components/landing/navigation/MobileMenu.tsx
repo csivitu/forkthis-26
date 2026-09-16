@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 
-const LOCKED_LINKS = [
+const NAV_LINKS = [
   { href: "/#home", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/leaderboard", label: "Leaderboard" },
@@ -17,15 +17,9 @@ interface MobileMenuProps {
   onAuthAction: () => void;
   authLabel: string;
   authPending: boolean;
-  landingOnly: boolean;
 }
 
-export function MobileMenu({ open, onClose, onAuthAction, authLabel, authPending, landingOnly }: MobileMenuProps) {
-  function openLockedSection() {
-    onClose();
-    window.dispatchEvent(new Event("launch-locked"));
-  }
-
+export function MobileMenu({ open, onClose, onAuthAction, authLabel, authPending }: MobileMenuProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -52,12 +46,8 @@ export function MobileMenu({ open, onClose, onAuthAction, authLabel, authPending
       <span className="mobile-menu__cross mobile-menu__cross--left" aria-hidden="true" />
       <span className="mobile-menu__cross mobile-menu__cross--right" aria-hidden="true" />
       <nav className="mobile-menu__links" aria-label="Mobile navigation">
-        {LOCKED_LINKS.map((link) => (
-          landingOnly && link.href !== "/#home" ? (
-            <button key={link.href} type="button" onClick={openLockedSection} tabIndex={open ? 0 : -1}>
-              <span>{link.label}</span>
-            </button>
-          ) : link.href === "/login" ? (
+        {NAV_LINKS.map((link) => (
+          link.href === "/login" ? (
             <button key={link.href} type="button" onClick={onAuthAction} disabled={authPending} tabIndex={open ? 0 : -1}>
               <span>{authPending ? "Logging out…" : authLabel}</span>
             </button>

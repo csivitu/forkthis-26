@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const SPEAKER_DESCRIPTION =
-  "A tech community leader and AI and open-source advocate, Mr. Janardan Revuru brings engineering leadership experience across Dell, HPE, Nortel, Siemens, and Motorola. An Advisor to Open Source India since 2011 and co-founder of prominent developer communities, he has brought together 22K+ members through 110+ events. Currently pursuing a PhD in AI focused on multi-agent systems, he brings together industry expertise, academic insight, and a strong commitment to knowledge sharing.";
+  "A tech community leader and open-source advocate, Mr. Janardan Revuru brings engineering leadership experience in building enterprise products and distributed systems. An Advisor to Open Source India conference since 2011 and founder of prominent developer communities, he has brought together 22K+ members through 110+ events. Currently pursuing a PhD in AI focused on multi-agent systems, he brings together industry expertise, academic insight, and a strong commitment to knowledge sharing.";
 
 function LinkedInIcon() {
   return (
@@ -100,8 +100,8 @@ export function SpeakerSection() {
   const cardTransform = !isInView
     ? "translateY(24px) scale(0.96) rotate(0deg)"
     : isHovered
-    ? "translateY(-4px) scale(1.06) rotate(-3deg)"
-    : "translateY(0) scale(1) rotate(0deg)";
+      ? "translateY(-4px) scale(1.06) rotate(-3deg)"
+      : "translateY(0) scale(1) rotate(0deg)";
 
   return (
     <section
@@ -149,8 +149,8 @@ export function SpeakerSection() {
                   style={{ minHeight: "23%" }}
                 >
                   <div className="flex flex-col justify-start leading-[1.05] tracking-[0.04em]">
-                    <span className="text-[clamp(0.95rem,2.1vw,1.55rem)] font-bold">Janardan</span>
-                    <span className="text-[clamp(0.95rem,2.1vw,1.55rem)] font-bold">Revuru</span>
+                    <span className="text-[clamp(1.1rem,2.4vw,1.75rem)] font-bold">Janardan</span>
+                    <span className="text-[clamp(1.1rem,2.4vw,1.75rem)] font-bold">Revuru</span>
                   </div>
 
                   <a
@@ -160,8 +160,8 @@ export function SpeakerSection() {
                     aria-label="Janardan Revuru on LinkedIn"
                     className="!static self-start flex items-center justify-center text-white transition-all duration-200 hover:scale-110 hover:text-[#8FFE09] -translate-x-1.5 sm:-translate-x-2.5 mt-[0.08em]"
                     style={{
-                      width: "clamp(1.25rem, 2.7vw, 1.85rem)",
-                      height: "clamp(1.25rem, 2.7vw, 1.85rem)",
+                      width: "clamp(1.35rem, 2.9vw, 1.95rem)",
+                      height: "clamp(1.35rem, 2.9vw, 1.95rem)",
                     }}
                   >
                     <LinkedInIcon />
@@ -173,8 +173,8 @@ export function SpeakerSection() {
 
           {/* Copy and Animated SVG Line */}
           <div className="speaker-copy">
-            <p className="speaker-copy__role">Director of Engineering</p>
-            <p className="speaker-copy__company">@Dell Technologies</p>
+            <p className="speaker-copy__role">DIRECTOR OF ENGINEERING</p>
+            <p className="speaker-copy__company">Dell Technologies, HPE, Nortel, SIEMENS, Avaya</p>
 
             <div ref={lineContainerRef} className="w-full">
               <svg
@@ -204,7 +204,7 @@ export function SpeakerSection() {
                   opacity={lineProgress.opacity}
                 >
                   <path
-                    d="M 0 -9 L 2.2 -2.2 L 9 0 L 2.2 2.2 L 0 9 L -2.2 2.2 L -9 0 L -2.2 -2.2 Z"
+                    d="M 0 -10.5 L 2.5 -2.5 L 10.5 0 L 2.5 2.5 L 0 10.5 L -2.5 2.5 L -10.5 0 L -2.5 -2.5 Z"
                     filter="url(#speakerStarGlow)"
                   />
                 </g>

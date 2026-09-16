@@ -11,7 +11,7 @@
   --ink: #fcfcfc;
   --panel: #0d0d12;
   --frame-inset: 3px;
-  --page-heading-size: clamp(1.75rem, 6vw, 3.75rem);
+  --page-heading-size: clamp(1.5rem, 4.5vw, 3rem);
 }
 
 @theme inline {

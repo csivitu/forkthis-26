@@ -210,7 +210,7 @@ export default function DashboardPage() {
                 Your Points
               </span>
               <span className="font-[family-name:var(--font-mono)] text-2xl font-medium text-[#8FFE09] tracking-wider">
-                {points.data ? `${points.data.totalPoints}/${points.data.maxPoints}` : "—"}
+                {points.data ? `${points.data.totalPoints}` : "—"}
               </span>
             </div>
 

@@ -1,7 +1,9 @@
+import "server-only";
 import type {
   PublishedResourceSectionDto,
   PublishedResourceSectionListDto,
 } from "@repo/resource-contracts";
+import { headers } from "next/headers";
 
 interface ApiFailure {
   success: false;
@@ -27,7 +29,11 @@ const apiOrigin = (): string => {
 };
 
 async function resourceRequest<T>(path: string): Promise<T | null> {
-  const response = await fetch(`${apiOrigin()}${path}`, { cache: "no-store" });
+  const cookie = (await headers()).get("cookie");
+  const response = await fetch(`${apiOrigin()}${path}`, {
+    cache: "no-store",
+    headers: cookie ? { cookie } : undefined,
+  });
   const payload = (await response.json()) as ApiResponse<T>;
 
   if (response.status === 404) return null;

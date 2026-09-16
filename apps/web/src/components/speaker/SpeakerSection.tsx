@@ -110,7 +110,7 @@ export function SpeakerSection() {
       className="speaker-section"
       aria-labelledby="speaker-title"
     >
-      <div className="speaker-section__inner">
+      <div className="speaker-section__inner relative z-10">
         <h2 id="speaker-title" className="speaker-section__title page-heading">
           Speaker
         </h2>

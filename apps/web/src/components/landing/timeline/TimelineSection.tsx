@@ -156,8 +156,7 @@ export function TimelineSection() {
   return (
     <section ref={section} id="timeline" className="timeline-section" aria-labelledby="timeline-title">
       <div className="timeline-stage">
-        <div className="timeline-stars" aria-hidden="true" />
-        <div className="timeline-canvas">
+        <div className="timeline-canvas relative z-10">
           <h2 id="timeline-title" className="timeline-title page-heading" data-timeline-title>
             Timeline
           </h2>

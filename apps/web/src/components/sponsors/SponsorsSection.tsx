@@ -3,7 +3,6 @@
 
 import GlareHover from "@/components/ui/GlareHover";
 import { SPONSORS } from "./sponsors-data";
-import { Section } from "lucide-react";
 
 function LinkedInBadge({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -17,18 +16,18 @@ export function SponsorsSection() {
   return (
     <section
       id="sponsors"
-      className="relative z-[95] w-full py-20 sm:py-28 px-4 sm:px-6 lg:px-8"
+      className="relative z-[95] w-full overflow-hidden py-20 sm:py-28 px-4 sm:px-6 lg:px-8"
       aria-labelledby="sponsors-title"
     >
       <h2
         id="sponsors-title"
-        className="text-center font-[family-name:var(--font-title)] text-[clamp(2rem,6vw,3.5rem)] font-bold tracking-[0.08em] uppercase text-white mb-16 sm:mb-20"
+        className="relative z-10 text-center font-[family-name:var(--font-title)] text-[clamp(2rem,6vw,3.5rem)] font-bold tracking-[0.08em] uppercase text-white mb-16 sm:mb-20"
       >
         Powered By
       </h2>
 
       <div
-  className={`mx-auto grid w-full max-w-5xl gap-8 sm:gap-10 ${
+  className={`relative z-10 mx-auto grid w-full max-w-5xl gap-8 sm:gap-10 ${
     SPONSORS.length === 1 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"
   }`}
 >

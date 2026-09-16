@@ -7,6 +7,7 @@ import {
   updateResourceSectionSchema,
 } from "@repo/resource-contracts";
 import { validate } from "../../middleware/validate.middleware";
+import { requireSession } from "../../middleware/auth.middleware";
 import {
   createDraft,
   deleteDraft,
@@ -24,6 +25,7 @@ const publicRouter = Router();
 const adminRouter = Router();
 const idParams = { params: resourceSectionIdParamsSchema };
 
+publicRouter.use(requireSession);
 publicRouter.get("/sections", listPublishedSections);
 publicRouter.get(
   "/sections/:slug",

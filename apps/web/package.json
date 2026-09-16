@@ -9,15 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@repo/markdown": "workspace:*",
-    "@repo/resource-contracts": "workspace:*",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "@repo/markdown": "workspace:*",
+    "@repo/resource-contracts": "workspace:*",
     "@tanstack/react-query": "^5.102.8",
     "axios": "^1.20.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.44.0",
     "next": "16.3.3",
+    "ogl": "^1.0.11",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "three": "^0.185.1"

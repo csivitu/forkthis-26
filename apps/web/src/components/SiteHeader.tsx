@@ -42,10 +42,6 @@ function MobileHeaderPanel({ side }: { side: "left" | "right" }) {
   );
 }
 
-function openLockedSection() {
-  window.dispatchEvent(new Event("launch-locked"));
-}
-
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
@@ -119,8 +115,8 @@ export function SiteHeader() {
 
   const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
   const anchorPrefix = Boolean(forceTimeline) && !timelineActive ? "/" : "";
-  const landingOnly = process.env.NEXT_PUBLIC_LAUNCH_MODE === "landing-only";
-
+  const showSiteScrollbar =
+    !pathname.startsWith("/resources") && pathname !== "/leaderboard";
   return (
     <header
       className={`site-header${effectiveTimeline ? " site-header--timeline" : ""}${
@@ -130,28 +126,11 @@ export function SiteHeader() {
       <nav className="site-nav" aria-label="Primary navigation">
         <div className="site-nav__links site-nav__links--left">
           <a href={`${anchorPrefix}#home`}>Home</a>
-          {landingOnly ? (
-            <button type="button" onClick={openLockedSection}>Dashboard</button>
-          ) : (
-            <Link href="/dashboard">Dashboard</Link>
-          )}
+          <Link href="/dashboard">Dashboard</Link>
         </div>
         <div className="site-nav__links site-nav__links--right">
-          {landingOnly ? (
-            <>
-              <button type="button" onClick={openLockedSection}>
-                Leaderboard
-              </button>
-              <button type="button" onClick={openLockedSection}>
-                Resources
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/leaderboard">Leaderboard</Link>
-              <Link href="/resources">Resources</Link>
-            </>
-          )}
+          <Link href="/leaderboard">Leaderboard</Link>
+          <Link href="/resources">Resources</Link>
         </div>
       </nav>
 
@@ -173,12 +152,7 @@ export function SiteHeader() {
         </a>
       </div>
 
-      {landingOnly ? (
-        <button type="button" className="site-login" onClick={openLockedSection}>
-          <NavPanelShape className="site-login__shape" />
-          <span className="site-login__label">Log in</span>
-        </button>
-      ) : session.data ? (
+      {session.data ? (
         <button type="button" className="site-login" disabled={logout.isPending} onClick={() => logout.mutate()}>
           <NavPanelShape className="site-login__shape" />
           <span className="site-login__label">{logout.isPending ? "Logging out…" : "Logout"}</span>
@@ -225,7 +199,6 @@ export function SiteHeader() {
         onAuthAction={session.data ? () => { closeMenu(); logout.mutate(); } : () => void startLogin()}
         authLabel={session.data ? "Logout" : "Log in"}
         authPending={logout.isPending}
-        landingOnly={landingOnly}
       />
 
       {logout.error ? (
@@ -249,7 +222,7 @@ export function SiteHeader() {
         </ThemedDialog>
       ) : null}
 
-      <SiteScrollbar />
+      {showSiteScrollbar ? <SiteScrollbar /> : null}
     </header>
   );
 }

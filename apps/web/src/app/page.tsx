@@ -5,24 +5,30 @@ import { FAQHeader } from "@/components/faq/faq-header";
 import { FAQAccordion } from "@/components/faq/faq-accordion";
 import { FooterSection } from "@/components/footer/FooterSection";
 import { SponsorsSection } from "@/components/sponsors/SponsorsSection";
+import { ThemedGalaxyBackground } from "@/components/ThemedGalaxyBackground";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#030305] text-white">
       <HeroExperience />
-      <TimelineSection />
-      <SponsorsSection />
-      <SpeakerSection />
+      <div className="relative isolate bg-black">
+        <ThemedGalaxyBackground />
+        <div className="relative z-10">
+          <TimelineSection />
+          <SponsorsSection />
+          <SpeakerSection />
 
-      {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}
-      <section id="faqs" className="relative z-10 w-full flex flex-col items-center justify-start pb-24 overflow-x-hidden">
-        <div className="relative z-10 w-full flex flex-col items-center">
-          <FAQHeader />
-          <div className="w-full mt-4 sm:mt-6 md:mt-8">
-            <FAQAccordion />
-          </div>
+          {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}
+          <section id="faqs" className="relative w-full flex flex-col items-center justify-start pb-24">
+            <div className="relative z-10 w-full flex flex-col items-center">
+              <FAQHeader />
+              <div className="w-full mt-4 sm:mt-6 md:mt-8">
+                <FAQAccordion />
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
 
       {/* Footer Section */}
       <FooterSection />
@@ -32,4 +38,3 @@ export default function Home() {
     </main>
   );
 }
-

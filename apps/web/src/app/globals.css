@@ -901,7 +901,7 @@ button {
   position: relative;
   height: 300vh;
   min-height: 3072px;
-  background: #000;
+  background: transparent;
   isolation: isolate;
 }
 
@@ -911,20 +911,7 @@ button {
   height: 100vh;
   min-height: 560px;
   overflow: hidden;
-  background: #000;
-}
-
-.timeline-stars {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.55;
-  background-image:
-    radial-gradient(circle, #777 0 1.2px, transparent 1.5px),
-    radial-gradient(circle, #454545 0 1px, transparent 1.35px),
-    radial-gradient(circle, #696969 0 0.8px, transparent 1.2px);
-  background-position: 11px 17px, 43px 71px, 83px 31px;
-  background-size: 131px 137px, 173px 181px, 211px 197px;
+  background: transparent;
 }
 
 .timeline-canvas {
@@ -1073,7 +1060,7 @@ button {
 .speaker-section {
   position: relative;
   overflow: hidden;
-  background: #000;
+  background: transparent;
   color: #fff;
 }
 
@@ -1680,6 +1667,54 @@ button {
   flex-direction: column;
   gap: 3px;
   margin-top: 14px;
+}
+
+.docs-outline__body {
+  display: grid;
+  grid-template-columns: 4px minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.docs-outline__body .docs-outline__links {
+  margin-top: 0;
+}
+
+.docs-outline__progress {
+  --docs-outline-progress: 0;
+  position: relative;
+  width: 2px;
+  margin: 6px 1px;
+  overflow: visible;
+  border-radius: 999px;
+  background: rgb(143 254 9 / 15%);
+}
+
+.docs-outline__progress-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgb(143 254 9 / 32%), var(--acid));
+  box-shadow: 0 0 10px rgb(143 254 9 / 35%);
+  transform: scaleY(var(--docs-outline-progress));
+  transform-origin: top;
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.docs-outline__progress-dot {
+  position: absolute;
+  top: calc(var(--docs-outline-progress) * 100%);
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #000;
+  border-radius: 999px;
+  background: var(--acid);
+  box-shadow: 0 0 10px rgb(143 254 9 / 70%);
+  transform: translate(-50%, -50%);
+  transition: top 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: top;
 }
 
 .docs-outline__link {

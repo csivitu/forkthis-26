@@ -1,5 +1,6 @@
 import { HeroExperience } from "@/components/landing/hero/HeroExperience";
 import { TimelineSection } from "@/components/landing/timeline/TimelineSection";
+import { SpeakerSection } from "@/components/speaker/SpeakerSection";
 import { FAQHeader } from "@/components/faq/faq-header";
 import { FAQAccordion } from "@/components/faq/faq-accordion";
 import { FooterSection } from "@/components/footer/FooterSection";
@@ -9,6 +10,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-[#030305] text-white">
       <HeroExperience />
       <TimelineSection />
+      <SpeakerSection />
 
       {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}
       <section id="faqs" className="relative z-10 w-full flex flex-col items-center justify-start pb-24 overflow-x-hidden">

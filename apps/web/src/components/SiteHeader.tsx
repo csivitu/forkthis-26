@@ -115,6 +115,7 @@ export function SiteHeader() {
 
   const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
   const anchorPrefix = Boolean(forceTimeline) && !timelineActive ? "/" : "";
+  const showSiteScrollbar = !pathname.startsWith("/resources");
   return (
     <header
       className={`site-header${effectiveTimeline ? " site-header--timeline" : ""}${
@@ -220,7 +221,7 @@ export function SiteHeader() {
         </ThemedDialog>
       ) : null}
 
-      <SiteScrollbar />
+      {showSiteScrollbar ? <SiteScrollbar /> : null}
     </header>
   );
 }

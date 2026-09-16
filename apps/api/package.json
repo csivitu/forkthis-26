@@ -27,6 +27,7 @@
   "dependencies": {
     "@repo/admin-contracts": "workspace:*",
     "@repo/db": "workspace:*",
+    "@repo/resource-contracts": "workspace:*",
     "better-auth": "^1.7.2",
     "cors": "^2.8.6",
     "drizzle-orm": "^0.45.2",

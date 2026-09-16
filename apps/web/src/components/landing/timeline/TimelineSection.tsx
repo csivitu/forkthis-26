@@ -12,7 +12,7 @@ const TIMELINE_EVENTS = [
     title: "Master the Basics",
     description: "Learn to branch, commit, and merge through a hands-on workshop built to get you mission-ready.",
     date: "19th September 2026",
-    time: "11:00 AM onwards",
+    time: "10:00 AM onwards",
   },
   {
     title: "Speaker Session",
@@ -158,7 +158,7 @@ export function TimelineSection() {
       <div className="timeline-stage">
         <div className="timeline-stars" aria-hidden="true" />
         <div className="timeline-canvas">
-          <h2 id="timeline-title" className="timeline-title" data-timeline-title>
+          <h2 id="timeline-title" className="timeline-title page-heading" data-timeline-title>
             Timeline
           </h2>
 

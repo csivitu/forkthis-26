@@ -3,6 +3,7 @@ import type { OverviewStatsDto, SyncLogDto } from "@repo/admin-contracts"
 import { AlertTriangleIcon, ArrowUpRightIcon } from "lucide-react"
 import { OverviewCharts } from "@/components/overview-charts"
 import { PageHeader } from "@/components/page-header"
+import { SyncButton } from "@/components/sync-button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,6 +52,7 @@ export default async function OverviewPage() {
       <PageHeader
         title="Overview"
         description="Operational health across members, repositories, synchronization, and scoring."
+        action={<SyncButton />}
       />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
@@ -75,7 +77,7 @@ export default async function OverviewPage() {
           <div>
             <CardTitle>Recent sync failures</CardTitle>
             <CardDescription>
-              Latest failed scheduled repository polls.
+              Latest failed repository polls.
             </CardDescription>
           </div>
           <Button variant="outline" size="sm" asChild>

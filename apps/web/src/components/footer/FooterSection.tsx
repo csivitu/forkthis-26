@@ -388,8 +388,8 @@ export function FooterSection() {
 
                   {/* Text Content in IBM Plex Mono (Fills the entire box width boldly) */}
                   <div className="relative z-10 mb-6 w-full text-left">
-                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-sm font-medium leading-relaxed tracking-wide text-zinc-100 sm:text-base md:text-[17px]">
-                      Join The Discord Channel For Competition Discussion And All Further Communication
+                    <p className="w-full text-left font-[family-name:var(--font-ibm-plex-mono)] font-mono text-base font-semibold leading-relaxed tracking-wide text-zinc-100 sm:text-lg md:text-[1.125rem]">
+                      Join the Discord channel for all mission-related communication
                     </p>
                   </div>
 
@@ -460,7 +460,7 @@ export function FooterSection() {
       </div>
 
       {/* ── 3. ELEGANT UNCLIPPED "FORKTHIS" BANNER & CREDITS ─────────── */}
-      <div className="relative flex min-h-0 flex-1 w-full flex-col items-center justify-center overflow-hidden pt-16 pb-0 sm:pt-24 md:pt-28">
+      <div className="relative flex min-h-0 flex-1 w-full flex-col items-center justify-center overflow-visible pt-16 pb-0 sm:pt-24 md:pt-28">
 
         {/* Geodesic Photo Background — prominent and clearly visible behind FORKTHIS */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -472,11 +472,15 @@ export function FooterSection() {
           style={{ opacity: 0.85 }}
         />
 
-        {/* FORKTHIS in Hail Mary font (#264501, dynamically responsive across mobile, tablet, and 1024px+ screens) */}
-        <div className="relative z-10 flex w-full -translate-y-4 justify-center px-6 text-center select-none py-6 sm:-translate-y-6 sm:px-10 sm:py-10 md:px-16 md:py-12 lg:px-20">
-          <div className="inline-flex max-w-full flex-row flex-nowrap items-center justify-center text-[#264501] font-[family-name:var(--font-title)] font-extrabold tracking-[0.04em] sm:tracking-[0.08em] md:tracking-[0.12em] lg:tracking-[0.14em] leading-none text-[clamp(2.1rem,7.8vw,7.8rem)] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] gap-3 sm:gap-5 md:gap-7 lg:gap-9 whitespace-nowrap">
-            <span className="inline-block py-1">FORK</span>
-            <span className="inline-block py-1">THIS</span>
+        {/* FORKTHIS in Hail Mary font (#264501, fully responsive and visible without clipping) */}
+        <div className="relative z-10 flex w-full -translate-y-4 justify-center px-3 text-center select-none py-5 sm:-translate-y-6 sm:px-10 sm:py-10 md:px-16 md:py-12 lg:px-20">
+          <div className="inline-flex max-w-full flex-col items-center justify-center gap-[0.18em] text-[#264501] font-[family-name:var(--font-title)] font-extrabold leading-none uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)] sm:max-w-none sm:flex-row sm:items-center sm:gap-[clamp(0.75rem,2vw,2.5rem)]">
+            <span className="block whitespace-nowrap text-[clamp(3rem,8vw,11rem)] tracking-[0.04em] sm:tracking-[0.06em] md:tracking-[0.1em]">
+              FORK
+            </span>
+            <span className="block whitespace-nowrap text-[clamp(3rem,8vw,11rem)] tracking-[0.04em] sm:tracking-[0.06em] md:tracking-[0.1em]">
+              THIS
+            </span>
           </div>
         </div>
 

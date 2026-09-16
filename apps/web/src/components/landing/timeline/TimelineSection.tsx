@@ -9,26 +9,26 @@ const FRAME_PATH =
 
 const TIMELINE_EVENTS = [
   {
-    title: "Teaching Git Basics",
-    description: "Master the art of branching, committing, and merging in a hands-on open workshop.",
+    title: "Master the Basics",
+    description: "Learn to branch, commit, and merge through a hands-on workshop built to get you mission-ready.",
     date: "19th September 2026",
     time: "11:00 AM onwards",
   },
   {
     title: "Speaker Session",
-    description: "Get inspired as industry experts share their Git journey and insights.",
+    description: "Industry experts share their trajectories, lessons, and what lies beyond the launchpad.",
     date: "19th September 2026",
     time: "2:00 PM onwards",
   },
   {
-    title: "Introduction to Game",
-    description: "Dive into the world of Git gamification, where learning meets fun.",
+    title: "⁠Game on",
+    description: "Enter the flight simulator where Git meets gamification. Experiment, adapt, and see how far your skills can take you.",
     date: "19th September 2026",
     time: "4:30 PM onwards",
   },
   {
     title: "Online Competition",
-    description: "Compete head-to-head in Git challenges, proving your skills in real time.",
+    description: "Houston, your move. Go head-to-head in Git challenges and navigate your way to the finish line.",
     date: "19th–21st September 2026",
     time: "10:00 PM onwards",
   },

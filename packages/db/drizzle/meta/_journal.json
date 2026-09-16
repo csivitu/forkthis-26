@@ -43,6 +43,13 @@
       "when": 1789387622536,
       "tag": "0005_burly_maverick",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789562569787,
+      "tag": "0006_resources",
+      "breakpoints": true
     }
   ]
 }

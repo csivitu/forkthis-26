@@ -3,12 +3,14 @@ import { TimelineSection } from "@/components/landing/timeline/TimelineSection";
 import { FAQHeader } from "@/components/faq/faq-header";
 import { FAQAccordion } from "@/components/faq/faq-accordion";
 import { FooterSection } from "@/components/footer/FooterSection";
+import { SponsorsSection } from "@/components/sponsors/SponsorsSection";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#030305] text-white">
       <HeroExperience />
       <TimelineSection />
+      <SponsorsSection />
 
       {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}
       <section id="faqs" className="relative z-10 w-full flex flex-col items-center justify-start pb-24 overflow-x-hidden">

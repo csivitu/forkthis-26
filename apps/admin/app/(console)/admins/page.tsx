@@ -70,7 +70,6 @@ export default async function AdminsPage({
                 <TableHead>Administrator</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>GitHub</TableHead>
-                <TableHead className="text-right">Total points</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -95,9 +94,6 @@ export default async function AdminsPage({
                     <TableCell>{admin.email}</TableCell>
                     <TableCell className="font-mono text-xs">
                       {admin.githubUsername ?? "Not linked"}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {admin.totalPoints}
                     </TableCell>
                   </TableRow>
                 )

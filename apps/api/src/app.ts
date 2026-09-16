@@ -22,17 +22,18 @@ app.use(
   pinoHttp({
     logger,
     genReqId: (req) => crypto.randomUUID(),
-    redact: ['req.headers.authorization'],
+    redact: ['req.headers.authorization','req.headers.cookie'],
     customLogLevel: (req, res, err) => {
       if (res.statusCode >= 500 || err) return 'error';
       if (res.statusCode >= 400) return 'warn';
       return 'info';
     },
     serializers:{
-      
+      req: (req) => ({method: req.method, url: req.url, remoteAddress: req.remoteAddress}),
+      res: (res) => ({statusCode: res.satusCode}),
     },
     customSuccessMessage: (req,res) => `${req.method}${req.url} - ${res.statusCode}`,
-    customErrorMessage:(req,res,err) => `${req.method}${req.url}-${res.statusCode}-${err.message}-${err.stack}`,
+    customErrorMessage:(req,res,err) => `${req.method}${req.url}-${res.statusCode}-${err.message}`,
   })
 )
 

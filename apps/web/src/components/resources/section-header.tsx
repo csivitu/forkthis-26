@@ -6,7 +6,7 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title }: SectionHeaderProps) {
   return (
-    <div className="mb-6 flex w-full items-center justify-center pr-0 select-none sm:mb-8 md:mb-10 md:pr-28 lg:pr-36 xl:pr-40">
+    <div className="mb-6 flex w-full items-center justify-center select-none sm:mb-8 md:mb-10">
       <h2
         className="page-heading max-w-full text-center font-bold uppercase leading-snug tracking-[0.14em] text-white sm:tracking-[0.2em]"
       >

@@ -5,7 +5,8 @@ import { issues } from "./issues.js";
 import { pullRequests } from "./pull-request.js";
 import { pointTransactions } from "./point-transactions.js";
 import { syncLogs } from "./sync-logs.js";
-import { sessions, accounts} from "./auth.js";
+import { sessions, accounts } from "./auth.js";
+import { resourcePublications, resourceSections } from "./resources.js";
 
 export const usersRelations = relations(users, ({ many }) => ({
   pullRequests: many(pullRequests),
@@ -19,7 +20,48 @@ export const usersRelations = relations(users, ({ many }) => ({
   }),
   sessions: many(sessions),
   accounts: many(accounts),
+  resourceSectionsCreated: many(resourceSections, {
+    relationName: "resourceSectionCreator",
+  }),
+  resourceSectionsUpdated: many(resourceSections, {
+    relationName: "resourceSectionUpdater",
+  }),
+  resourcePublicationsPublished: many(resourcePublications, {
+    relationName: "resourcePublicationPublisher",
+  }),
 }));
+
+export const resourceSectionsRelations = relations(
+  resourceSections,
+  ({ one }) => ({
+    creator: one(users, {
+      fields: [resourceSections.createdBy],
+      references: [users.id],
+      relationName: "resourceSectionCreator",
+    }),
+    updater: one(users, {
+      fields: [resourceSections.updatedBy],
+      references: [users.id],
+      relationName: "resourceSectionUpdater",
+    }),
+    publication: one(resourcePublications),
+  }),
+);
+
+export const resourcePublicationsRelations = relations(
+  resourcePublications,
+  ({ one }) => ({
+    section: one(resourceSections, {
+      fields: [resourcePublications.sectionId],
+      references: [resourceSections.id],
+    }),
+    publisher: one(users, {
+      fields: [resourcePublications.publishedBy],
+      references: [users.id],
+      relationName: "resourcePublicationPublisher",
+    }),
+  }),
+);
 
 export const repositoriesRelations = relations(repositories, ({ many }) => ({
   issues: many(issues),

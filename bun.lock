@@ -153,6 +153,18 @@
         "typescript-eslint": "8.68.0",
       },
     },
+    "packages/resource-contracts": {
+      "name": "@repo/resource-contracts",
+      "version": "0.0.0",
+      "dependencies": {
+        "zod": "^4.4.3",
+      },
+      "devDependencies": {
+        "@repo/typescript-config": "*",
+        "@types/bun": "latest",
+        "typescript": "7.0.2",
+      },
+    },
     "packages/typescript-config": {
       "name": "@repo/typescript-config",
       "version": "0.0.0",
@@ -607,6 +619,8 @@
     "@repo/db": ["@repo/db@workspace:packages/db"],
 
     "@repo/eslint-config": ["@repo/eslint-config@workspace:packages/eslint-config"],
+
+    "@repo/resource-contracts": ["@repo/resource-contracts@workspace:packages/resource-contracts"],
 
     "@repo/typescript-config": ["@repo/typescript-config@workspace:packages/typescript-config"],
 

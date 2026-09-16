@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
         {/* Header Title DASHBOARD (Letter 'D' sits exactly at 143px from left border) */}
         <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-4 sm:mb-6 lg:order-none">
-          <h1 className="text-[clamp(24px,7vw,42px)] sm:text-[42px] lg:text-[50px] font-extrabold tracking-[0.04em] lg:tracking-[0.1em] text-white font-[family-name:var(--font-title)] leading-none whitespace-nowrap">
+          <h1 className="page-heading w-full text-center font-extrabold tracking-[0.04em] lg:tracking-[0.1em] text-white leading-none whitespace-nowrap">
             DASHBOARD
           </h1>
         </div>

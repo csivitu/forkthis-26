@@ -4,12 +4,14 @@ import { SpeakerSection } from "@/components/speaker/SpeakerSection";
 import { FAQHeader } from "@/components/faq/faq-header";
 import { FAQAccordion } from "@/components/faq/faq-accordion";
 import { FooterSection } from "@/components/footer/FooterSection";
+import { SponsorsSection } from "@/components/sponsors/SponsorsSection";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#030305] text-white">
       <HeroExperience />
       <TimelineSection />
+      <SponsorsSection />
       <SpeakerSection />
 
       {/* FAQ Section: Full Width to allow circuit lines and green fill to span the entire screen */}

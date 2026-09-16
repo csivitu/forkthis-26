@@ -40,7 +40,7 @@ export function SponsorsSection() {
             glareSize={220}
             transitionDuration={700}
             style={{ width: "100%", height: "100%" }}
-            className="!flex !flex-col !items-stretch !justify-start p-6 sm:p-8"
+            className="!cursor-default !flex !flex-col !items-stretch !justify-start p-6 sm:p-8"
           >
             <span className="font-mono text-center text-xs sm:text-sm tracking-[0.25em] uppercase text-zinc-400 mb-6">
               Event Sponsor
@@ -76,7 +76,7 @@ export function SponsorsSection() {
                 rel="noopener noreferrer"
                 className="font-mono text-xs sm:text-sm text-zinc-300 transition-colors hover:text-[#8FFE09]"
               >
-                visit them here →
+                Visit Them Here →
               </a>
             </div>
           </GlareHover>

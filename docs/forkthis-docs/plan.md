@@ -2,7 +2,7 @@
 
 ## Plan Status
 
-This plan is implementation-ready but not started. Every phase has an explicit exit gate. A later phase should not begin until its dependency phases pass their checks.
+Phases 1–3 are complete. Phases 4–7 are implemented and awaiting manual review. Phase 8 (search) is intentionally deferred until requested; Phase 9 rollout verification remains. Every phase has an explicit exit gate.
 
 ## Delivery Principles
 

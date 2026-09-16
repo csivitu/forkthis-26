@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import {
   BookOpenCheckIcon,
+  BookOpenTextIcon,
   DatabaseIcon,
   GaugeIcon,
   LogOutIcon,
@@ -33,6 +34,7 @@ const navigation = [
   { href: "/members", label: "Members", icon: UsersIcon },
   { href: "/admins", label: "Admins", icon: ShieldCheckIcon },
   { href: "/participants", label: "Whitelist", icon: BookOpenCheckIcon },
+  { href: "/resources", label: "Resources", icon: BookOpenTextIcon },
   { href: "/points", label: "Points log", icon: TrophyIcon },
 ] as const
 

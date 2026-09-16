@@ -116,7 +116,9 @@ export function SiteHeader() {
   const effectiveTimeline = Boolean(forceTimeline) || timelineActive;
   const anchorPrefix = Boolean(forceTimeline) && !timelineActive ? "/" : "";
   const showSiteScrollbar =
-    !pathname.startsWith("/resources") && pathname !== "/leaderboard";
+    !pathname.startsWith("/resources") &&
+    pathname !== "/dashboard" &&
+    pathname !== "/leaderboard";
   return (
     <header
       className={`site-header${effectiveTimeline ? " site-header--timeline" : ""}${

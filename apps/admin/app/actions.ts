@@ -9,11 +9,19 @@ import {
   updateIssueSchema,
   updateRepositorySchema,
 } from "@repo/admin-contracts"
+import {
+  createResourceSectionSchema,
+  reorderResourceSectionsSchema,
+  resourceSectionIdParamsSchema,
+  updateResourceSectionSchema,
+  type ResourceSectionAdminDto,
+} from "@repo/resource-contracts"
 import { apiRequest } from "@/lib/api"
 
 export interface ActionResult {
   success: boolean
   message: string
+  resourceId?: string
 }
 
 const failure = (error: Error): ActionResult => ({
@@ -265,6 +273,162 @@ export async function uploadParticipantsAction(
   } catch (error) {
     return failure(
       error instanceof Error ? error : new Error("CSV import failed")
+    )
+  }
+}
+
+const resourceInput = (formData: FormData) => ({
+  title: value(formData, "title"),
+  slug: value(formData, "slug"),
+  markdown: String(formData.get("markdown") ?? ""),
+})
+
+const validResourceId = (id: string): ActionResult | null => {
+  const parsed = resourceSectionIdParamsSchema.safeParse({ id })
+  return parsed.success
+    ? null
+    : { success: false, message: "Invalid resource section ID" }
+}
+
+export async function createResourceSectionAction(
+  formData: FormData
+): Promise<ActionResult> {
+  const parsed = createResourceSectionSchema.safeParse(resourceInput(formData))
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid resource section",
+    }
+  try {
+    const response = await apiRequest<ResourceSectionAdminDto>(
+      "/api/admin/resource-sections",
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(parsed.data),
+      }
+    )
+    revalidatePath("/resources")
+    return {
+      success: true,
+      message: "Resource section created",
+      resourceId: response.data.id,
+    }
+  } catch (error) {
+    return failure(
+      error instanceof Error
+        ? error
+        : new Error("Resource section creation failed")
+    )
+  }
+}
+
+export async function updateResourceSectionAction(
+  id: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const invalidId = validResourceId(id)
+  if (invalidId) return invalidId
+  const parsed = updateResourceSectionSchema.safeParse(resourceInput(formData))
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid resource section",
+    }
+  try {
+    await apiRequest(`/api/admin/resource-sections/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/resources")
+    revalidatePath(`/resources/${id}`)
+    return { success: true, message: "Draft saved" }
+  } catch (error) {
+    return failure(
+      error instanceof Error
+        ? error
+        : new Error("Resource section update failed")
+    )
+  }
+}
+
+export async function reorderResourceSectionsAction(
+  orderedIds: string[]
+): Promise<ActionResult> {
+  const parsed = reorderResourceSectionsSchema.safeParse({ orderedIds })
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid section order",
+    }
+  try {
+    await apiRequest("/api/admin/resource-sections/order", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/resources")
+    return { success: true, message: "Section order updated" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Resource reorder failed")
+    )
+  }
+}
+
+export async function publishResourceSectionAction(
+  id: string
+): Promise<ActionResult> {
+  const invalidId = validResourceId(id)
+  if (invalidId) return invalidId
+  try {
+    await apiRequest(`/api/admin/resource-sections/${id}/publish`, {
+      method: "POST",
+    })
+    revalidatePath("/resources")
+    revalidatePath(`/resources/${id}`)
+    return { success: true, message: "Resource section published" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Resource publication failed")
+    )
+  }
+}
+
+export async function unpublishResourceSectionAction(
+  id: string
+): Promise<ActionResult> {
+  const invalidId = validResourceId(id)
+  if (invalidId) return invalidId
+  try {
+    await apiRequest(`/api/admin/resource-sections/${id}/unpublish`, {
+      method: "POST",
+    })
+    revalidatePath("/resources")
+    revalidatePath(`/resources/${id}`)
+    return { success: true, message: "Resource section unpublished" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Resource unpublish failed")
+    )
+  }
+}
+
+export async function deleteResourceSectionAction(
+  id: string
+): Promise<ActionResult> {
+  const invalidId = validResourceId(id)
+  if (invalidId) return invalidId
+  try {
+    await apiRequest(`/api/admin/resource-sections/${id}`, {
+      method: "DELETE",
+    })
+    revalidatePath("/resources")
+    return { success: true, message: "Resource section permanently deleted" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Resource deletion failed")
     )
   }
 }

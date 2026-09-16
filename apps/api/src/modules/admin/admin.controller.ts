@@ -513,16 +513,23 @@ export async function listPointTransactions(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const { page, limit, memberId, issueId, repositoryId, reason, from, to } =
+  const { page, limit, memberId, memberSearch, issueId, repositoryId, reason, sort } =
     req.query;
   const conditions: SQL[] = [];
   if (memberId) conditions.push(eq(pointTransactions.userId, memberId));
+  if (memberSearch) {
+    const searchCondition = or(
+      ilike(users.name, `%${memberSearch}%`),
+      ilike(users.githubUsername, `%${memberSearch}%`),
+      ilike(users.email, `%${memberSearch}%`),
+    );
+    if (searchCondition) conditions.push(searchCondition);
+  }
   if (issueId) conditions.push(eq(pointTransactions.issueId, issueId));
   if (repositoryId) conditions.push(eq(issues.repositoryId, repositoryId));
   if (reason) conditions.push(eq(pointTransactions.reason, reason));
-  if (from) conditions.push(gte(pointTransactions.createdAt, new Date(from)));
-  if (to) conditions.push(lte(pointTransactions.createdAt, endDate(to)));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
+  const orderDir = sort === "oldest" ? asc(pointTransactions.createdAt) : desc(pointTransactions.createdAt);
   const awarders = alias(users, "awarders");
   try {
     const base = db
@@ -549,12 +556,13 @@ export async function listPointTransactions(
     const [rows, totalRows] = await Promise.all([
       base
         .where(where)
-        .orderBy(desc(pointTransactions.createdAt))
+        .orderBy(orderDir)
         .limit(limit)
         .offset((page - 1) * limit),
       db
         .select({ total: count() })
         .from(pointTransactions)
+        .leftJoin(users, eq(users.id, pointTransactions.userId))
         .leftJoin(issues, eq(issues.id, pointTransactions.issueId))
         .where(where),
     ]);

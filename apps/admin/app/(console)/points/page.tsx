@@ -8,7 +8,7 @@ import { ReceiptTextIcon } from "lucide-react"
 import { AdjustPointsDialog } from "@/components/adjust-points-dialog"
 import { Pager } from "@/components/pager"
 import { PageHeader } from "@/components/page-header"
-import { FilterBar } from "@/components/search-filter"
+import { PointsFilterBar } from "@/components/points-filter-bar"
 import { Badge } from "@/components/ui/badge"
 import {
   Empty,
@@ -17,16 +17,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -40,11 +30,10 @@ import { apiGet } from "@/lib/api"
 interface PointSearch {
   page?: string
   memberId?: string
+  memberSearch?: string
   issueId?: string
   repositoryId?: string
-  reason?: string
-  from?: string
-  to?: string
+  sort?: string
 }
 
 export default async function PointsPage({
@@ -54,8 +43,11 @@ export default async function PointsPage({
 }) {
   const query = await searchParams
   const params = new URLSearchParams({ page: query.page ?? "1", limit: "25" })
-  for (const [key, value] of Object.entries(query))
-    if (value && value !== "all" && key !== "page") params.set(key, value)
+  if (query.memberSearch) params.set("memberSearch", query.memberSearch)
+  if (query.repositoryId && query.repositoryId !== "all")
+    params.set("repositoryId", query.repositoryId)
+  if (query.sort && query.sort !== "newest") params.set("sort", query.sort)
+
   const [transactions, members, issues, repositories] = await Promise.all([
     apiGet<PointTransactionDto[]>(`/api/admin/point-transactions?${params}`),
     apiGet<MemberDto[]>("/api/admin/members?page=1&limit=100"),
@@ -76,80 +68,15 @@ export default async function PointsPage({
           <AdjustPointsDialog members={members.data} issues={issues.data} />
         }
       />
-      <FilterBar>
-        <Field>
-          <FieldLabel htmlFor="memberId" className="sr-only">
-            Member
-          </FieldLabel>
-          <Select name="memberId" defaultValue={query.memberId ?? "all"}>
-            <SelectTrigger id="memberId">
-              <SelectValue placeholder="All members" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="all">All members</SelectItem>
-                {members.data.map((member) => (
-                  <SelectItem key={member.id} value={member.id}>
-                    {member.name ?? member.email}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="repositoryId" className="sr-only">
-            Repository
-          </FieldLabel>
-          <Select
-            name="repositoryId"
-            defaultValue={query.repositoryId ?? "all"}
-          >
-            <SelectTrigger id="repositoryId">
-              <SelectValue placeholder="All repositories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="all">All repositories</SelectItem>
-                {repositories.data.map((repo) => (
-                  <SelectItem key={repo.id} value={repo.id}>
-                    {repo.owner}/{repo.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="reason" className="sr-only">
-            Reason
-          </FieldLabel>
-          <Select name="reason" defaultValue={query.reason ?? "all"}>
-            <SelectTrigger id="reason">
-              <SelectValue placeholder="All reasons" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="all">All reasons</SelectItem>
-                <SelectItem value="auto_merge">Automatic merge</SelectItem>
-                <SelectItem value="admin_manual">Manual</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="from" className="sr-only">
-            From date
-          </FieldLabel>
-          <Input id="from" name="from" type="date" defaultValue={query.from} />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="to" className="sr-only">
-            To date
-          </FieldLabel>
-          <Input id="to" name="to" type="date" defaultValue={query.to} />
-        </Field>
-      </FilterBar>
+      <PointsFilterBar
+        members={members.data}
+        repositories={repositories.data}
+        defaults={{
+          memberSearch: query.memberSearch,
+          repositoryId: query.repositoryId,
+          sort: query.sort,
+        }}
+      />
       {transactions.data.length === 0 ? (
         <Empty>
           <EmptyHeader>
@@ -172,7 +99,6 @@ export default async function PointsPage({
                 <TableHead>Reason</TableHead>
                 <TableHead>Note</TableHead>
                 <TableHead>Awarded by</TableHead>
-                <TableHead>Date</TableHead>
                 <TableHead className="text-right">Points</TableHead>
               </TableRow>
             </TableHeader>
@@ -191,9 +117,6 @@ export default async function PointsPage({
                     {entry.note ?? "—"}
                   </TableCell>
                   <TableCell>{entry.awardedByName ?? "System"}</TableCell>
-                  <TableCell>
-                    {new Date(entry.createdAt).toLocaleString()}
-                  </TableCell>
                   <TableCell className="text-right font-mono">
                     {entry.points > 0 ? "+" : ""}
                     {entry.points}
@@ -208,12 +131,9 @@ export default async function PointsPage({
         meta={meta}
         path="/points"
         query={{
-          memberId: query.memberId,
-          issueId: query.issueId,
+          memberSearch: query.memberSearch,
           repositoryId: query.repositoryId,
-          reason: query.reason,
-          from: query.from,
-          to: query.to,
+          sort: query.sort,
         }}
       />
     </>

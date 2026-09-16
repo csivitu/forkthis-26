@@ -113,11 +113,11 @@ export const addAdminSchema = z.object({
 
 export const transactionsQuerySchema = paginationQuerySchema.extend({
   memberId: uuid.optional(),
+  memberSearch: optionalSearch,
   issueId: uuid.optional(),
   repositoryId: uuid.optional(),
   reason: z.enum(pointReasons).optional(),
-  from: z.union([z.iso.date(), z.iso.datetime()]).optional(),
-  to: z.union([z.iso.date(), z.iso.datetime()]).optional(),
+  sort: z.enum(["newest", "oldest"]).optional(),
 });
 
 export const adjustPointsSchema = z.object({

@@ -29,19 +29,49 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 
 function AdjustmentFields({ issues }: { issues: IssueDto[] }) {
+  const [repositoryId, setRepositoryId] = useState("")
+  const repositories = Array.from(
+    new Map(issues.map((issue) => [issue.repositoryId, issue.repository])),
+  )
+  const repoIssues = issues.filter((issue) => issue.repositoryId === repositoryId)
+
   return (
     <>
       <Field>
-        <FieldLabel htmlFor="issueId">Issue</FieldLabel>
-        <Select name="issueId" required>
-          <SelectTrigger id="issueId">
-            <SelectValue placeholder="Select issue" />
+        <FieldLabel htmlFor="repositoryId">Repository</FieldLabel>
+        <Select value={repositoryId} onValueChange={setRepositoryId} required>
+          <SelectTrigger id="repositoryId">
+            <SelectValue placeholder="Select repository" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {issues.map((issue) => (
+              {repositories.map(([id, label]) => (
+                <SelectItem key={id} value={id}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="issueId">Issue</FieldLabel>
+        <Select
+          key={repositoryId}
+          name="issueId"
+          required
+          disabled={!repositoryId}
+        >
+          <SelectTrigger id="issueId">
+            <SelectValue
+              placeholder={repositoryId ? "Select issue" : "Select a repository first"}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {repoIssues.map((issue) => (
                 <SelectItem key={issue.id} value={issue.id}>
-                  {issue.repository} #{issue.githubIssueNumber}
+                  #{issue.githubIssueNumber} · {issue.title}
                 </SelectItem>
               ))}
             </SelectGroup>

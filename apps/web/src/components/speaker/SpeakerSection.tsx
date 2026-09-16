@@ -133,7 +133,7 @@ export function SpeakerSection() {
                 willChange: "transform, opacity",
               }}
             >
-              <div className="speaker-card-frame__inner relative w-full overflow-hidden">
+              <div className="!cursor-default  speaker-card-frame__inner relative w-full overflow-hidden">
                 <Image
                   src="/images/speaker.png"
                   alt="Janardan Revuru"

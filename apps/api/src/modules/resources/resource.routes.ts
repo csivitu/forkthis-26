@@ -3,6 +3,7 @@ import {
   createResourceSectionSchema,
   reorderResourceSectionsSchema,
   resourceSectionIdParamsSchema,
+  resourceSectionSlugParamsSchema,
   updateResourceSectionSchema,
 } from "@repo/resource-contracts";
 import { validate } from "../../middleware/validate.middleware";
@@ -10,31 +11,46 @@ import {
   createDraft,
   deleteDraft,
   getDraft,
+  getPublishedSection,
   listDrafts,
+  listPublishedSections,
   publishDraft,
   reorderDrafts,
   unpublishDraft,
   updateDraft,
 } from "./resource.controller";
 
-const router = Router();
+const publicRouter = Router();
+const adminRouter = Router();
 const idParams = { params: resourceSectionIdParamsSchema };
 
-router.get("/", listDrafts);
-router.post("/", validate({ body: createResourceSectionSchema }), createDraft);
-router.patch(
+publicRouter.get("/sections", listPublishedSections);
+publicRouter.get(
+  "/sections/:slug",
+  validate({ params: resourceSectionSlugParamsSchema }),
+  getPublishedSection,
+);
+
+adminRouter.get("/", listDrafts);
+adminRouter.post(
+  "/",
+  validate({ body: createResourceSectionSchema }),
+  createDraft,
+);
+adminRouter.patch(
   "/order",
   validate({ body: reorderResourceSectionsSchema }),
   reorderDrafts,
 );
-router.get("/:id", validate(idParams), getDraft);
-router.patch(
+adminRouter.get("/:id", validate(idParams), getDraft);
+adminRouter.patch(
   "/:id",
   validate({ ...idParams, body: updateResourceSectionSchema }),
   updateDraft,
 );
-router.post("/:id/publish", validate(idParams), publishDraft);
-router.post("/:id/unpublish", validate(idParams), unpublishDraft);
-router.delete("/:id", validate(idParams), deleteDraft);
+adminRouter.post("/:id/publish", validate(idParams), publishDraft);
+adminRouter.post("/:id/unpublish", validate(idParams), unpublishDraft);
+adminRouter.delete("/:id", validate(idParams), deleteDraft);
 
-export default router;
+export { adminRouter };
+export default publicRouter;

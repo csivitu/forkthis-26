@@ -1,14 +1,18 @@
 import type {
   CreateResourceSectionRequest,
   PublishedResourceSectionDto,
+  PublishedResourceSectionListDto,
+  PublishedResourceSectionSummaryDto,
   ReorderResourceSectionsRequest,
   ResourceSectionAdminDto,
   ResourceSectionIdParams,
+  ResourceSectionSlugParams,
   ResourceSectionSummaryDto,
   UpdateResourceSectionRequest,
 } from "@repo/resource-contracts";
 import { createResourceSectionSchema } from "@repo/resource-contracts";
-import type { Response } from "express";
+import type { Request, Response } from "express";
+import { createHash } from "node:crypto";
 import {
   db,
   resourcePublications,
@@ -458,4 +462,76 @@ export async function deleteDraft(
   await deleteResourceSection(req.params.id);
   logger.info({ sectionId: req.params.id }, "Admin deleted resource section");
   responseOk(res, { message: "Resource section deleted" });
+}
+
+export async function listPublishedSections(
+  _req: Request,
+  res: Response,
+): Promise<void> {
+  const rows = await db
+    .select({
+      id: resourcePublications.sectionId,
+      title: resourcePublications.title,
+      slug: resourcePublications.slug,
+      position: resourceSections.position,
+      publishedAt: resourcePublications.publishedAt,
+    })
+    .from(resourcePublications)
+    .innerJoin(
+      resourceSections,
+      eq(resourceSections.id, resourcePublications.sectionId),
+    )
+    .orderBy(
+      asc(resourceSections.position),
+      asc(resourceSections.createdAt),
+      asc(resourceSections.id),
+    );
+  const sections: PublishedResourceSectionSummaryDto[] = rows.map((row) => ({
+    ...row,
+    publishedAt: asIso(row.publishedAt),
+  }));
+  const revision = createHash("sha256")
+    .update(
+      sections
+        .map((section) => `${section.id}:${section.publishedAt}`)
+        .join("|"),
+    )
+    .digest("hex");
+  const data: PublishedResourceSectionListDto = { sections, revision };
+  res.set("Cache-Control", "no-store");
+  responseOk(res, data);
+}
+
+export async function getPublishedSection(
+  req: Request<ResourceSectionSlugParams>,
+  res: Response,
+): Promise<void> {
+  res.set("Cache-Control", "no-store");
+  const [row] = await db
+    .select({
+      id: resourcePublications.sectionId,
+      title: resourcePublications.title,
+      slug: resourcePublications.slug,
+      markdown: resourcePublications.markdown,
+      position: resourceSections.position,
+      publishedAt: resourcePublications.publishedAt,
+    })
+    .from(resourcePublications)
+    .innerJoin(
+      resourceSections,
+      eq(resourceSections.id, resourcePublications.sectionId),
+    )
+    .where(eq(resourcePublications.slug, req.params.slug));
+  if (!row) {
+    throw new ApiError(
+      404,
+      "RESOURCE_SECTION_NOT_FOUND",
+      `Published resource section '${req.params.slug}' was not found`,
+    );
+  }
+  const data: PublishedResourceSectionDto = {
+    ...row,
+    publishedAt: asIso(row.publishedAt),
+  };
+  responseOk(res, data);
 }

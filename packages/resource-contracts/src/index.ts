@@ -17,15 +17,19 @@ const uuidSchema = z.string().uuid();
 
 const resourceTitleSchema = z.string().trim().min(1).max(120);
 
-const resourceSlugSchema = z
+const resourceSlugFormatSchema = z
   .string()
   .trim()
   .min(1)
   .max(80)
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must use lowercase kebab-case")
-  .refine((slug) => slug !== "additional", {
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must use lowercase kebab-case");
+
+const resourceSlugSchema = resourceSlugFormatSchema.refine(
+  (slug) => slug !== "additional",
+  {
     message: "The slug 'additional' is reserved",
-  });
+  },
+);
 
 const resourceMarkdownSchema = z
   .string()
@@ -72,7 +76,7 @@ export const resourceSectionIdParamsSchema = z.object({
 });
 
 export const resourceSectionSlugParamsSchema = z.object({
-  slug: resourceSlugSchema,
+  slug: resourceSlugFormatSchema,
 });
 
 export const resourceSearchQuerySchema = z.object({
@@ -127,6 +131,11 @@ export interface PublishedResourceSectionSummaryDto {
 
 export interface PublishedResourceSectionDto extends PublishedResourceSectionSummaryDto {
   markdown: string;
+}
+
+export interface PublishedResourceSectionListDto {
+  sections: PublishedResourceSectionSummaryDto[];
+  revision: string;
 }
 
 export interface ResourceSearchResultDto {

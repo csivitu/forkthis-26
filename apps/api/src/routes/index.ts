@@ -2,6 +2,7 @@ import { Router } from "express";
 import dashboardRoutes from "../modules/dashboard/dashboard.routes";
 import moduleRoutes from "../modules/leaderboard/leaderboard.routes";
 import adminRoutes from "../modules/admin/admin.routes"
+import resourceRoutes from "../modules/resources/resource.routes";
 const router = Router();
 
 router.get("/health", (req, res) => {
@@ -10,6 +11,7 @@ router.get("/health", (req, res) => {
 router.use("/dashboard", dashboardRoutes);
 router.use("/leaderboard", moduleRoutes);
 router.use("/admin",adminRoutes);
+router.use("/resources", resourceRoutes);
 
 
 export default router;

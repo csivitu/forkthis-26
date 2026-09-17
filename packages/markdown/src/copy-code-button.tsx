@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type CopyState = "idle" | "copied" | "failed";
 
@@ -10,6 +10,13 @@ export interface CopyCodeButtonProps {
 
 export function CopyCodeButton({ value }: CopyCodeButtonProps) {
   const [state, setState] = useState<CopyState>("idle");
+
+  useEffect(() => {
+    if (state === "idle") return;
+
+    const resetTimer = window.setTimeout(() => setState("idle"), 2000);
+    return () => window.clearTimeout(resetTimer);
+  }, [state]);
 
   const copyCode = (): void => {
     void navigator.clipboard.writeText(value).then(
@@ -25,8 +32,8 @@ export function CopyCodeButton({ value }: CopyCodeButtonProps) {
     state === "copied"
       ? "Copied"
       : state === "failed"
-        ? "Copy failed"
-        : "Copy code";
+        ? "Failed"
+        : "Copy";
 
   return (
     <button

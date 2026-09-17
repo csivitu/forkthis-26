@@ -21,7 +21,7 @@ export function SponsorsSection() {
     >
       <h2
         id="sponsors-title"
-        className="relative z-10 text-center font-[family-name:var(--font-title)] text-[clamp(2rem,6vw,3.5rem)] font-bold tracking-[0.08em] uppercase text-white mb-16 sm:mb-20"
+        className="page-heading relative z-10 text-center font-bold tracking-[0.08em] uppercase text-white mb-16 sm:mb-20"
       >
         Powered By
       </h2>

@@ -478,7 +478,7 @@ button {
   will-change: transform;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1080px) {
   .site-header {
     height: 54px;
   }

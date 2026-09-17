@@ -33,6 +33,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { formatDateTime } from "@/lib/utils"
 
 interface DraftValue {
   title: string
@@ -261,10 +262,10 @@ export function ResourceEditor({
 
       {section ? (
         <div className="grid gap-2 rounded-lg border bg-card p-4 font-mono text-xs text-muted-foreground sm:grid-cols-2">
-          <span>Updated {new Date(section.updatedAt).toLocaleString()}</span>
+          <span>Updated {formatDateTime(section.updatedAt)}</span>
           <span>
             {section.publishedAt
-              ? `Published ${new Date(section.publishedAt).toLocaleString()}`
+              ? `Published ${formatDateTime(section.publishedAt)}`
               : "Never published"}
           </span>
         </div>

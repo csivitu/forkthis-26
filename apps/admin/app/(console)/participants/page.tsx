@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
+import { formatDateTime } from "@/lib/utils"
 
 export default async function ParticipantsPage({
   searchParams,
@@ -76,7 +77,7 @@ export default async function ParticipantsPage({
                     {participant.regno}
                   </TableCell>
                   <TableCell>
-                    {new Date(participant.createdAt).toLocaleString()}
+                    {formatDateTime(participant.createdAt)}
                   </TableCell>
                 </TableRow>
               ))}

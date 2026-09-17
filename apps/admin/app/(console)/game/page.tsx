@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
+import { formatIstDateTime } from "@/lib/date-time"
 
 const OPTION_LABELS = ["A", "B", "C", "D"] as const
 
@@ -118,7 +119,7 @@ export default async function GamePage() {
                   </TableCell>
                   <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
                     {question.lastPushedAt
-                      ? `${new Date(question.lastPushedAt).toLocaleString()} (${question.timesPushed}×)`
+                      ? `${formatIstDateTime(question.lastPushedAt)} (${question.timesPushed}×)`
                       : "Never"}
                   </TableCell>
                   <TableCell>

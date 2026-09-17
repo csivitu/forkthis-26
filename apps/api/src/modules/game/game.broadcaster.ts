@@ -6,6 +6,7 @@ import {
   type LiveGameRoundDto,
 } from "@repo/game-contracts";
 import logger from "../../utils/logger.util";
+import { dateToIstTimestamp } from "../../utils/timestamp.util";
 
 /**
  * In-process fan-out for Fastest Fingers First.
@@ -81,11 +82,11 @@ function toLiveDto(round: LiveRound): LiveGameRoundDto {
     prompt: round.prompt,
     options: round.options,
     durationSeconds: round.durationSeconds,
-    startedAt: round.startedAt.toISOString(),
-    endsAt: round.endsAt.toISOString(),
+    startedAt: dateToIstTimestamp(round.startedAt),
+    endsAt: dateToIstTimestamp(round.endsAt),
     // Re-stamped per delivery, so a late joiner measures skew against the
     // moment they actually received the payload rather than the push.
-    serverNow: new Date().toISOString(),
+    serverNow: dateToIstTimestamp(new Date()),
   };
 }
 

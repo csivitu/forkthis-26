@@ -19,6 +19,7 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
+import { dateToIstTimestamp } from "../../utils/timestamp.util";
 import {
   addClient,
   connectedClientCount,
@@ -30,9 +31,11 @@ import {
   type LiveRound,
 } from "./game.broadcaster";
 
-const asIso = (value: Date): string => value.toISOString();
-const asNullableIso = (value: Date | null): string | null =>
-  value ? value.toISOString() : null;
+// Timestamps leave the API in the shared IST format, matching every other
+// module. The countdown is unaffected: the offset round-trips exactly through
+// Date.parse, and the client only ever diffs two server-produced values.
+const asNullableIst = (value: Date | null): string | null =>
+  value ? dateToIstTimestamp(value) : null;
 
 const HOW_MANY_FASTEST = 5;
 
@@ -106,10 +109,10 @@ async function toQuestionDtos(
     const pushed = byQuestion.get(row.id);
     return {
       ...row,
-      createdAt: asIso(row.createdAt),
-      updatedAt: asIso(row.updatedAt),
+      createdAt: dateToIstTimestamp(row.createdAt),
+      updatedAt: dateToIstTimestamp(row.updatedAt),
       lastPushedAt: pushed?.lastPushedAt
-        ? asIso(new Date(pushed.lastPushedAt))
+        ? dateToIstTimestamp(new Date(pushed.lastPushedAt))
         : null,
       timesPushed: Number(pushed?.timesPushed ?? 0),
     };
@@ -184,9 +187,9 @@ export function getCurrentRound(_req: AuthRequest, res: Response): void {
     prompt: round.prompt,
     options: round.options,
     durationSeconds: round.durationSeconds,
-    startedAt: asIso(round.startedAt),
-    endsAt: asIso(round.endsAt),
-    serverNow: new Date().toISOString(),
+    startedAt: dateToIstTimestamp(round.startedAt),
+    endsAt: dateToIstTimestamp(round.endsAt),
+    serverNow: dateToIstTimestamp(new Date()),
   };
   responseOk(res, payload);
 }
@@ -536,8 +539,8 @@ export async function pushQuestion(
 
     responseCreated(res, {
       roundId: round.id,
-      startedAt: asIso(startedAt),
-      endsAt: asIso(endsAt),
+      startedAt: dateToIstTimestamp(startedAt),
+      endsAt: dateToIstTimestamp(endsAt),
       durationSeconds: question.durationSeconds,
       notifiedClients: connectedClientCount(),
     });
@@ -565,7 +568,7 @@ export async function endRound(
       .update(gameRounds)
       .set({ endsAt: round.endsAt })
       .where(eq(gameRounds.id, round.roundId));
-    responseOk(res, { roundId: round.roundId, endsAt: asIso(round.endsAt) });
+    responseOk(res, { roundId: round.roundId, endsAt: dateToIstTimestamp(round.endsAt) });
   } catch (error) {
     next(error);
   }
@@ -599,8 +602,8 @@ export async function listRounds(
     const data: GameRoundSummaryDto[] = await Promise.all(
       rows.map(async (row) => ({
         ...row,
-        startedAt: asIso(row.startedAt),
-        endsAt: asIso(row.endsAt),
+        startedAt: dateToIstTimestamp(row.startedAt),
+        endsAt: dateToIstTimestamp(row.endsAt),
         totalAnswers: Number(row.totalAnswers),
         correctAnswers: Number(row.correctAnswers),
         fastest: await fastestCorrect(row.roundId, 3),
@@ -646,8 +649,8 @@ export async function getRoundResults(
       options: round.options,
       correctIndex: round.correctIndex,
       durationSeconds: round.durationSeconds,
-      startedAt: asIso(round.startedAt),
-      endsAt: asIso(round.endsAt),
+      startedAt: dateToIstTimestamp(round.startedAt),
+      endsAt: dateToIstTimestamp(round.endsAt),
       totalAnswers: Number(totals?.totalAnswers ?? 0),
       correctAnswers: Number(totals?.correctAnswers ?? 0),
       fastest: await fastestCorrect(round.id, 25),
@@ -666,11 +669,11 @@ export function getGameStatus(_req: AuthRequest, res: Response): void {
       ? {
           roundId: round.roundId,
           prompt: round.prompt,
-          endsAt: asIso(round.endsAt),
+          endsAt: dateToIstTimestamp(round.endsAt),
           // The admin console shows how long answers stay open past the timer.
           graceMs: ANSWER_GRACE_MS,
         }
       : null,
-    lastPushedAt: asNullableIso(round ? round.startedAt : null),
+    lastPushedAt: asNullableIst(round ? round.startedAt : null),
   });
 }

@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
+import { formatIstDateTime } from "@/lib/date-time"
 
 export default async function RepositoriesPage() {
   const { data } = await apiGet<RepositoryDto[]>("/api/admin/repos")
@@ -66,7 +67,7 @@ export default async function RepositoriesPage() {
                     </p>
                     <p className="font-mono text-xs text-muted-foreground">
                       {repository.lastPolledAt
-                        ? `Polled ${new Date(repository.lastPolledAt).toLocaleString()}`
+                        ? `Polled ${formatIstDateTime(repository.lastPolledAt)}`
                         : "Never polled"}
                     </p>
                   </TableCell>

@@ -25,13 +25,13 @@ export const resourceSections = pgTable(
     updatedBy: uuid("updated_by")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
-    createdAt: timestamp("created_at", { withTimezone: true })
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow()
-      .$onUpdate(() => new Date()),
+      .$onUpdate(() => new Date().toISOString()),
   },
   (table) => [
     uniqueIndex("resource_sections_slug_unique").on(table.slug),
@@ -66,7 +66,10 @@ export const resourcePublications = pgTable(
     publishedBy: uuid("published_by")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
-    publishedAt: timestamp("published_at", { withTimezone: true })
+    publishedAt: timestamp("published_at", {
+      withTimezone: true,
+      mode: "string",
+    })
       .notNull()
       .defaultNow(),
   },

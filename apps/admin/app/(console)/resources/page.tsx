@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
+import { formatIstDateTime } from "@/lib/date-time"
 
 const statusVariant = (
   status: ResourcePublicationStatus
@@ -115,11 +116,11 @@ export default async function ResourcesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
-                    {new Date(section.updatedAt).toLocaleString()}
+                    {formatIstDateTime(section.updatedAt)}
                   </TableCell>
                   <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
                     {section.publishedAt
-                      ? new Date(section.publishedAt).toLocaleString()
+                      ? formatIstDateTime(section.publishedAt)
                       : "Never"}
                   </TableCell>
                   <TableCell>

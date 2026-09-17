@@ -50,17 +50,30 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
+import {
+  dateToIstTimestamp,
+  normalizeIstTimestamp,
+  timestampToEpochMillis,
+} from "../../utils/timestamp.util";
 import { participantsDb } from "../../../../../packages/db/sqlite/client.ts";
 import { participants } from "../../../../../packages/db/sqlite/schema.ts";
 import { CsvParseError, parseParticipantsCsv } from "./csv-parser";
 import { validateGithubRepository } from "./github-repository";
 import type { IdParams } from "./admin.types";
 
-const asIso = (value: Date): string => value.toISOString();
-const asNullableIso = (value: Date | null): string | null =>
-  value ? asIso(value) : null;
+const asIst = (value: string): string => normalizeIstTimestamp(value);
+const asNullableIst = (value: string | null): string | null =>
+  value ? asIst(value) : null;
 const repositoryLabel = (owner: string, name: string): string =>
   `${owner}/${name}`;
+const withRepositoryTimestamps = <T extends {
+  createdAt: string;
+  lastPolledAt: string | null;
+}>(repository: T): T => ({
+  ...repository,
+  createdAt: asIst(repository.createdAt),
+  lastPolledAt: asNullableIst(repository.lastPolledAt),
+});
 const endDate = (value: string): Date =>
   new Date(value.includes("T") ? value : `${value}T23:59:59.999Z`);
 
@@ -88,8 +101,8 @@ export async function listRepositories(
       .orderBy(asc(repositories.owner), asc(repositories.name));
     const data: RepositoryDto[] = rows.map((row) => ({
       ...row,
-      lastPolledAt: asNullableIso(row.lastPolledAt),
-      createdAt: asIso(row.createdAt),
+      lastPolledAt: asNullableIst(row.lastPolledAt),
+      createdAt: asIst(row.createdAt),
       issueCount: Number(row.issueCount),
     }));
     responseOk(res, data, 200, {
@@ -129,7 +142,7 @@ export async function createRepo(
     if (!repo)
       throw new ApiError(500, "INSERT_FAILED", "Failed to create repository");
     logger.info({ repoId: repo.id }, "Admin created repository");
-    responseCreated(res, repo);
+    responseCreated(res, withRepositoryTimestamps(repo));
   } catch (error) {
     logger.error({ err: error, body: req.body }, "Failed to create repository");
     next(error);
@@ -173,7 +186,7 @@ export async function updateRepo(
       { repoId: req.params.id, patch: req.body },
       "Admin updated repository",
     );
-    responseOk(res, updated);
+    responseOk(res, withRepositoryTimestamps(updated));
   } catch (error) {
     logger.error(
       { err: error, repoId: req.params.id },
@@ -248,7 +261,7 @@ export async function listIssues(
     const data: IssueDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      lastSyncedAt: asIso(row.lastSyncedAt),
+      lastSyncedAt: asIst(row.lastSyncedAt),
     }));
     responseOk(res, data, 200, {
       page,
@@ -282,7 +295,11 @@ export async function updateIssue(
       { issueId: req.params.id, points: req.body.points },
       "Admin updated issue base points",
     );
-    responseOk(res, updated);
+    responseOk(res, {
+      ...updated,
+      createdAt: asIst(updated.createdAt),
+      lastSyncedAt: asIst(updated.lastSyncedAt),
+    });
   } catch (error) {
     logger.error(
       { err: error, issueId: req.params.id },
@@ -336,9 +353,9 @@ export async function listPullRequests(
     const data: PullRequestDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      openedAt: asIso(row.openedAt),
-      updatedAt: asIso(row.updatedAt),
-      mergedAt: asNullableIso(row.mergedAt),
+      openedAt: asIst(row.openedAt),
+      updatedAt: asIst(row.updatedAt),
+      mergedAt: asNullableIst(row.mergedAt),
     }));
     responseOk(res, data, 200, {
       page,
@@ -390,10 +407,11 @@ export async function listSyncLogs(
     const data: SyncLogDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      startedAt: asIso(row.startedAt),
-      completedAt: asNullableIso(row.completedAt),
+      startedAt: asIst(row.startedAt),
+      completedAt: asNullableIst(row.completedAt),
       durationMs: row.completedAt
-        ? row.completedAt.getTime() - row.startedAt.getTime()
+        ? timestampToEpochMillis(row.completedAt) -
+          timestampToEpochMillis(row.startedAt)
         : null,
     }));
     responseOk(res, data, 200, {
@@ -513,8 +531,16 @@ export async function listPointTransactions(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const { page, limit, memberId, memberSearch, issueId, repositoryId, reason, sort } =
-    req.query;
+  const {
+    page,
+    limit,
+    memberId,
+    memberSearch,
+    issueId,
+    repositoryId,
+    reason,
+    sort,
+  } = req.query;
   const conditions: SQL[] = [];
   if (memberId) conditions.push(eq(pointTransactions.userId, memberId));
   if (memberSearch) {
@@ -529,7 +555,10 @@ export async function listPointTransactions(
   if (repositoryId) conditions.push(eq(issues.repositoryId, repositoryId));
   if (reason) conditions.push(eq(pointTransactions.reason, reason));
   const where = conditions.length > 0 ? and(...conditions) : undefined;
-  const orderDir = sort === "oldest" ? asc(pointTransactions.createdAt) : desc(pointTransactions.createdAt);
+  const orderDir =
+    sort === "oldest"
+      ? asc(pointTransactions.createdAt)
+      : desc(pointTransactions.createdAt);
   const awarders = alias(users, "awarders");
   try {
     const base = db
@@ -570,7 +599,7 @@ export async function listPointTransactions(
       ({ owner, repoName, ...row }) => ({
         ...row,
         repository: owner && repoName ? repositoryLabel(owner, repoName) : null,
-        createdAt: asIso(row.createdAt),
+        createdAt: asIst(row.createdAt),
       }),
     );
     responseOk(res, data, 200, {
@@ -637,7 +666,10 @@ export async function awardPoints(
       },
       "Admin adjusted points",
     );
-    responseCreated(res, transaction);
+    responseCreated(res, {
+      ...transaction,
+      createdAt: asIst(transaction.createdAt),
+    });
   } catch (error) {
     logger.error({ err: error, body: req.body }, "Failed to adjust points");
     next(error);
@@ -667,7 +699,7 @@ export async function listParticipants(
       .where(where);
     const data: ParticipantDto[] = rows.map((row) => ({
       ...row,
-      createdAt: asIso(row.createdAt),
+      createdAt: dateToIstTimestamp(row.createdAt),
     }));
     responseOk(res, data, 200, {
       page,
@@ -706,7 +738,10 @@ export async function createParticipant(
       .returning();
     if (!created)
       throw new ApiError(500, "INSERT_FAILED", "Failed to add participant");
-    responseCreated(res, { ...created, createdAt: asIso(created.createdAt) });
+    responseCreated(res, {
+      ...created,
+      createdAt: dateToIstTimestamp(created.createdAt),
+    });
   } catch (error) {
     logger.error(
       { err: error, email: req.body.email },

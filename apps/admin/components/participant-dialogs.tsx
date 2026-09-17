@@ -53,13 +53,13 @@ function MutationDialog({ mode }: { mode: "single" | "csv" }) {
         </DialogHeader>
         <form action={submit} className="flex flex-col gap-5">
           <Field>
-            <FieldLabel htmlFor={single ? "regno" : "file"}>
-              {single ? "Registration number" : "CSV file"}
+            <FieldLabel htmlFor={single ? "email" : "file"}>
+              {single ? "Email address" : "CSV file"}
             </FieldLabel>
             <Input
-              id={single ? "regno" : "file"}
-              name={single ? "regno" : "file"}
-              type={single ? "text" : "file"}
+              id={single ? "email" : "file"}
+              name={single ? "email" : "file"}
+              type={single ? "email" : "file"}
               accept={single ? undefined : ".csv,text/csv"}
               required
             />

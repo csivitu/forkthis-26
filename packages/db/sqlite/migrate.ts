@@ -6,10 +6,19 @@ export const participantsDbPath =
   path.join(import.meta.dir, "../../../participants.db");
 
 export const migrateParticipants = (database: Database): void => {
+  const columns = database
+    .query("PRAGMA table_info(participants)")
+    .all() as Array<{ name: string }>;
+  if (columns.some((column) => column.name === "regno")) {
+    throw new Error(
+      `Legacy participants database found at '${participantsDbPath}'. Remove it before starting the email-based whitelist.`,
+    );
+  }
+
   database.exec(`
   CREATE TABLE IF NOT EXISTS participants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    regno TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL COLLATE NOCASE UNIQUE,
     created_at INTEGER NOT NULL
   );
 `);

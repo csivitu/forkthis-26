@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
-import { formatIstDateTime } from "@/lib/date-time"
 
 export default async function ParticipantsPage({
   searchParams,
@@ -77,7 +76,7 @@ export default async function ParticipantsPage({
                     {participant.email}
                   </TableCell>
                   <TableCell>
-                    {formatIstDateTime(participant.createdAt)}
+                    {new Date(participant.createdAt).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}

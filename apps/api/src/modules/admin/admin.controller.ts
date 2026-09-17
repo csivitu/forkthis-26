@@ -50,30 +50,15 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import {
-  dateToIstTimestamp,
-  normalizeIstTimestamp,
-  timestampToEpochMillis,
-} from "../../utils/timestamp.util";
+import { dateToIstTimestamp } from "../../utils/timestamp.util";
 import { participantsDb } from "../../../../../packages/db/sqlite/client.ts";
 import { participants } from "../../../../../packages/db/sqlite/schema.ts";
 import { CsvParseError, parseParticipantsCsv } from "./csv-parser";
 import { validateGithubRepository } from "./github-repository";
 import type { IdParams } from "./admin.types";
 
-const asIst = (value: string): string => normalizeIstTimestamp(value);
-const asNullableIst = (value: string | null): string | null =>
-  value ? asIst(value) : null;
 const repositoryLabel = (owner: string, name: string): string =>
   `${owner}/${name}`;
-const withRepositoryTimestamps = <T extends {
-  createdAt: string;
-  lastPolledAt: string | null;
-}>(repository: T): T => ({
-  ...repository,
-  createdAt: asIst(repository.createdAt),
-  lastPolledAt: asNullableIst(repository.lastPolledAt),
-});
 const endDate = (value: string): Date =>
   new Date(value.includes("T") ? value : `${value}T23:59:59.999Z`);
 
@@ -101,8 +86,6 @@ export async function listRepositories(
       .orderBy(asc(repositories.owner), asc(repositories.name));
     const data: RepositoryDto[] = rows.map((row) => ({
       ...row,
-      lastPolledAt: asNullableIst(row.lastPolledAt),
-      createdAt: asIst(row.createdAt),
       issueCount: Number(row.issueCount),
     }));
     responseOk(res, data, 200, {
@@ -142,7 +125,7 @@ export async function createRepo(
     if (!repo)
       throw new ApiError(500, "INSERT_FAILED", "Failed to create repository");
     logger.info({ repoId: repo.id }, "Admin created repository");
-    responseCreated(res, withRepositoryTimestamps(repo));
+    responseCreated(res, repo);
   } catch (error) {
     logger.error({ err: error, body: req.body }, "Failed to create repository");
     next(error);
@@ -186,7 +169,7 @@ export async function updateRepo(
       { repoId: req.params.id, patch: req.body },
       "Admin updated repository",
     );
-    responseOk(res, withRepositoryTimestamps(updated));
+    responseOk(res, updated);
   } catch (error) {
     logger.error(
       { err: error, repoId: req.params.id },
@@ -261,7 +244,6 @@ export async function listIssues(
     const data: IssueDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      lastSyncedAt: asIst(row.lastSyncedAt),
     }));
     responseOk(res, data, 200, {
       page,
@@ -295,11 +277,7 @@ export async function updateIssue(
       { issueId: req.params.id, points: req.body.points },
       "Admin updated issue base points",
     );
-    responseOk(res, {
-      ...updated,
-      createdAt: asIst(updated.createdAt),
-      lastSyncedAt: asIst(updated.lastSyncedAt),
-    });
+    responseOk(res, updated);
   } catch (error) {
     logger.error(
       { err: error, issueId: req.params.id },
@@ -353,9 +331,6 @@ export async function listPullRequests(
     const data: PullRequestDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      openedAt: asIst(row.openedAt),
-      updatedAt: asIst(row.updatedAt),
-      mergedAt: asNullableIst(row.mergedAt),
     }));
     responseOk(res, data, 200, {
       page,
@@ -407,11 +382,8 @@ export async function listSyncLogs(
     const data: SyncLogDto[] = rows.map(({ owner, repoName, ...row }) => ({
       ...row,
       repository: repositoryLabel(owner, repoName),
-      startedAt: asIst(row.startedAt),
-      completedAt: asNullableIst(row.completedAt),
       durationMs: row.completedAt
-        ? timestampToEpochMillis(row.completedAt) -
-          timestampToEpochMillis(row.startedAt)
+        ? Date.parse(row.completedAt) - Date.parse(row.startedAt)
         : null,
     }));
     responseOk(res, data, 200, {
@@ -599,7 +571,6 @@ export async function listPointTransactions(
       ({ owner, repoName, ...row }) => ({
         ...row,
         repository: owner && repoName ? repositoryLabel(owner, repoName) : null,
-        createdAt: asIst(row.createdAt),
       }),
     );
     responseOk(res, data, 200, {
@@ -666,10 +637,7 @@ export async function awardPoints(
       },
       "Admin adjusted points",
     );
-    responseCreated(res, {
-      ...transaction,
-      createdAt: asIst(transaction.createdAt),
-    });
+    responseCreated(res, transaction);
   } catch (error) {
     logger.error({ err: error, body: req.body }, "Failed to adjust points");
     next(error);

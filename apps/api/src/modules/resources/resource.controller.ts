@@ -24,7 +24,6 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import { normalizeIstTimestamp } from "../../utils/timestamp.util";
 
 interface ResourceSectionRow {
   id: string;
@@ -60,10 +59,6 @@ const resourceSectionSelection = {
   publishedAt: resourcePublications.publishedAt,
 };
 
-const asIst = (value: string): string => normalizeIstTimestamp(value);
-const asNullableIst = (value: string | null): string | null =>
-  value ? asIst(value) : null;
-
 const publicationStatus = (
   row: ResourceSectionRow,
 ): ResourceSectionSummaryDto["publicationStatus"] => {
@@ -84,8 +79,8 @@ const toSummaryDto = (row: ResourceSectionRow): ResourceSectionSummaryDto => ({
   slug: row.slug,
   position: row.position,
   publicationStatus: publicationStatus(row),
-  updatedAt: asIst(row.updatedAt),
-  publishedAt: asNullableIst(row.publishedAt),
+  updatedAt: row.updatedAt,
+  publishedAt: row.publishedAt,
 });
 
 const toAdminDto = (row: ResourceSectionRow): ResourceSectionAdminDto => ({
@@ -97,7 +92,7 @@ const toAdminDto = (row: ResourceSectionRow): ResourceSectionAdminDto => ({
   createdBy: row.createdBy,
   updatedBy: row.updatedBy,
   publishedBy: row.publishedBy,
-  createdAt: asIst(row.createdAt),
+  createdAt: row.createdAt,
 });
 
 const resourceSectionNotFound = (id: string): ApiError =>
@@ -328,7 +323,7 @@ async function publishResourceSection(
       slug: publication.slug,
       markdown: publication.markdown,
       position: publication.position,
-      publishedAt: asIst(publication.publishedAt),
+      publishedAt: publication.publishedAt,
     };
   } catch (error) {
     return mapSlugConflict(error, id);
@@ -491,10 +486,7 @@ export async function listPublishedSections(
       asc(resourceSections.createdAt),
       asc(resourceSections.id),
     );
-  const sections: PublishedResourceSectionSummaryDto[] = rows.map((row) => ({
-    ...row,
-    publishedAt: asIst(row.publishedAt),
-  }));
+  const sections: PublishedResourceSectionSummaryDto[] = rows;
   const revision = createHash("sha256")
     .update(
       sections
@@ -534,9 +526,5 @@ export async function getPublishedSection(
       `Published resource section '${req.params.slug}' was not found`,
     );
   }
-  const data: PublishedResourceSectionDto = {
-    ...row,
-    publishedAt: asIst(row.publishedAt),
-  };
-  responseOk(res, data);
+  responseOk(res, row);
 }

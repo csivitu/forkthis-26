@@ -57,8 +57,8 @@ export default function LeaderboardPage() {
           </div>
 
           <div
-            className="relative z-10 grid min-h-0 w-full max-w-[55rem] flex-1 gap-[clamp(0.2rem,0.7dvh,0.75rem)]"
-            style={{ gridTemplateRows: `repeat(${Math.max(rows.length, 1)}, minmax(0, 1fr))` }}
+            className="relative z-10 grid w-full max-w-[55rem] gap-[clamp(0.2rem,0.7dvh,0.75rem)]"
+            style={{ gridTemplateRows: `repeat(${Math.max(rows.length, 1)}, clamp(2.5rem, 5dvh, 2.75rem))` }}
           >
             {leaderboard.isPending ? <p className="self-center text-center" role="status">Loading rankings…</p> : null}
             {leaderboard.error ? <p className="self-center text-center text-red-300" role="alert">{apiErrorMessage(leaderboard.error)}</p> : null}

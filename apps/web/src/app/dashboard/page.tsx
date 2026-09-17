@@ -40,7 +40,7 @@ export default function DashboardPage() {
       <div className="relative z-10 flex flex-col items-start justify-start w-full min-h-screen pt-24 pl-6 pr-6 lg:pl-[143px] lg:pr-[123px] pb-20">
 
         {/* Header Title DASHBOARD (Letter 'D' sits exactly at 143px from left border) */}
-        <div className="order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-4 sm:mb-6 lg:order-none">
+                <div className="dash-slide-in order-1 relative z-10 w-full flex flex-col items-start mt-2 sm:mt-4 mb-4 sm:mb-6 lg:order-none">
           <h1 className="page-heading w-full text-left font-extrabold tracking-[0.04em] lg:tracking-[0.1em] text-white leading-none whitespace-nowrap">
             DASHBOARD
           </h1>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
         <div className="relative z-10 contents w-full lg:flex lg:flex-row lg:items-start lg:justify-start lg:gap-8">
 
           {/* Left Panel: Repositories Table Container (Aligned at 143px from left border) */}
-          <div className="order-3 relative flex flex-col items-start w-full max-w-[568px] lg:order-1 lg:max-w-[680px] lg:w-[680px] min-h-[560px] rounded-2xl pt-6 pl-4 pr-4 pb-6 shrink-0 lg:pl-6 lg:pr-6 lg:shadow-[0_0_20px_rgba(0,0,0,0.8)] lg:backdrop-blur-sm">
+                   <div style={{ animationDelay: "150ms" }} className="dash-fade-up order-3 relative flex flex-col items-start w-full max-w-[568px] lg:order-1 lg:max-w-[680px] lg:w-[680px] min-h-[560px] rounded-2xl pt-6 pl-4 pr-4 pb-6 shrink-0 lg:pl-6 lg:pr-6 lg:shadow-[0_0_20px_rgba(0,0,0,0.8)] lg:backdrop-blur-sm">
             {/* Custom Sci-Fi Intersect Container SVG */}
             <svg
               className="pointer-events-none absolute inset-y-0 left-0 hidden w-[calc(100%+110px)] h-full lg:block"
@@ -89,7 +89,7 @@ export default function DashboardPage() {
               {enabled ? repositories.data?.map((repo, idx) => {
                 const isExpanded = expandedRepoId === repo.id;
                 return (
-                  <div key={repo.id} className="flex flex-col w-full shrink-0">
+                                   <div key={repo.id} style={{ animationDelay: `${Math.min(idx, 12) * 45 + 300}ms` }} className="dash-fade-up flex flex-col w-full shrink-0">
                     {/* Main Row */}
                     <button
                       type="button"
@@ -131,7 +131,7 @@ export default function DashboardPage() {
 
                     {/* Accordion Issues Drawer */}
                     {isExpanded && (
-                      <div className="flex flex-col w-full mt-1 p-2.5 bg-black/90 border border-[#8FFE09]/40 rounded-[8px] gap-1.5 text-[11px] font-[family-name:var(--font-mono)]">
+                                            <div className="dash-drawer flex flex-col w-full mt-1 p-2.5 bg-black/90 border border-[#8FFE09]/40 rounded-[8px] gap-1.5 text-[11px] font-[family-name:var(--font-mono)]">
                         <div className="text-[#8FFE09] font-semibold tracking-wider flex items-center justify-between border-b border-[#649627]/40 pb-1">
                           <span>AVAILABLE ISSUES ({repo.name}):</span>
                           <span className="text-[9px] text-white/70">
@@ -141,10 +141,11 @@ export default function DashboardPage() {
                         {issues.isPending ? <p role="status">Loading issues…</p> : null}
                         {issues.error ? <p role="alert">{apiErrorMessage(issues.error)}</p> : null}
                         {issues.data?.issues.length === 0 ? <p>No issues in this repository.</p> : null}
-                        {issues.data?.issues.map((issue) => (
+                                                {issues.data?.issues.map((issue, i) => (
                           <div
                             key={issue.id}
-                            className="flex items-center justify-between py-0.5 px-1.5 rounded hover:bg-[#8FFE09]/10 text-white/90 transition-colors"
+                            style={{ animationDelay: `${Math.min(i, 12) * 35}ms` }}
+                            className="dash-fade-up flex items-center justify-between py-0.5 px-1.5 rounded hover:bg-[#8FFE09]/10 text-white/90 transition-colors"
                           >
                             <span className="flex items-center gap-1.5 truncate mr-2">
                               <span className="text-[#8FFE09]">•</span>
@@ -168,7 +169,7 @@ export default function DashboardPage() {
           <div className="order-2 relative flex w-full flex-row flex-wrap items-center justify-center gap-6 pt-2 lg:order-2 lg:w-[410px] lg:flex-col lg:items-start lg:justify-start lg:-ml-[80px]">
 
             {/* 1. Your Points Card (Aligned to right edge) */}
-            <div className="order-2 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
+                       <div style={{ animationDelay: "250ms" }} className="dash-fade-up order-2 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />
@@ -192,7 +193,7 @@ export default function DashboardPage() {
             </div>
 
             {/* 2. Central Sci-Fi Countdown Clock Timer (indented to follow the mirrored curve) */}
-            <div className="order-1 relative flex basis-full flex-col items-center justify-center w-[350px] sm:w-[410px] h-[160px] my-2 lg:order-none lg:ml-[40px] lg:basis-auto shrink-0">
+                        <div style={{ animationDelay: "350ms" }} className="dash-fade-up order-1 relative flex basis-full flex-col items-center justify-center w-[350px] sm:w-[410px] h-[160px] my-2 lg:order-none lg:ml-[40px] lg:basis-auto shrink-0">
               {/* Sci-Fi Octagonal Outer Frame SVG with Top & Bottom Trapezoid Notches */}
               <svg
                 className="pointer-events-none absolute inset-0 w-full h-full"
@@ -266,7 +267,7 @@ export default function DashboardPage() {
             </div>
 
             {/* 3. Issues Solved Card (Aligned to right edge) */}
-            <div className="order-3 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
+                       <div style={{ animationDelay: "450ms" }} className="dash-fade-up order-3 relative flex flex-col items-center justify-center w-[230px] h-[92px] bg-black border-2 border-[#649627] p-6 shadow-[0_0_15px_rgba(100,150,39,0.25)] lg:order-none lg:ml-0 shrink-0">
               {/* 4 Acid Green Corner Brackets */}
               <div className="absolute -top-1 -left-1 w-6 h-6 border-t-[8px] border-l-[8px] border-[#8FFE09]" />
               <div className="absolute -top-1 -right-1 w-6 h-6 border-t-[8px] border-r-[8px] border-[#8FFE09]" />

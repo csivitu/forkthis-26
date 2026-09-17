@@ -1,13 +1,14 @@
-import type { CsvInvalidRow } from "@repo/admin-contracts";
+import {
+  createParticipantSchema,
+  type CsvInvalidRow,
+} from "@repo/admin-contracts";
 
-const registrationNumberPattern = /^\d{2}[A-Z]{3}\d{4}$/;
-const registrationHeaders = new Set([
-  "registration number",
-  "registration no",
-  "registration_number",
-  "reg no",
-  "reg_no",
-  "regno",
+const emailHeaders = new Set([
+  "email",
+  "email address",
+  "email_address",
+  "email id",
+  "email_id",
 ]);
 
 export class CsvParseError extends Error {}
@@ -17,7 +18,7 @@ interface CsvRow {
   line: number;
 }
 export interface ParsedParticipants {
-  entries: Array<{ regno: string; line: number }>;
+  entries: Array<{ email: string; line: number }>;
   invalid: CsvInvalidRow[];
 }
 
@@ -74,7 +75,7 @@ export function parseParticipantsCsv(input: string): ParsedParticipants {
   if (rows.length === 0) throw new CsvParseError("CSV is empty");
   const detectedHeaderIndex =
     rows[0]?.cells.findIndex((cell) =>
-      registrationHeaders.has(cell.trim().toLowerCase()),
+      emailHeaders.has(cell.trim().toLowerCase()),
     ) ?? -1;
   const hasHeader = detectedHeaderIndex >= 0;
   const headerIndex = hasHeader ? detectedHeaderIndex : 0;
@@ -83,25 +84,27 @@ export function parseParticipantsCsv(input: string): ParsedParticipants {
   const invalid: CsvInvalidRow[] = [];
   const seen = new Set<string>();
   for (const row of rows.slice(hasHeader ? 1 : 0)) {
-    const regno = (row.cells[headerIndex] ?? "").trim().toUpperCase();
-    if (!registrationNumberPattern.test(regno)) {
+    const value = row.cells[headerIndex] ?? "";
+    const parsed = createParticipantSchema.safeParse({ email: value });
+    if (!parsed.success) {
       invalid.push({
         line: row.line,
-        value: regno,
-        reason: "Invalid registration number",
+        value: value.trim(),
+        reason: "Invalid email address",
       });
       continue;
     }
-    if (seen.has(regno)) {
+    const { email } = parsed.data;
+    if (seen.has(email)) {
       invalid.push({
         line: row.line,
-        value: regno,
+        value: email,
         reason: "Duplicate in CSV",
       });
       continue;
     }
-    seen.add(regno);
-    entries.push({ regno, line: row.line });
+    seen.add(email);
+    entries.push({ email, line: row.line });
   }
   return { entries, invalid };
 }

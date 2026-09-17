@@ -8,7 +8,16 @@ import { eq } from "drizzle-orm";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { participantsDb } from "../../../../packages/db/sqlite/client";
 import { participants } from "../../../../packages/db/sqlite/schema";
-import { extractRegNo } from "../utils/regno.util";
+import { normalizeParticipantEmail } from "../../../../packages/db/sqlite/participant-email";
+
+async function participantExists(email: string): Promise<boolean> {
+    const participant = await participantsDb
+        .select({ email: participants.email })
+        .from(participants)
+        .where(eq(participants.email, normalizeParticipantEmail(email)))
+        .get();
+    return Boolean(participant);
+}
 
 export const auth = betterAuth({
     baseURL: env.BETTER_AUTH_URL,
@@ -81,9 +90,9 @@ export const auth = betterAuth({
 
             if (ctx.path === "/link-social" && ctx.body?.provider === "github") {
                 const session = await auth.api.getSession({ headers: ctx.headers });
-                const name = session?.user?.name;
+                const email = session?.user?.email;
 
-                if (!name) {
+                if (!email) {
                     throw new APIError("UNAUTHORIZED", {
                         code: "no_active_session",
                         message: "You must be signed in with Google before linking GitHub.",
@@ -99,24 +108,10 @@ export const auth = betterAuth({
 
                 if (existingUser?.githubId) return;
 
-                const regNo = extractRegNo(name);
-                if (!regNo) {
-                    throw new APIError("FORBIDDEN", {
-                        code: "invalid_username_format",
-                        message: "Google account name does not match the expected registration number format.",
-                    });
-                }
-
-                const match = await participantsDb
-                    .select()
-                    .from(participants)
-                    .where(eq(participants.regno, regNo))
-                    .get();
-
-                if (!match) {
+                if (!(await participantExists(email))) {
                     throw new APIError("FORBIDDEN", {
                         code: "not_a_participant",
-                        message: "This registration number is not registered as a participant.",
+                        message: "This email address is not registered as a participant.",
                     });
                 }
             }
@@ -135,25 +130,35 @@ export const auth = betterAuth({
 
                     if (existing) return;
 
-                    const regNo = extractRegNo(user.name);
-
-                    if (!regNo) {
-                        throw new APIError("BAD_REQUEST", {
-                            code: "invalid_username_format",
-                            message: "Google account name does not match the expected registration number format.",
-                        });
-                    }
-
-                    const participant = await participantsDb
-                        .select({ regno: participants.regno })
-                        .from(participants)
-                        .where(eq(participants.regno, regNo))
-                        .get();
-
-                    if (!participant) {
+                    if (!(await participantExists(user.email))) {
                         throw new APIError("BAD_REQUEST", {
                             code: "signup_disabled",
                             message: "Signup is disabled for this account.",
+                        });
+                    }
+                },
+            },
+        },
+        session: {
+            create: {
+                before: async (session) => {
+                    const existingUser = await db
+                        .select({ email: users.email })
+                        .from(users)
+                        .where(eq(users.id, session.userId))
+                        .limit(1)
+                        .then((rows) => rows[0]);
+
+                    if (!existingUser) {
+                        throw new APIError("UNAUTHORIZED", {
+                            code: "user_not_found",
+                            message: "Cannot create a session for an unknown user.",
+                        });
+                    }
+                    if (!(await participantExists(existingUser.email))) {
+                        throw new APIError("FORBIDDEN", {
+                            code: "not_a_participant",
+                            message: "This email address is not registered as a participant.",
                         });
                     }
                 },

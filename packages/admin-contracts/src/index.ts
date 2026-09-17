@@ -134,11 +134,11 @@ export const participantsQuerySchema = paginationQuerySchema.extend({
   search: optionalSearch,
 });
 export const createParticipantSchema = z.object({
-  regno: z
+  email: z
     .string()
     .trim()
-    .toUpperCase()
-    .regex(/^\d{2}[A-Z]{3}\d{4}$/, "Invalid registration number"),
+    .toLowerCase()
+    .email("Invalid email address"),
 });
 
 export type CreateRepositoryRequest = z.infer<typeof createRepositorySchema>;
@@ -235,7 +235,7 @@ export interface PointTransactionDto {
 
 export interface ParticipantDto {
   id: number;
-  regno: string;
+  email: string;
   createdAt: string;
 }
 

@@ -651,14 +651,14 @@ export async function listParticipants(
 ): Promise<void> {
   const { page, limit, search } = req.query;
   const where = search
-    ? like(participants.regno, `%${search.toUpperCase()}%`)
+    ? like(participants.email, `%${search.toLowerCase()}%`)
     : undefined;
   try {
     const rows = await participantsDb
       .select()
       .from(participants)
       .where(where)
-      .orderBy(asc(participants.regno))
+      .orderBy(asc(participants.email))
       .limit(limit)
       .offset((page - 1) * limit);
     const totals = await participantsDb
@@ -692,24 +692,24 @@ export async function createParticipant(
     const existing = await participantsDb
       .select({ id: participants.id })
       .from(participants)
-      .where(eq(participants.regno, req.body.regno))
+      .where(eq(participants.email, req.body.email))
       .get();
     if (existing)
       throw new ApiError(
         409,
         "PARTICIPANT_EXISTS",
-        `Participant '${req.body.regno}' already exists`,
+        `Participant '${req.body.email}' already exists`,
       );
     const [created] = await participantsDb
       .insert(participants)
-      .values({ regno: req.body.regno, createdAt: new Date() })
+      .values({ email: req.body.email, createdAt: new Date() })
       .returning();
     if (!created)
       throw new ApiError(500, "INSERT_FAILED", "Failed to add participant");
     responseCreated(res, { ...created, createdAt: asIso(created.createdAt) });
   } catch (error) {
     logger.error(
-      { err: error, regno: req.body.regno },
+      { err: error, email: req.body.email },
       "Failed to add participant",
     );
     next(error);
@@ -736,7 +736,7 @@ export async function uploadParticipantsCsv(
     for (const entry of parsed.entries) {
       const created = participantsDb
         .insert(participants)
-        .values({ regno: entry.regno, createdAt: new Date() })
+        .values({ email: entry.email, createdAt: new Date() })
         .onConflictDoNothing()
         .returning({ id: participants.id })
         .get();

@@ -42,11 +42,11 @@ export default async function ParticipantsPage({
     <>
       <PageHeader
         title="Whitelist"
-        description="Append-only registration-number eligibility list."
+        description="Append-only email eligibility list."
         action={<ParticipantActions />}
       />
       <DebouncedSearch
-        placeholder="Registration number"
+        placeholder="Email address"
         defaultValue={query.search}
       />
       {response.data.length === 0 ? (
@@ -57,7 +57,7 @@ export default async function ParticipantsPage({
             </EmptyMedia>
             <EmptyTitle>No whitelist entries found</EmptyTitle>
             <EmptyDescription>
-              Add one registration number or import a CSV list.
+              Add one email address or import a CSV list.
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -66,7 +66,7 @@ export default async function ParticipantsPage({
           <Table>
             <TableHeader className="sticky top-0 bg-card">
               <TableRow>
-                <TableHead>Registration number</TableHead>
+                <TableHead>Email address</TableHead>
                 <TableHead>Added</TableHead>
               </TableRow>
             </TableHeader>
@@ -74,7 +74,7 @@ export default async function ParticipantsPage({
               {response.data.map((participant) => (
                 <TableRow key={participant.id}>
                   <TableCell className="font-mono font-medium">
-                    {participant.regno}
+                    {participant.email}
                   </TableCell>
                   <TableCell>
                     {formatDateTime(participant.createdAt)}

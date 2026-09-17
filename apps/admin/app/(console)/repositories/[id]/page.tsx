@@ -41,6 +41,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { apiGet } from "@/lib/api"
+import { formatDateTime } from "@/lib/utils"
 
 interface RepositorySearch {
   search?: string
@@ -108,7 +109,7 @@ export default async function RepositoryDetailPage({
             <CardDescription>Last poll</CardDescription>
             <CardTitle className="text-base">
               {repository.lastPolledAt
-                ? new Date(repository.lastPolledAt).toLocaleString()
+                ? formatDateTime(repository.lastPolledAt)
                 : "Never"}
             </CardTitle>
           </CardHeader>
@@ -272,7 +273,7 @@ export default async function RepositoryDetailPage({
                             : "No"}
                       </TableCell>
                       <TableCell>
-                        {new Date(pr.updatedAt).toLocaleString()}
+                        {formatDateTime(pr.updatedAt)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -305,7 +306,7 @@ export default async function RepositoryDetailPage({
                   {logsResponse.data.map((log) => (
                     <TableRow key={log.id}>
                       <TableCell>
-                        {new Date(log.startedAt).toLocaleString()}
+                        {formatDateTime(log.startedAt)}
                       </TableCell>
                       <TableCell>
                         <Badge

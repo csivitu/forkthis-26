@@ -229,12 +229,12 @@ export async function createParticipantAction(
   formData: FormData
 ): Promise<ActionResult> {
   const parsed = createParticipantSchema.safeParse({
-    regno: value(formData, "regno"),
+    email: value(formData, "email"),
   })
   if (!parsed.success)
     return {
       success: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid registration number",
+      message: parsed.error.issues[0]?.message ?? "Invalid email address",
     }
   try {
     await apiRequest("/api/admin/participants", {

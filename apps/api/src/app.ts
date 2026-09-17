@@ -10,7 +10,7 @@ import { auth } from "./config/auth.config";
 import { eq } from "drizzle-orm";
 import { participantsDb } from "../../../packages/db/sqlite/client";
 import { participants } from "../../../packages/db/sqlite/schema";
-import { extractRegNo } from "./utils/regno.util";
+import { normalizeParticipantEmail } from "../../../packages/db/sqlite/participant-email";
 import { buildCorsOptions } from "./config/cors.config";
 
 
@@ -51,17 +51,15 @@ app.get("/api/debug/participant-status", async (req, res, next) => {
       return res.status(401).json({ authenticated: false });
     }
 
-    const regNo = extractRegNo(session.user.name);
-    const participant = regNo
-      ? await participantsDb
-          .select({ regno: participants.regno })
-          .from(participants)
-          .where(eq(participants.regno, regNo))
-          .get()
-      : undefined;
+    const email = normalizeParticipantEmail(session.user.email);
+    const participant = await participantsDb
+      .select({ email: participants.email })
+      .from(participants)
+      .where(eq(participants.email, email))
+      .get();
     return res.json({
       authenticated: true,
-      regNo,
+      email,
       participantFound: Boolean(participant),
     });
   } catch (error) {

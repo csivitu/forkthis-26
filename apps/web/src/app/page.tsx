@@ -11,9 +11,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#030305] text-white">
       <HeroExperience />
-      <div className="relative isolate bg-black">
         <ThemedGalaxyBackground />
-        <div className="relative z-10">
           <TimelineSection />
           <SponsorsSection />
           <SpeakerSection />
@@ -27,8 +25,6 @@ export default function Home() {
               </div>
             </div>
           </section>
-        </div>
-      </div>
 
       {/* Footer Section */}
       <FooterSection />

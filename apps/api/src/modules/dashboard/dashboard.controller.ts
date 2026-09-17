@@ -12,7 +12,6 @@ import {
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import { normalizeIstTimestamp } from "../../utils/timestamp.util";
 import type {
   PointTransactionsSummary,
   IssuesByRepositoryResponse,
@@ -68,7 +67,6 @@ export const getRepositories = async (
 
     const typed: RepositoryRow[] = rows.map((r) => ({
       ...r,
-      createdAt: normalizeIstTimestamp(r.createdAt),
       issueCount: Number(r.issueCount),
     }));
 
@@ -122,10 +120,7 @@ export const getIssuesByRepository = async (
     ]);
 
     const payload: IssuesByRepositoryResponse = {
-      issues: rows.map((row) => ({
-        ...row,
-        createdAt: normalizeIstTimestamp(row.createdAt),
-      })),
+      issues: rows,
       issuesSolved,
     };
 
@@ -189,10 +184,7 @@ export const getPointTransactions = async (
     const totalIssues = Number(totalIssuesResult[0]?.total ?? 0);
 
     const payload: PointTransactionsSummary = {
-      transactions: transactions.map((transaction) => ({
-        ...transaction,
-        createdAt: normalizeIstTimestamp(transaction.createdAt),
-      })),
+      transactions,
       totalPoints,
       issuesSolved,
       maxPoints,

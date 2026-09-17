@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { formatIstDateTime } from "@/lib/date-time"
 import {
   Field,
   FieldDescription,
@@ -262,10 +261,10 @@ export function ResourceEditor({
 
       {section ? (
         <div className="grid gap-2 rounded-lg border bg-card p-4 font-mono text-xs text-muted-foreground sm:grid-cols-2">
-          <span>Updated {formatIstDateTime(section.updatedAt)}</span>
+          <span>Updated {new Date(section.updatedAt).toLocaleString()}</span>
           <span>
             {section.publishedAt
-              ? `Published ${formatIstDateTime(section.publishedAt)}`
+              ? `Published ${new Date(section.publishedAt).toLocaleString()}`
               : "Never published"}
           </span>
         </div>

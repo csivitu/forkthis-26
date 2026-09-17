@@ -11,7 +11,6 @@ import {
   DocumentationMobileOutline,
 } from "@/components/resources/documentation-outline";
 import { createResourcePageTree } from "@/lib/resource-tree";
-import { formatIstDate } from "@/lib/date-time";
 import {
   getPublishedResourceSection,
   getPublishedResourceSections,
@@ -56,7 +55,12 @@ export default async function ResourceSectionPage({
           <p className="docs-article__eyebrow">ForkThis // Docs</p>
           <h1>{section.title}</h1>
           <p className="docs-article__meta">
-            Published {formatIstDate(section.publishedAt)}
+            Published{" "}
+            {new Date(section.publishedAt).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           </p>
         </header>
 

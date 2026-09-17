@@ -28,6 +28,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@repo/admin-contracts": "workspace:*",
+        "@repo/game-contracts": "workspace:*",
         "@repo/markdown": "workspace:*",
         "@repo/resource-contracts": "workspace:*",
         "better-auth": "^1.7.2",
@@ -63,6 +64,7 @@
       "dependencies": {
         "@repo/admin-contracts": "workspace:*",
         "@repo/db": "workspace:*",
+        "@repo/game-contracts": "workspace:*",
         "@repo/resource-contracts": "workspace:*",
         "better-auth": "^1.7.2",
         "cors": "^2.8.6",
@@ -94,6 +96,7 @@
       "dependencies": {
         "@react-three/drei": "^10.7.8",
         "@react-three/fiber": "^9.7.0",
+        "@repo/game-contracts": "workspace:*",
         "@repo/markdown": "workspace:*",
         "@repo/resource-contracts": "workspace:*",
         "@tanstack/react-query": "^5.102.8",
@@ -159,6 +162,18 @@
         "globals": "17.11.0",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "typescript-eslint": "8.68.0",
+      },
+    },
+    "packages/game-contracts": {
+      "name": "@repo/game-contracts",
+      "version": "0.0.0",
+      "dependencies": {
+        "zod": "^4.4.3",
+      },
+      "devDependencies": {
+        "@repo/typescript-config": "*",
+        "@types/bun": "latest",
+        "typescript": "7.0.2",
       },
     },
     "packages/markdown": {
@@ -648,6 +663,8 @@
     "@repo/db": ["@repo/db@workspace:packages/db"],
 
     "@repo/eslint-config": ["@repo/eslint-config@workspace:packages/eslint-config"],
+
+    "@repo/game-contracts": ["@repo/game-contracts@workspace:packages/game-contracts"],
 
     "@repo/markdown": ["@repo/markdown@workspace:packages/markdown"],
 
@@ -1928,8 +1945,6 @@
     "postcss": ["postcss@8.5.23", "", { "dependencies": { "nanoid": "^3.3.16", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg=="],
 
     "postcss-selector-parser": ["postcss-selector-parser@7.1.6", "", { "dependencies": { "cssesc": "^3.0.0", "util-deprecate": "^1.0.2" } }, "sha512-7qASPzhKF2l2KLboRZux8CCTRMdGiV08vWmyKzPz22qZ7ZjQBOeY7rNzNoCLSUiftJ7HUq0GERHmxw/t0dCdMw=="],
-
-    "postgres": ["postgres@3.4.9", "", {}, "sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw=="],
 
     "potpack": ["potpack@1.0.2", "", {}, "sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ=="],
 

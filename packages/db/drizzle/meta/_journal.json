@@ -50,6 +50,13 @@
       "when": 1789562569787,
       "tag": "0006_resources",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789670027650,
+      "tag": "0007_perpetual_rachel_grey",
+      "breakpoints": true
     }
   ]
 }

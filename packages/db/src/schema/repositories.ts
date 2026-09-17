@@ -7,13 +7,16 @@ export const repositories = pgTable("repositories", {
   githubRepoId: text("github_repo_id").notNull().unique(),
   techStack: text("tech_stack"),
   isActive: boolean("is_active").notNull().default(true),
-  lastPolledAt: timestamp("last_polled_at", { withTimezone: true }),
+  lastPolledAt: timestamp("last_polled_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
   // Storing per-resource ETags directly on the repo row was the source of the
   // shared-state bug — keep these two separate so issue polling and PR
   // polling never clobber each other's cursor.
   lastIssuesEtag: text("last_issues_etag"),
   lastPrsEtag: text("last_prs_etag"),
-  createdAt: timestamp("created_at", { withTimezone: true })
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
     .notNull()
     .defaultNow(),
 });

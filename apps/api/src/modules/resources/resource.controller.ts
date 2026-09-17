@@ -24,6 +24,7 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
+import { normalizeIstTimestamp } from "../../utils/timestamp.util";
 
 interface ResourceSectionRow {
   id: string;
@@ -33,13 +34,13 @@ interface ResourceSectionRow {
   position: number;
   createdBy: string;
   updatedBy: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   publishedTitle: string | null;
   publishedSlug: string | null;
   publishedMarkdown: string | null;
   publishedBy: string | null;
-  publishedAt: Date | null;
+  publishedAt: string | null;
 }
 
 const resourceSectionSelection = {
@@ -59,9 +60,9 @@ const resourceSectionSelection = {
   publishedAt: resourcePublications.publishedAt,
 };
 
-const asIso = (value: Date): string => value.toISOString();
-const asNullableIso = (value: Date | null): string | null =>
-  value ? asIso(value) : null;
+const asIst = (value: string): string => normalizeIstTimestamp(value);
+const asNullableIst = (value: string | null): string | null =>
+  value ? asIst(value) : null;
 
 const publicationStatus = (
   row: ResourceSectionRow,
@@ -83,8 +84,8 @@ const toSummaryDto = (row: ResourceSectionRow): ResourceSectionSummaryDto => ({
   slug: row.slug,
   position: row.position,
   publicationStatus: publicationStatus(row),
-  updatedAt: asIso(row.updatedAt),
-  publishedAt: asNullableIso(row.publishedAt),
+  updatedAt: asIst(row.updatedAt),
+  publishedAt: asNullableIst(row.publishedAt),
 });
 
 const toAdminDto = (row: ResourceSectionRow): ResourceSectionAdminDto => ({
@@ -96,7 +97,7 @@ const toAdminDto = (row: ResourceSectionRow): ResourceSectionAdminDto => ({
   createdBy: row.createdBy,
   updatedBy: row.updatedBy,
   publishedBy: row.publishedBy,
-  createdAt: asIso(row.createdAt),
+  createdAt: asIst(row.createdAt),
 });
 
 const resourceSectionNotFound = (id: string): ApiError =>
@@ -204,7 +205,7 @@ async function updateResourceSection(
   const patch: Partial<NewResourceSection> = {
     ...input,
     updatedBy: administratorId,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString(),
   };
   try {
     const [updated] = await db
@@ -244,7 +245,11 @@ async function reorderResourceSections(
     for (const [position, id] of input.orderedIds.entries()) {
       await transaction
         .update(resourceSections)
-        .set({ position, updatedBy: administratorId, updatedAt: new Date() })
+        .set({
+          position,
+          updatedBy: administratorId,
+          updatedAt: new Date().toISOString(),
+        })
         .where(eq(resourceSections.id, id));
     }
   });
@@ -286,7 +291,7 @@ async function publishResourceSection(
           `Published resource slug '${publishable.slug}' is already in use`,
         );
       }
-      const publishedAt = new Date();
+      const publishedAt = new Date().toISOString();
       const [saved] = await transaction
         .insert(resourcePublications)
         .values({
@@ -323,7 +328,7 @@ async function publishResourceSection(
       slug: publication.slug,
       markdown: publication.markdown,
       position: publication.position,
-      publishedAt: asIso(publication.publishedAt),
+      publishedAt: asIst(publication.publishedAt),
     };
   } catch (error) {
     return mapSlugConflict(error, id);
@@ -488,7 +493,7 @@ export async function listPublishedSections(
     );
   const sections: PublishedResourceSectionSummaryDto[] = rows.map((row) => ({
     ...row,
-    publishedAt: asIso(row.publishedAt),
+    publishedAt: asIst(row.publishedAt),
   }));
   const revision = createHash("sha256")
     .update(
@@ -531,7 +536,7 @@ export async function getPublishedSection(
   }
   const data: PublishedResourceSectionDto = {
     ...row,
-    publishedAt: asIso(row.publishedAt),
+    publishedAt: asIst(row.publishedAt),
   };
   responseOk(res, data);
 }

@@ -20,10 +20,9 @@ export const pointTransactions = pgTable(
     userId: uuid("user_id").references(() => users.id, {
       onDelete: "set null",
     }),
-    pullRequestId: uuid("pull_request_id").references(
-      () => pullRequests.id,
-      { onDelete: "set null" },
-    ),
+    pullRequestId: uuid("pull_request_id").references(() => pullRequests.id, {
+      onDelete: "set null",
+    }),
     issueId: uuid("issue_id").references(() => issues.id, {
       onDelete: "set null",
     }),
@@ -34,7 +33,7 @@ export const pointTransactions = pgTable(
       onDelete: "set null",
     }),
     note: text("note"),
-    createdAt: timestamp("created_at", { withTimezone: true })
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
   },

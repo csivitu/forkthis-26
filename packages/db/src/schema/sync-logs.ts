@@ -11,8 +11,14 @@ export const syncLogs = pgTable("sync_logs", {
   issuesFetched: integer("issues_fetched").notNull().default(0),
   prsFetched: integer("prs_fetched").notNull().default(0),
   errorMessage: text("error_message"),
-  startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
-  completedAt: timestamp("completed_at", { withTimezone: true }),
+  startedAt: timestamp("started_at", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+  completedAt: timestamp("completed_at", {
+    withTimezone: true,
+    mode: "string",
+  }),
 });
 
 export type SyncLog = typeof syncLogs.$inferSelect;

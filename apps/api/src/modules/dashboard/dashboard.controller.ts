@@ -1,12 +1,25 @@
 import type { Response, NextFunction } from "express";
 import { db, repositories, issues, pointTransactions } from "@repo/db";
-import { eq, and, desc, sum, count, countDistinct, isNotNull } from "drizzle-orm";
+import {
+  eq,
+  and,
+  desc,
+  sum,
+  count,
+  countDistinct,
+  isNotNull,
+} from "drizzle-orm";
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import type { PointTransactionsSummary, IssuesByRepositoryResponse, RepositoryRow, GetIssuesByRepoParams } from "./dashboard.types";
+import { normalizeIstTimestamp } from "../../utils/timestamp.util";
+import type {
+  PointTransactionsSummary,
+  IssuesByRepositoryResponse,
+  RepositoryRow,
+  GetIssuesByRepoParams,
+} from "./dashboard.types";
 import type { AuthRequest } from "../../middleware/auth.middleware";
-
 
 const getIssuesSolvedCount = async (userId: string): Promise<number> => {
   const result = await db
@@ -15,8 +28,8 @@ const getIssuesSolvedCount = async (userId: string): Promise<number> => {
     .where(
       and(
         eq(pointTransactions.userId, userId),
-        isNotNull(pointTransactions.issueId)
-      )
+        isNotNull(pointTransactions.issueId),
+      ),
     );
 
   return Number(result[0]?.count ?? 0);
@@ -25,7 +38,7 @@ const getIssuesSolvedCount = async (userId: string): Promise<number> => {
 export const getRepositories = async (
   _req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const rows = await db
@@ -55,6 +68,7 @@ export const getRepositories = async (
 
     const typed: RepositoryRow[] = rows.map((r) => ({
       ...r,
+      createdAt: normalizeIstTimestamp(r.createdAt),
       issueCount: Number(r.issueCount),
     }));
 
@@ -65,11 +79,10 @@ export const getRepositories = async (
   }
 };
 
-
 export const getIssuesByRepository = async (
   req: AuthRequest<GetIssuesByRepoParams>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -82,7 +95,11 @@ export const getIssuesByRepository = async (
       .limit(1);
 
     if (!repo) {
-      throw new ApiError(404, "NOT_FOUND", `Repository with id '${id}' not found`);
+      throw new ApiError(
+        404,
+        "NOT_FOUND",
+        `Repository with id '${id}' not found`,
+      );
     }
 
     const [rows, issuesSolved] = await Promise.all([
@@ -105,13 +122,19 @@ export const getIssuesByRepository = async (
     ]);
 
     const payload: IssuesByRepositoryResponse = {
-      issues: rows,
+      issues: rows.map((row) => ({
+        ...row,
+        createdAt: normalizeIstTimestamp(row.createdAt),
+      })),
       issuesSolved,
     };
 
     responseOk(res, payload);
   } catch (error) {
-    logger.error({ err: error, repositoryId: req.params.id }, "Failed to get issues by repository");
+    logger.error(
+      { err: error, repositoryId: req.params.id },
+      "Failed to get issues by repository",
+    );
     next(error);
   }
 };
@@ -119,12 +142,18 @@ export const getIssuesByRepository = async (
 export const getPointTransactions = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const userId = req.user!.id;
 
-    const [transactions, totalResult, issuesSolved, maxPointsResult, totalIssuesResult] = await Promise.all([
+    const [
+      transactions,
+      totalResult,
+      issuesSolved,
+      maxPointsResult,
+      totalIssuesResult,
+    ] = await Promise.all([
       db
         .select({
           id: pointTransactions.id,
@@ -149,14 +178,10 @@ export const getPointTransactions = async (
       getIssuesSolvedCount(userId),
 
       // Max possible points: sum of points on all issues in the DB
-      db
-        .select({ total: sum(issues.points) })
-        .from(issues),
+      db.select({ total: sum(issues.points) }).from(issues),
 
       // Total number of issues in the DB
-      db
-        .select({ total: count(issues.id) })
-        .from(issues),
+      db.select({ total: count(issues.id) }).from(issues),
     ]);
 
     const totalPoints = Number(totalResult[0]?.total ?? 0);
@@ -164,7 +189,10 @@ export const getPointTransactions = async (
     const totalIssues = Number(totalIssuesResult[0]?.total ?? 0);
 
     const payload: PointTransactionsSummary = {
-      transactions,
+      transactions: transactions.map((transaction) => ({
+        ...transaction,
+        createdAt: normalizeIstTimestamp(transaction.createdAt),
+      })),
       totalPoints,
       issuesSolved,
       maxPoints,
@@ -173,7 +201,10 @@ export const getPointTransactions = async (
 
     responseOk(res, payload);
   } catch (error) {
-    logger.error({ err: error, userid: req.user?.id }, "Failed to get point transactions");
+    logger.error(
+      { err: error, userid: req.user?.id },
+      "Failed to get point transactions",
+    );
     next(error);
   }
 };

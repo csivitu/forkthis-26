@@ -11,7 +11,7 @@ import { repositories } from "./repositories.js";
 import { issues } from "./issues.js";
 import { users } from "./users.js";
 import { pullRequestStatusEnum } from "./enums.js";
- 
+
 export const pullRequests = pgTable(
   "pull_requests",
   {
@@ -36,11 +36,14 @@ export const pullRequests = pgTable(
     // means "unknown yet", not false.
     isMergeable: boolean("is_mergeable"),
     reviewedBy: text("reviewed_by"),
-    openedAt: timestamp("opened_at", { withTimezone: true }).notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
+    openedAt: timestamp("opened_at", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
-    mergedAt: timestamp("merged_at", { withTimezone: true }),
+    mergedAt: timestamp("merged_at", { withTimezone: true, mode: "string" }),
   },
   (table) => [
     unique("pull_requests_repository_pr_number_unique").on(
@@ -49,6 +52,6 @@ export const pullRequests = pgTable(
     ),
   ],
 );
- 
+
 export type PullRequest = typeof pullRequests.$inferSelect;
 export type NewPullRequest = typeof pullRequests.$inferInsert;

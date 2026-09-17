@@ -15,6 +15,7 @@ import {
 } from "@/components/repository-dialogs"
 import { DebouncedSearch, FilterBar } from "@/components/search-filter"
 import { Badge } from "@/components/ui/badge"
+import { formatIstDateTime } from "@/lib/date-time"
 import {
   Card,
   CardContent,
@@ -108,7 +109,7 @@ export default async function RepositoryDetailPage({
             <CardDescription>Last poll</CardDescription>
             <CardTitle className="text-base">
               {repository.lastPolledAt
-                ? new Date(repository.lastPolledAt).toLocaleString()
+                ? formatIstDateTime(repository.lastPolledAt)
                 : "Never"}
             </CardTitle>
           </CardHeader>
@@ -271,9 +272,7 @@ export default async function RepositoryDetailPage({
                             ? "Yes"
                             : "No"}
                       </TableCell>
-                      <TableCell>
-                        {new Date(pr.updatedAt).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{formatIstDateTime(pr.updatedAt)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -304,9 +303,7 @@ export default async function RepositoryDetailPage({
                 <TableBody>
                   {logsResponse.data.map((log) => (
                     <TableRow key={log.id}>
-                      <TableCell>
-                        {new Date(log.startedAt).toLocaleString()}
-                      </TableCell>
+                      <TableCell>{formatIstDateTime(log.startedAt)}</TableCell>
                       <TableCell>
                         <Badge
                           variant={

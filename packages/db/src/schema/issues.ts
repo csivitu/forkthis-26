@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { repositories } from "./repositories.js";
 import { issueDifficultyEnum, issueStatusEnum } from "./enums.js";
- 
+
 export const issues = pgTable(
   "issues",
   {
@@ -21,12 +21,15 @@ export const issues = pgTable(
     difficulty: issueDifficultyEnum("difficulty").notNull(),
     points: integer("points").notNull(),
     status: issueStatusEnum("status").notNull().default("open"),
-    createdAt: timestamp("created_at", { withTimezone: true })
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
     // Bumped every time the poller re-fetches this issue from GitHub, so you
     // can tell a stale row from one that's simply never changed.
-    lastSyncedAt: timestamp("last_synced_at", { withTimezone: true })
+    lastSyncedAt: timestamp("last_synced_at", {
+      withTimezone: true,
+      mode: "string",
+    })
       .notNull()
       .defaultNow(),
   },
@@ -37,6 +40,6 @@ export const issues = pgTable(
     ),
   ],
 );
- 
+
 export type Issue = typeof issues.$inferSelect;
 export type NewIssue = typeof issues.$inferInsert;

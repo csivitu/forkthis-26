@@ -45,7 +45,9 @@ export default async function ResourceSectionPage({
   const tree = createResourcePageTree(sections);
   const neighbours = findNeighbour(tree, `/resources/${section.slug}`);
   const toc = (await getMarkdownTableOfContents(section.markdown)).filter(
-    (item) => item.depth === 2 || item.depth === 3,
+    (item) =>
+      (item.depth === 2 || item.depth === 3) &&
+      item.title !== "Pre-Workshop Setup Manual",
   );
 
   return (

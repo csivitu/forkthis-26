@@ -8,6 +8,7 @@ import ReactMarkdown, {
   type Components,
   type UrlTransform,
 } from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
@@ -42,6 +43,11 @@ const appendAttributes = (
 const markdownSanitizeSchema: SanitizeSchema = {
   ...defaultSchema,
   clobberPrefix: "",
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    "details",
+    "summary",
+  ],
   attributes: {
     ...defaultSchema.attributes,
     "*": appendAttributes(defaultSchema.attributes, "*", ["className"]),
@@ -53,6 +59,7 @@ const markdownSanitizeSchema: SanitizeSchema = {
       "target",
     ]),
     code: appendAttributes(defaultSchema.attributes, "code", ["className"]),
+    details: appendAttributes(defaultSchema.attributes, "details", ["open"]),
     h1: appendAttributes(defaultSchema.attributes, "h1", ["id"]),
     h2: appendAttributes(defaultSchema.attributes, "h2", ["id"]),
     h3: appendAttributes(defaultSchema.attributes, "h3", ["id"]),
@@ -120,6 +127,8 @@ const markdownComponents: Components = {
   h4: (props) => <Heading level={4} {...props} />,
   h5: (props) => <Heading level={5} {...props} />,
   h6: (props) => <Heading level={6} {...props} />,
+  details: (props) => <details data-slot="markdown-details" {...props} />,
+  summary: (props) => <summary data-slot="markdown-summary" {...props} />,
   p: (props) => <p data-slot="markdown-paragraph" {...props} />,
   ul: (props) => <ul data-slot="markdown-unordered-list" {...props} />,
   ol: (props) => <ol data-slot="markdown-ordered-list" {...props} />,
@@ -201,8 +210,11 @@ export function MarkdownContent({
           a: linkComponent ?? markdownComponents.a,
         }}
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeSlug, [rehypeSanitize, markdownSanitizeSchema]]}
-        skipHtml
+        rehypePlugins={[
+          rehypeSlug,
+          rehypeRaw,
+          [rehypeSanitize, markdownSanitizeSchema],
+        ]}
         urlTransform={markdownUrlTransform}
       >
         {markdown}

@@ -7,7 +7,12 @@ import { ThemedDialog } from "@/components/ui/ThemedDialog";
 import { useSessionQuery } from "@/hooks/use-session";
 
 function isProtectedPath(pathname: string): boolean {
-  return pathname === "/dashboard" || pathname === "/leaderboard";
+  return (
+    pathname === "/dashboard" ||
+    pathname === "/leaderboard" ||
+    pathname === "/resources" ||
+    pathname.startsWith("/resources/")
+  );
 }
 
 function findAnchor(element: Element | null): HTMLAnchorElement | null {

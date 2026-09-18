@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { RepositoryDto } from "@repo/admin-contracts"
 import { FolderGit2Icon } from "lucide-react"
+import { DateTime } from "@/components/date-time"
 import { PageHeader } from "@/components/page-header"
 import { RepositoryDialog } from "@/components/repository-dialogs"
 import { Badge } from "@/components/ui/badge"
@@ -66,7 +67,7 @@ export default async function RepositoriesPage() {
                     </p>
                     <p className="font-mono text-xs text-muted-foreground">
                       {repository.lastPolledAt
-                        ? `Polled ${new Date(repository.lastPolledAt).toLocaleString()}`
+                        ? <><span>Polled </span><DateTime value={repository.lastPolledAt} /></>
                         : "Never polled"}
                     </p>
                   </TableCell>

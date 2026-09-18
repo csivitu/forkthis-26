@@ -50,7 +50,6 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import { dateToIstTimestamp } from "../../utils/timestamp.util";
 import { participantsDb } from "../../../../../packages/db/sqlite/client.ts";
 import { participants } from "../../../../../packages/db/sqlite/schema.ts";
 import { CsvParseError, parseParticipantsCsv } from "./csv-parser";
@@ -667,7 +666,7 @@ export async function listParticipants(
       .where(where);
     const data: ParticipantDto[] = rows.map((row) => ({
       ...row,
-      createdAt: dateToIstTimestamp(row.createdAt),
+      createdAt: row.createdAt.toISOString(),
     }));
     responseOk(res, data, 200, {
       page,
@@ -706,10 +705,7 @@ export async function createParticipant(
       .returning();
     if (!created)
       throw new ApiError(500, "INSERT_FAILED", "Failed to add participant");
-    responseCreated(res, {
-      ...created,
-      createdAt: dateToIstTimestamp(created.createdAt),
-    });
+    responseCreated(res, created);
   } catch (error) {
     logger.error(
       { err: error, email: req.body.email },

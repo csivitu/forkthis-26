@@ -3,6 +3,7 @@ import { ContactRoundIcon } from "lucide-react"
 import { Pager } from "@/components/pager"
 import { PageHeader } from "@/components/page-header"
 import { ParticipantActions } from "@/components/participant-dialogs"
+import { DateTime } from "@/components/date-time"
 import { DebouncedSearch } from "@/components/search-filter"
 import {
   Empty,
@@ -76,7 +77,7 @@ export default async function ParticipantsPage({
                     {participant.email}
                   </TableCell>
                   <TableCell>
-                    {new Date(participant.createdAt).toLocaleString()}
+                    <DateTime value={participant.createdAt} />
                   </TableCell>
                 </TableRow>
               ))}

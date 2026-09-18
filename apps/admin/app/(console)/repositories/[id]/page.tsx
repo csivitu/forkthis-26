@@ -6,6 +6,7 @@ import type {
   SyncLogDto,
 } from "@repo/admin-contracts"
 import { IssuePointsDialog } from "@/components/issue-points-dialog"
+import { DateTime } from "@/components/date-time"
 import { PageHeader } from "@/components/page-header"
 import { Pager } from "@/components/pager"
 import {
@@ -108,7 +109,7 @@ export default async function RepositoryDetailPage({
             <CardDescription>Last poll</CardDescription>
             <CardTitle className="text-base">
               {repository.lastPolledAt
-                ? new Date(repository.lastPolledAt).toLocaleString()
+                ? <DateTime value={repository.lastPolledAt} />
                 : "Never"}
             </CardTitle>
           </CardHeader>
@@ -272,7 +273,7 @@ export default async function RepositoryDetailPage({
                             : "No"}
                       </TableCell>
                       <TableCell>
-                        {new Date(pr.updatedAt).toLocaleString()}
+                        <DateTime value={pr.updatedAt} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -305,7 +306,7 @@ export default async function RepositoryDetailPage({
                   {logsResponse.data.map((log) => (
                     <TableRow key={log.id}>
                       <TableCell>
-                        {new Date(log.startedAt).toLocaleString()}
+                        <DateTime value={log.startedAt} />
                       </TableCell>
                       <TableCell>
                         <Badge

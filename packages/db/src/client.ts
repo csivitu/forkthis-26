@@ -12,7 +12,7 @@ const pool = new Pool({
   connectionString,
   // PostgreSQL still stores timestamptz values as UTC; this only controls
   // the offset used for timestamp strings returned to the API.
-  options: "-c timezone=Asia/Kolkata",
+  options: "-c timezone=UTC"
 });
 
 export const db = drizzle(pool, { schema, casing: "snake_case" });

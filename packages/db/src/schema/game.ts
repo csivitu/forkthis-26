@@ -35,13 +35,13 @@ export const gameQuestions = pgTable(
     updatedBy: uuid("updated_by")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
-    createdAt: timestamp("created_at", { withTimezone: true })
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow()
-      .$onUpdate(() => new Date()),
+      .$onUpdate(() => new Date().toISOString()),
   },
   (table) => [
     index("game_questions_position_idx").on(table.position),
@@ -87,8 +87,8 @@ export const gameRounds = pgTable(
     options: jsonb("options").$type<string[]>().notNull(),
     correctIndex: integer("correct_index").notNull(),
     durationSeconds: integer("duration_seconds").notNull(),
-    startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
-    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true, mode: "string" }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true, mode: "string" }).notNull(),
     pushedBy: uuid("pushed_by")
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
@@ -130,7 +130,7 @@ export const gameAnswers = pgTable(
     selectedIndex: integer("selected_index").notNull(),
     isCorrect: boolean("is_correct").notNull(),
     responseMs: integer("response_ms").notNull(),
-    answeredAt: timestamp("answered_at", { withTimezone: true })
+    answeredAt: timestamp("answered_at", { withTimezone: true, mode: "string" })
       .notNull()
       .defaultNow(),
   },

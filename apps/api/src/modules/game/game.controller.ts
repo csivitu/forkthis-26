@@ -19,7 +19,6 @@ import type { AuthRequest } from "../../middleware/auth.middleware";
 import { ApiError } from "../../utils/api-error";
 import { responseCreated, responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
-import { dateToIstTimestamp } from "../../utils/timestamp.util";
 import {
   addClient,
   connectedClientCount,
@@ -31,12 +30,10 @@ import {
   type LiveRound,
 } from "./game.broadcaster";
 
-// Timestamps leave the API in the shared IST format, matching every other
-// module. The countdown is unaffected: the offset round-trips exactly through
-// Date.parse, and the client only ever diffs two server-produced values.
-const asNullableIst = (value: Date | null): string | null =>
-  value ? dateToIstTimestamp(value) : null;
-
+// Timestamp columns are declared `mode: "string"` (see packages/db game
+// schema), so they arrive as ISO strings and go straight into DTOs — the same
+// pass-through the resources module uses. Only in-memory values computed here
+// need converting.
 const HOW_MANY_FASTEST = 5;
 
 const administratorId = (req: { user?: { id: string } }): string => {
@@ -80,8 +77,8 @@ async function toQuestionDtos(
     correctIndex: number;
     durationSeconds: number;
     position: number;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
   }[],
 ): Promise<GameQuestionDto[]> {
   if (rows.length === 0) return [];
@@ -109,11 +106,9 @@ async function toQuestionDtos(
     const pushed = byQuestion.get(row.id);
     return {
       ...row,
-      createdAt: dateToIstTimestamp(row.createdAt),
-      updatedAt: dateToIstTimestamp(row.updatedAt),
-      lastPushedAt: pushed?.lastPushedAt
-        ? dateToIstTimestamp(new Date(pushed.lastPushedAt))
-        : null,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      lastPushedAt: pushed?.lastPushedAt ?? null,
       timesPushed: Number(pushed?.timesPushed ?? 0),
     };
   });
@@ -187,9 +182,9 @@ export function getCurrentRound(_req: AuthRequest, res: Response): void {
     prompt: round.prompt,
     options: round.options,
     durationSeconds: round.durationSeconds,
-    startedAt: dateToIstTimestamp(round.startedAt),
-    endsAt: dateToIstTimestamp(round.endsAt),
-    serverNow: dateToIstTimestamp(new Date()),
+    startedAt: round.startedAt.toISOString(),
+    endsAt: round.endsAt.toISOString(),
+    serverNow: new Date().toISOString(),
   };
   responseOk(res, payload);
 }
@@ -518,8 +513,10 @@ export async function pushQuestion(
         options: question.options,
         correctIndex: question.correctIndex,
         durationSeconds: question.durationSeconds,
-        startedAt,
-        endsAt,
+        // The round window is computed here as Dates for the in-memory
+        // LiveRound; the columns are string-mode, so they serialise on the way in.
+        startedAt: startedAt.toISOString(),
+        endsAt: endsAt.toISOString(),
         pushedBy: adminId,
       })
       .returning({ id: gameRounds.id });
@@ -539,8 +536,8 @@ export async function pushQuestion(
 
     responseCreated(res, {
       roundId: round.id,
-      startedAt: dateToIstTimestamp(startedAt),
-      endsAt: dateToIstTimestamp(endsAt),
+      startedAt: startedAt.toISOString(),
+      endsAt: endsAt.toISOString(),
       durationSeconds: question.durationSeconds,
       notifiedClients: connectedClientCount(),
     });
@@ -566,9 +563,9 @@ export async function endRound(
     }
     await db
       .update(gameRounds)
-      .set({ endsAt: round.endsAt })
+      .set({ endsAt: round.endsAt.toISOString() })
       .where(eq(gameRounds.id, round.roundId));
-    responseOk(res, { roundId: round.roundId, endsAt: dateToIstTimestamp(round.endsAt) });
+    responseOk(res, { roundId: round.roundId, endsAt: round.endsAt.toISOString() });
   } catch (error) {
     next(error);
   }
@@ -602,8 +599,8 @@ export async function listRounds(
     const data: GameRoundSummaryDto[] = await Promise.all(
       rows.map(async (row) => ({
         ...row,
-        startedAt: dateToIstTimestamp(row.startedAt),
-        endsAt: dateToIstTimestamp(row.endsAt),
+        startedAt: row.startedAt,
+        endsAt: row.endsAt,
         totalAnswers: Number(row.totalAnswers),
         correctAnswers: Number(row.correctAnswers),
         fastest: await fastestCorrect(row.roundId, 3),
@@ -649,8 +646,8 @@ export async function getRoundResults(
       options: round.options,
       correctIndex: round.correctIndex,
       durationSeconds: round.durationSeconds,
-      startedAt: dateToIstTimestamp(round.startedAt),
-      endsAt: dateToIstTimestamp(round.endsAt),
+      startedAt: round.startedAt,
+      endsAt: round.endsAt,
       totalAnswers: Number(totals?.totalAnswers ?? 0),
       correctAnswers: Number(totals?.correctAnswers ?? 0),
       fastest: await fastestCorrect(round.id, 25),
@@ -669,11 +666,11 @@ export function getGameStatus(_req: AuthRequest, res: Response): void {
       ? {
           roundId: round.roundId,
           prompt: round.prompt,
-          endsAt: dateToIstTimestamp(round.endsAt),
+          endsAt: round.endsAt.toISOString(),
           // The admin console shows how long answers stay open past the timer.
           graceMs: ANSWER_GRACE_MS,
         }
       : null,
-    lastPushedAt: asNullableIst(round ? round.startedAt : null),
+    lastPushedAt: round ? round.startedAt.toISOString() : null,
   });
 }

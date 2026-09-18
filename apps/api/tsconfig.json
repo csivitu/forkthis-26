@@ -20,7 +20,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
-      "@repo/db": ["../../packages/db/src/index.ts"]
+      "@repo/db": ["../../packages/db/src/index.ts"],
+      "@repo/game-contracts": ["../../packages/game-contracts/src/index.ts"]
     }
   },
   "include": ["src/**/*"]

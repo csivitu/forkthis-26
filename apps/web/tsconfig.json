@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@repo/game-contracts": ["../../packages/game-contracts/src/index.ts"]
     }
   },
   "include": [

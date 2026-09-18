@@ -4,6 +4,7 @@ import type {
   ResourceSectionSummaryDto,
 } from "@repo/resource-contracts"
 import { BookOpenTextIcon, PlusIcon } from "lucide-react"
+import { DateTime } from "@/components/date-time"
 import { PageHeader } from "@/components/page-header"
 import {
   ResourceLifecycleActions,
@@ -115,11 +116,11 @@ export default async function ResourcesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
-                    {new Date(section.updatedAt).toLocaleString()}
+                    <DateTime value={section.updatedAt} />
                   </TableCell>
                   <TableCell className="text-xs whitespace-nowrap text-muted-foreground">
                     {section.publishedAt
-                      ? new Date(section.publishedAt).toLocaleString()
+                      ? <DateTime value={section.publishedAt} />
                       : "Never"}
                   </TableCell>
                   <TableCell>

@@ -1,17 +1,64 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSessionQuery } from "@/hooks/use-session";
 import { useRepositories, useRepositoryIssues, usePointTransactions } from "@/hooks/use-dashboard";
 import { apiErrorMessage } from "@/lib/api-client";
 import Galaxy from "@/components/Galaxy";
 
+const DEADLINE = new Date("2026-09-20T23:59:59+05:30");
+
+function useCountdown(targetDate: Date) {
+  const [timeLeft, setTimeLeft] = useState<{
+    days: string;
+    hours: string;
+    minutes: string;
+    seconds: string;
+    isEnded: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const diff = targetDate.getTime() - Date.now();
+      if (diff <= 0) {
+        setTimeLeft({
+          days: "00",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+          isEnded: true,
+        });
+        return;
+      }
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft({
+        days: days.toString().padStart(2, "0"),
+        hours: hours.toString().padStart(2, "0"),
+        minutes: minutes.toString().padStart(2, "0"),
+        seconds: seconds.toString().padStart(2, "0"),
+        isEnded: false,
+      });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  return timeLeft;
+}
+
 export default function DashboardPage() {
   const session = useSessionQuery();
   const enabled = Boolean(session.data?.user.githubId);
   const repositories = useRepositories(enabled, session.data?.user.id);
   const points = usePointTransactions(enabled, session.data?.user.id);
+  const countdown = useCountdown(DEADLINE);
   const [expandedRepoId, setExpandedRepoId] = useState<string | null>(null);
   const issues = useRepositoryIssues(enabled ? expandedRepoId ?? "" : "", session.data?.user.id);
 
@@ -261,9 +308,43 @@ export default function DashboardPage() {
               </svg>
 
               {/* Digital Stencil Readout */}
-              <div className="relative z-10 font-[family-name:var(--font-mono)] text-sm sm:text-lg font-bold text-[#8FFE09] tracking-[2px]">
-                Timer unavailable
-              </div>
+              {countdown?.isEnded ? (
+                <div className="relative z-10 flex flex-col items-center justify-center text-center">
+                  <span className="font-[family-name:var(--font-sixsound)] text-xs sm:text-sm text-[#8FFE09]/90 tracking-[0.2em] uppercase mb-1">
+                    Event Status
+                  </span>
+                  <span className="font-[family-name:var(--font-mono)] text-base sm:text-lg font-bold text-[#8FFE09] tracking-[2px]">
+                    DEADLINE REACHED
+                  </span>
+                </div>
+              ) : (
+                <div className="relative z-10 flex flex-col items-center justify-center text-center">
+                  <span className="font-[family-name:var(--font-sixsound)] text-xs sm:text-sm text-[#8FFE09]/90 tracking-[0.2em] uppercase mb-1">
+                    Time Remaining
+                  </span>
+                  <div className="flex items-center gap-1 sm:gap-2 font-[family-name:var(--font-mono)] text-lg sm:text-2xl font-bold text-[#8FFE09] tracking-wider">
+                    <div className="flex flex-col items-center min-w-[28px] sm:min-w-[36px]">
+                      <span>{countdown ? countdown.days : "--"}</span>
+                      <span className="text-[8px] sm:text-[9px] font-normal text-[#8FFE09]/70 tracking-widest uppercase">Days</span>
+                    </div>
+                    <span className="pb-3 text-[#8FFE09]/50">:</span>
+                    <div className="flex flex-col items-center min-w-[28px] sm:min-w-[36px]">
+                      <span>{countdown ? countdown.hours : "--"}</span>
+                      <span className="text-[8px] sm:text-[9px] font-normal text-[#8FFE09]/70 tracking-widest uppercase">Hours</span>
+                    </div>
+                    <span className="pb-3 text-[#8FFE09]/50">:</span>
+                    <div className="flex flex-col items-center min-w-[28px] sm:min-w-[36px]">
+                      <span>{countdown ? countdown.minutes : "--"}</span>
+                      <span className="text-[8px] sm:text-[9px] font-normal text-[#8FFE09]/70 tracking-widest uppercase">Mins</span>
+                    </div>
+                    <span className="pb-3 text-[#8FFE09]/50">:</span>
+                    <div className="flex flex-col items-center min-w-[28px] sm:min-w-[36px]">
+                      <span>{countdown ? countdown.seconds : "--"}</span>
+                      <span className="text-[8px] sm:text-[9px] font-normal text-[#8FFE09]/70 tracking-widest uppercase">Secs</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 3. Issues Solved Card (Aligned to right edge) */}

@@ -11,6 +11,43 @@ function headingId(url: string): string | null {
   return decodeURIComponent(url.slice(1));
 }
 
+function useVisibleToc(toc: TOCItemType[]): TOCItemType[] {
+  const [openItems, setOpenItems] = useState<Set<string>>(() => new Set());
+
+  useEffect(() => {
+    const details = Array.from(
+      document.querySelectorAll<HTMLDetailsElement>(".docs-markdown details"),
+    );
+
+    const update = () => {
+      const visibleItems = new Set<string>();
+      for (const item of toc) {
+        const id = headingId(item.url);
+        const heading = id ? document.getElementById(id) : null;
+        let parent = heading?.parentElement;
+        const ancestors: HTMLDetailsElement[] = [];
+        while (parent) {
+          if (parent instanceof HTMLDetailsElement) ancestors.push(parent);
+          parent = parent.parentElement;
+        }
+        if (ancestors.length === 0 || ancestors.every((element) => element.open)) {
+          visibleItems.add(item.url);
+        }
+      }
+      setOpenItems(visibleItems);
+    };
+
+    details.forEach((element) => element.addEventListener("toggle", update));
+    update();
+    return () =>
+      details.forEach((element) =>
+        element.removeEventListener("toggle", update),
+      );
+  }, [toc]);
+
+  return toc.filter((item) => item.depth <= 2 || openItems.has(item.url));
+}
+
 function useActiveHeading(toc: TOCItemType[]): string | null {
   const [activeUrl, setActiveUrl] = useState<string | null>(toc[0]?.url ?? null);
 
@@ -19,10 +56,19 @@ function useActiveHeading(toc: TOCItemType[]): string | null {
 
     const update = () => {
       frame = null;
-      const headings = toc.flatMap((item) => {
-        const id = headingId(item.url);
-        const element = id ? document.getElementById(id) : null;
-        return element ? [{ url: item.url, top: element.getBoundingClientRect().top }] : [];
+      const tocById = new Map(
+        toc.flatMap((item) => {
+          const id = headingId(item.url);
+          return id ? [[id, item.url] as const] : [];
+        }),
+      );
+      const headings = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".docs-markdown h2[id], .docs-markdown h3[id]",
+        ),
+      ).flatMap((element) => {
+        const url = tocById.get(element.id);
+        return url ? [{ url, top: element.getBoundingClientRect().top }] : [];
       });
       const atPageEnd =
         window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
@@ -115,8 +161,9 @@ function OutlineLinks({
 }
 
 export function DocumentationDesktopOutline({ toc }: { toc: TOCItemType[] }) {
-  const activeUrl = useActiveHeading(toc);
-  if (toc.length === 0) return null;
+  const visibleToc = useVisibleToc(toc);
+  const activeUrl = useActiveHeading(visibleToc);
+  if (visibleToc.length === 0) return null;
 
   return (
     <aside
@@ -126,20 +173,21 @@ export function DocumentationDesktopOutline({ toc }: { toc: TOCItemType[] }) {
       <p>On this page</p>
       <div className="docs-outline__body">
         <OutlineScrollProgress />
-        <OutlineLinks toc={toc} activeUrl={activeUrl} />
+        <OutlineLinks toc={visibleToc} activeUrl={activeUrl} />
       </div>
     </aside>
   );
 }
 
 export function DocumentationMobileOutline({ toc }: { toc: TOCItemType[] }) {
-  const activeUrl = useActiveHeading(toc);
-  if (toc.length === 0) return null;
+  const visibleToc = useVisibleToc(toc);
+  const activeUrl = useActiveHeading(visibleToc);
+  if (visibleToc.length === 0) return null;
 
   return (
     <details className="docs-outline-mobile">
       <summary>On this page</summary>
-      <OutlineLinks toc={toc} activeUrl={activeUrl} />
+      <OutlineLinks toc={visibleToc} activeUrl={activeUrl} />
     </details>
   );
 }

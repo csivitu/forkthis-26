@@ -7,6 +7,9 @@
   --acid: #8ffe09;
   --acid-bright: #a5ff45;
   --acid-dim: #497a00;
+  --accent-green: #629626;
+  --accent-green-dim: rgb(98 150 38 / 30%);
+  --accent-green-bg: rgb(98 150 38 / 8%);
   --void: #030305;
   --ink: #fcfcfc;
   --panel: #0d0d12;
@@ -1734,6 +1737,10 @@ button {
   outline: none;
 }
 
+.docs-outline__link[data-active="true"] {
+  text-shadow: 0 0 10px rgb(143 254 9 / 70%);
+}
+
 .docs-outline-mobile {
   display: none;
 }
@@ -1744,6 +1751,85 @@ button {
   font-size: 16px;
   line-height: 1.8;
   user-select: text;
+}
+
+.docs-markdown [data-slot="markdown-details"] {
+  margin: 0.4rem 0;
+  overflow: hidden;
+  border: 1px solid var(--accent-green-dim);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 1.5%);
+}
+
+.docs-markdown [data-slot="markdown-details"][open] {
+  border-color: var(--accent-green);
+  background: var(--accent-green-bg);
+}
+
+.docs-markdown [data-slot="markdown-summary"] {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  color: #e5e7eb;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.docs-markdown [data-slot="markdown-summary"]::-webkit-details-marker {
+  display: none;
+}
+
+.docs-markdown [data-slot="markdown-summary"]::marker {
+  content: "";
+}
+
+.docs-markdown [data-slot="markdown-summary"]::before {
+  display: inline-block;
+  color: var(--accent-green);
+  content: "▶";
+  font-size: 0.65em;
+  transition: transform 150ms ease;
+}
+
+.docs-markdown
+  [data-slot="markdown-details"][open]
+  > [data-slot="markdown-summary"]::before {
+  transform: rotate(90deg);
+}
+
+.docs-markdown
+  [data-slot="markdown-details"][open]
+  > [data-slot="markdown-summary"] {
+  border-bottom: 1px solid var(--accent-green-dim);
+  color: var(--accent-green);
+}
+
+.docs-markdown [data-slot="markdown-details"] > *:not(summary) {
+  padding: 0 0.75rem 0.6rem;
+}
+
+.docs-markdown [data-slot="markdown-details"] [data-slot="markdown-details"] {
+  margin: 0.25rem 0.75rem;
+  border-color: rgb(255 255 255 / 8%);
+  background: transparent;
+}
+
+.docs-markdown
+  [data-slot="markdown-details"]
+  [data-slot="markdown-details"]
+  > [data-slot="markdown-summary"] {
+  padding: 0.35rem 0.6rem;
+  color: #d1d5db;
+  font-weight: 500;
+}
+
+.docs-markdown
+  [data-slot="markdown-details"]
+  [data-slot="markdown-details"][open]
+  > [data-slot="markdown-summary"] {
+  color: var(--accent-green);
 }
 
 .docs-markdown [data-slot="markdown-heading"] {
@@ -1768,6 +1854,16 @@ button {
 .docs-markdown h4 {
   font-size: 19px;
 }
+
+/* Subtitle pattern: an h2 directly under the h1 keeps full heading styling, just tighter spacing */
+.docs-markdown [data-slot="markdown-heading"][data-level="1"]
+  + [data-slot="markdown-heading"][data-level="2"] {
+  margin-top: 0.35em;
+  margin-bottom: 1.5em;
+  font-size: clamp(20px, 2.4vw, 28px);
+  color: rgb(255 255 255 / 72%);
+}
+
 .docs-markdown [data-slot="markdown-paragraph"],
 .docs-markdown [data-slot="markdown-unordered-list"],
 .docs-markdown [data-slot="markdown-ordered-list"] {

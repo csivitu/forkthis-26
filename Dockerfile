@@ -6,6 +6,7 @@ COPY apps/api/package.json apps/api/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/admin-contracts/package.json packages/admin-contracts/package.json
 COPY packages/resource-contracts/package.json packages/resource-contracts/package.json
+COPY packages/game-contracts/package.json packages/game-contracts/package.json
 COPY packages/typescript-config/package.json packages/typescript-config/package.json
 
 RUN bun install --frozen-lockfile --linker isolated --filter api
@@ -13,6 +14,7 @@ RUN bun install --frozen-lockfile --linker isolated --filter api
 COPY packages/db packages/db
 COPY packages/admin-contracts packages/admin-contracts
 COPY packages/resource-contracts packages/resource-contracts
+COPY packages/game-contracts packages/game-contracts
 COPY apps/api apps/api
 
 WORKDIR /repo/apps/api

@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
+    "@repo/game-contracts": "workspace:*",
     "@repo/markdown": "workspace:*",
     "@repo/resource-contracts": "workspace:*",
     "@tanstack/react-query": "^5.102.8",

@@ -6,5 +6,6 @@ export * from "./pull-request.js";
 export * from "./point-transactions.js";
 export * from "./sync-logs.js";
 export * from "./resources.js";
+export * from "./game.js";
 export * from "./relations.js";
 export * from "./auth.js";

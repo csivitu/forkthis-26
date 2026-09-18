@@ -10,6 +10,11 @@ import {
   updateRepositorySchema,
 } from "@repo/admin-contracts"
 import {
+  createGameQuestionSchema,
+  reorderGameQuestionsSchema,
+  type GameQuestionDto,
+} from "@repo/game-contracts"
+import {
   createResourceSectionSchema,
   reorderResourceSectionsSchema,
   resourceSectionIdParamsSchema,
@@ -429,6 +434,155 @@ export async function deleteResourceSectionAction(
   } catch (error) {
     return failure(
       error instanceof Error ? error : new Error("Resource deletion failed")
+    )
+  }
+}
+
+/* ------------------------ Fastest Fingers First ------------------------- */
+
+/** Reads the four option inputs out of the form as an ordered array. */
+const optionValues = (formData: FormData): string[] =>
+  [0, 1, 2, 3].map((index) => value(formData, `option-${index}`))
+
+const gameQuestionFields = (formData: FormData) => ({
+  prompt: value(formData, "prompt"),
+  options: optionValues(formData),
+  correctIndex: Number(value(formData, "correctIndex")),
+  durationSeconds: Number(value(formData, "durationSeconds")),
+})
+
+export async function createGameQuestionAction(
+  formData: FormData
+): Promise<ActionResult> {
+  const parsed = createGameQuestionSchema.safeParse(
+    gameQuestionFields(formData)
+  )
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid question",
+    }
+  try {
+    const response = await apiRequest<GameQuestionDto>("/api/admin/game/questions", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/game")
+    return {
+      success: true,
+      message: "Question created",
+      resourceId: response.data.id,
+    }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Question creation failed")
+    )
+  }
+}
+
+export async function updateGameQuestionAction(
+  id: string,
+  formData: FormData
+): Promise<ActionResult> {
+  // The editor always submits every field, so this validates as a full
+  // replace. Parsing against the partial schema instead would turn a blank
+  // number input into NaN and fail with an unhelpful message; the API still
+  // accepts genuine partial PATCHes.
+  const parsed = createGameQuestionSchema.safeParse(
+    gameQuestionFields(formData)
+  )
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid question",
+    }
+  try {
+    await apiRequest(`/api/admin/game/questions/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/game")
+    revalidatePath(`/game/${id}`)
+    return { success: true, message: "Question saved" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Question update failed")
+    )
+  }
+}
+
+export async function deleteGameQuestionAction(
+  id: string
+): Promise<ActionResult> {
+  try {
+    await apiRequest(`/api/admin/game/questions/${id}`, { method: "DELETE" })
+    revalidatePath("/game")
+    return { success: true, message: "Question deleted" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Question deletion failed")
+    )
+  }
+}
+
+export async function reorderGameQuestionsAction(
+  questionIds: string[]
+): Promise<ActionResult> {
+  const parsed = reorderGameQuestionsSchema.safeParse({ questionIds })
+  if (!parsed.success)
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "Invalid question order",
+    }
+  try {
+    await apiRequest("/api/admin/game/questions/order", {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(parsed.data),
+    })
+    revalidatePath("/game")
+    return { success: true, message: "Question order updated" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Reordering failed")
+    )
+  }
+}
+
+/** Pushes a question live to every connected participant. */
+export async function pushGameQuestionAction(
+  id: string
+): Promise<ActionResult> {
+  try {
+    const response = await apiRequest<{
+      notifiedClients: number
+      durationSeconds: number
+    }>(`/api/admin/game/questions/${id}/push`, { method: "POST" })
+    revalidatePath("/game")
+    const { notifiedClients, durationSeconds } = response.data
+    return {
+      success: true,
+      message: `Pushed to ${notifiedClients} participant${
+        notifiedClients === 1 ? "" : "s"
+      } — ${durationSeconds}s on the clock`,
+    }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Pushing the question failed")
+    )
+  }
+}
+
+export async function endGameRoundAction(): Promise<ActionResult> {
+  try {
+    await apiRequest("/api/admin/game/rounds/end", { method: "POST" })
+    revalidatePath("/game")
+    return { success: true, message: "Round closed — answer revealed" }
+  } catch (error) {
+    return failure(
+      error instanceof Error ? error : new Error("Closing the round failed")
     )
   }
 }

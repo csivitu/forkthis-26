@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
 import { AuthGate } from "@/components/auth/AuthGate";
+import { GameListener } from "@/components/game/GameListener";
 import { SiteHeader } from "@/components/SiteHeader";
 import { QueryProvider } from "@/lib/query-provider";
 import "./globals.css";
@@ -106,6 +107,7 @@ export default function RootLayout({
             <SiteHeader />
             {children}
           </AuthGate>
+          <GameListener />
         </QueryProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { isSyncRunning, runSync } from "../../scripts/sync-prs";
 import { ApiError } from "../../utils/api-error";
 import { responseOk } from "../../utils/api-response";
 import logger from "../../utils/logger.util";
+import { adminRouter as gameAdminRoutes } from "../game/game.routes";
 import { adminRouter as resourceAdminRoutes } from "../resources/resource.routes";
 import {
   addAdmin,
@@ -50,6 +51,7 @@ const upload = multer({
 
 router.use(requireSession, requireAdmin);
 router.use("/resource-sections", resourceAdminRoutes);
+router.use("/game", gameAdminRoutes);
 router.post("/sync", (_req, res, next) => {
   if (isSyncRunning()) {
     next(new ApiError(409, "SYNC_ALREADY_RUNNING", "A repository sync is already running"));

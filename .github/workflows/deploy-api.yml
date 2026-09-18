@@ -8,6 +8,8 @@ on:
       - "apps/api/**"
       - "packages/db/**"
       - "packages/admin-contracts/**"
+      - "packages/resource-contracts/**"
+      - "packages/game-contracts/**"
       - "packages/typescript-config/package.json"
       - "Dockerfile"
       - "docker-compose.yaml"

@@ -57,6 +57,13 @@
       "when": 1789670027650,
       "tag": "0007_perpetual_rachel_grey",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789671354531,
+      "tag": "0008_daily_sumo",
+      "breakpoints": true
     }
   ]
 }

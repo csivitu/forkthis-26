@@ -11,6 +11,7 @@ import {
   ShieldCheckIcon,
   TrophyIcon,
   UsersIcon,
+  ZapIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -35,6 +36,7 @@ const navigation = [
   { href: "/admins", label: "Admins", icon: ShieldCheckIcon },
   { href: "/participants", label: "Whitelist", icon: BookOpenCheckIcon },
   { href: "/resources", label: "Resources", icon: BookOpenTextIcon },
+  { href: "/game", label: "Fastest Fingers", icon: ZapIcon },
   { href: "/points", label: "Points log", icon: TrophyIcon },
 ] as const
 
